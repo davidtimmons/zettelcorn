@@ -1,6 +1,27 @@
 import { assert, assertThrows } from "../deps.ts";
-import { __private__ } from "../../lib/cli/flags.ts";
+import { init, __private__ } from "../../lib/cli/cli.ts";
 const { _tryParse } = __private__;
+
+Deno.test("should display help with no command given", (): void => {
+  // setup
+  const originalConsoleLog = console.log;
+
+  // test
+  console.log = (...args: any[]): void => {
+    const message: string = args[0];
+    assert(message.length > 0);
+    assert(message.indexOf("zettlecorn <command> [options]") > 0);
+  };
+
+  init({
+    appName: "zettlecorn",
+    appVersion: "0.0.0",
+    renameFiles: (_options: object) => ({ status: 0, message: "" }),
+  });
+
+  // cleanup
+  console.log = originalConsoleLog;
+});
 
 Deno.test("should throw on an unexpected error", (): void => {
   assertThrows((): void => {
@@ -20,7 +41,7 @@ Deno.test("should display a helpful error message", (): void => {
   };
 
   // test
-  console.error = (...args: any[]) => {
+  console.error = (...args: any[]): void => {
     const message: string = args[0];
     assert(message.length > 0);
     assert(message.indexOf("try --help") !== -1);

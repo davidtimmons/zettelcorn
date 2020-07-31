@@ -1,17 +1,17 @@
-import { cac } from "../deps.ts";
+import { cac } from "./deps.ts";
+import { TCACObject, TCLIInit } from "./cli_types.ts";
 
-type CACObject = any;
-
-function init(
-  appVersion: string = "0.0.0",
-  appName: string = "",
-): void {
-  const flags: CACObject = cac(appName);
+function init({
+  appName,
+  appVersion,
+  renameFiles,
+}: TCLIInit): void {
+  const flags: TCACObject = cac(appName);
 
   flags
     .command(
       "rename.files <dir> <format>",
-      "Rename zettel file names in this directory",
+      "Rename zettel files using their YAML frontmatter",
     )
     .option(
       "-r, --recursive",
@@ -25,10 +25,14 @@ function init(
   flags.help();
   flags.version(appVersion);
 
-  _tryParse(flags);
+  if (Deno.args.length > 0) {
+    _tryParse(flags);
+  } else {
+    flags.outputHelp();
+  }
 }
 
-function _tryParse(flags: CACObject): void {
+function _tryParse(flags: TCACObject): void {
   try {
     flags.parse();
   } catch (err) {
