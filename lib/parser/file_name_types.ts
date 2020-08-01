@@ -8,8 +8,8 @@ import {
 } from "./parser_types.ts";
 
 interface TFileNameParseOptions extends TParseOptions {
-  readonly format: string;
   readonly path: string;
+  readonly pattern: string;
   readonly recursive: boolean;
 }
 

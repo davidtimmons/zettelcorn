@@ -4,5 +4,5 @@ import { init } from "./cli/cli.ts";
 init({
   appVersion: Env.ZETTLECORN_VERSION,
   appName: Env.ZETTLECORN_APP_NAME,
-  renameFiles: (options) => ({ status: 0, message: '' }), // TODO
+  renameFiles: (options) => ({ status: 0, message: "" }), // TODO
 });

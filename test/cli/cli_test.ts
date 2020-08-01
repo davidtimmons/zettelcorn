@@ -1,5 +1,5 @@
 import { assert, assertThrows } from "../deps.ts";
-import { init, __private__ } from "../../lib/cli/cli.ts";
+import { __private__, init } from "../../lib/cli/cli.ts";
 const { _tryParse } = __private__;
 
 Deno.test("should display help with no command given", (): void => {
