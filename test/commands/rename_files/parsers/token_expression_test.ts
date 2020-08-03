@@ -1,9 +1,9 @@
-import { assertEquals } from "../deps.ts";
+import { assertEquals } from "../../../deps.ts";
 import {
   __private__,
   generateInterpolatedString,
   identifyCharacter,
-} from "../../lib/parser/token.ts";
+} from "../../../../lib/commands/rename_files/parsers/token_expression.ts";
 const { TBracketIdentity } = __private__;
 
 Deno.test("should identify bracket and non-bracket characters", (): void => {

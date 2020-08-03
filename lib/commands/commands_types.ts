@@ -1,12 +1,16 @@
-interface TParse {
-  (options: TParseOptions): TParseResult;
+interface TCommandModule {
+  run: TCommand;
 }
 
-interface TParseOptions {}
+interface TCommand {
+  (options: TCommandOptions): TCommandResult;
+}
 
-interface TParseResult {
+interface TCommandOptions {}
+
+interface TCommandResult {
   readonly message: string;
-  readonly status: TParserStatus;
+  readonly status: TCommandStatus;
 }
 
 interface TRead {
@@ -17,7 +21,7 @@ interface TReadOptions {}
 
 interface TReadResult {
   readonly message: string;
-  readonly status: TParserStatus;
+  readonly status: TCommandStatus;
 }
 
 interface TWrite {
@@ -28,19 +32,20 @@ interface TWriteOptions {}
 
 interface TWriteResult {
   readonly message: string;
-  readonly status: TParserStatus;
+  readonly status: TCommandStatus;
 }
 
-enum TParserStatus {
+enum TCommandStatus {
   OK,
   Error,
 }
 
 export {
-  TParse,
-  TParseOptions,
-  TParseResult,
-  TParserStatus,
+  TCommand,
+  TCommandModule,
+  TCommandOptions,
+  TCommandResult,
+  TCommandStatus,
   TRead,
   TReadOptions,
   TReadResult,

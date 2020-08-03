@@ -1,16 +1,16 @@
 import { cac } from "./deps.ts";
-import { TCACObject, TCLIInit } from "./cli_types.ts";
+import * as CLITypes from "./cli_types.ts";
 
-function init({
+export default function init({
   appName,
   appVersion,
   renameFiles,
-}: TCLIInit): void {
-  const flags: TCACObject = cac(appName);
+}: CLITypes.TCLIInit): void {
+  const flags: CLITypes.TCACObject = cac(appName);
 
   flags
     .command(
-      "rename.files <dir> <format>",
+      "rename.files <path> <pattern>",
       "Rename zettel files using their YAML frontmatter",
     )
     .option(
@@ -18,8 +18,12 @@ function init({
       "Run command on a directory and all its sub-directories",
     )
     .example("rename.files ./zettelkasten {id}-{title}.md")
-    .action((dir: string, format: string, options: object): void => {
-      console.log(dir, format, options); // TODO
+    .action((
+      path: string,
+      pattern: string,
+      options: CLITypes.TCLIRenameFilesOptions,
+    ): void => {
+      renameFiles({ path, pattern, recursive: Boolean(options.recursive) }); // TODO: Status report
     });
 
   flags.help();
@@ -32,7 +36,7 @@ function init({
   }
 }
 
-function _tryParse(flags: TCACObject): void {
+function _tryParse(flags: CLITypes.TCACObject): void {
   try {
     flags.parse();
   } catch (err) {
