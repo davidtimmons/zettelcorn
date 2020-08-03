@@ -1,45 +1,26 @@
-import {
-  TCommandOptions,
-  TCommandResult,
-  TReadOptions,
-  TReadResult,
-  TWriteOptions,
-  TWriteResult,
-} from "./commands_types.ts";
+import * as CommandsTypes from "../commands_types.ts";
 
-interface TRenameFilesCommandOptions extends TCommandOptions {
+export interface TRenameFilesCommandOptions
+  extends CommandsTypes.TCommandOptions {
   readonly path: string;
   readonly pattern: string;
   readonly recursive: boolean;
 }
 
-interface TRenameFilesCommandResult extends TCommandResult {}
+export interface TRenameFilesCommandResult
+  extends CommandsTypes.TCommandResult {}
 
-interface TRenameFilesReadOptions extends TReadOptions {
-  readonly dir: string;
-  readonly recursive: boolean;
-}
-
-interface TRenameFilesReadResult extends TReadResult {
+export interface TRenameFilesReadResult extends CommandsTypes.TReadResult {
   readonly fileName: string;
   readonly path: string;
   readonly yaml: object;
 }
 
-interface TRenameFilesWriteOptions extends TWriteOptions {
+export interface TRenameFilesWriteOptions extends CommandsTypes.TWriteOptions {
   readonly fileName: string;
   readonly path: string;
   readonly transform: (yaml: object) => string;
   readonly yaml: object;
 }
 
-interface TRenameFilesWriteResult extends TWriteResult {}
-
-export {
-  TRenameFilesCommandOptions,
-  TRenameFilesCommandResult,
-  TRenameFilesReadOptions,
-  TRenameFilesReadResult,
-  TRenameFilesWriteOptions,
-  TRenameFilesWriteResult,
-};
+export interface TRenameFilesWriteResult extends CommandsTypes.TWriteResult {}

@@ -1,55 +1,41 @@
-interface TCommandModule {
+export interface TCommandModule {
   run: TCommand;
 }
 
-interface TCommand {
-  (options: TCommandOptions): TCommandResult;
+export interface TCommand {
+  (options: TCommandOptions): Promise<TCommandResult>;
 }
 
-interface TCommandOptions {}
+export interface TCommandOptions {}
 
-interface TCommandResult {
+export interface TCommandResult {
   readonly message: string;
   readonly status: TCommandStatus;
 }
 
-interface TRead {
+export interface TRead {
   (options: TReadOptions): TReadResult[];
 }
 
-interface TReadOptions {}
+export interface TReadOptions {}
 
-interface TReadResult {
+export interface TReadResult {
   readonly message: string;
   readonly status: TCommandStatus;
 }
 
-interface TWrite {
+export interface TWrite {
   (options: TWriteOptions): TWriteResult;
 }
 
-interface TWriteOptions {}
+export interface TWriteOptions {}
 
-interface TWriteResult {
+export interface TWriteResult {
   readonly message: string;
   readonly status: TCommandStatus;
 }
 
-enum TCommandStatus {
+export enum TCommandStatus {
   OK,
   Error,
 }
-
-export {
-  TCommand,
-  TCommandModule,
-  TCommandOptions,
-  TCommandResult,
-  TCommandStatus,
-  TRead,
-  TReadOptions,
-  TReadResult,
-  TWrite,
-  TWriteOptions,
-  TWriteResult,
-};

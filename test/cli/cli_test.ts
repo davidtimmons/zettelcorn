@@ -1,6 +1,6 @@
 import { assert, assertThrows } from "../deps.ts";
-import { __private__, init } from "../../lib/cli/cli.ts";
-const { _tryParse } = __private__;
+import * as CLI from "../../lib/cli/cli.ts";
+const { _tryParse } = CLI.__private__;
 
 Deno.test("should display help with no command given", (): void => {
   // setup
@@ -13,10 +13,11 @@ Deno.test("should display help with no command given", (): void => {
     assert(message.indexOf("zettlecorn <command> [options]") > 0);
   };
 
-  init({
+  CLI.init({
     appName: "zettlecorn",
     appVersion: "0.0.0",
-    renameFiles: (_options: object) => ({ status: 0, message: "" }),
+    renameFiles: async (_options: object) =>
+      Promise.resolve({ status: 0, message: "" }),
   });
 
   // cleanup

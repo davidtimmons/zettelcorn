@@ -1,29 +1,32 @@
 import { assertEquals } from "../../../deps.ts";
-import {
-  __private__,
-  generateInterpolatedString,
-  identifyCharacter,
-} from "../../../../lib/commands/rename_files/parsers/token_expression.ts";
-const { TBracketIdentity } = __private__;
+import * as TokenExp from "../../../../lib/commands/rename_files/parsers/token_expression.ts";
+const { TBracketIdentity } = TokenExp.__private__;
 
 Deno.test("should identify bracket and non-bracket characters", (): void => {
-  assertEquals(identifyCharacter("{"), TBracketIdentity.LeftBracket);
-  assertEquals(identifyCharacter("}"), TBracketIdentity.RightBracket);
-  assertEquals(identifyCharacter("a"), TBracketIdentity.Other);
-  assertEquals(identifyCharacter(""), TBracketIdentity.Other);
+  assertEquals(TokenExp.identifyCharacter("{"), TBracketIdentity.LeftBracket);
+  assertEquals(TokenExp.identifyCharacter("}"), TBracketIdentity.RightBracket);
+  assertEquals(TokenExp.identifyCharacter("a"), TBracketIdentity.Other);
+  assertEquals(TokenExp.identifyCharacter(""), TBracketIdentity.Other);
 });
 
 Deno.test("should generate an interpolated string", (): void => {
-  let goal: string = "";
-  goal = "`${x['id']}-${x['title']}-words.md`";
-  assertEquals(generateInterpolatedString("x", "{id}-{title}-words.md"), goal);
+  assertEquals(
+    TokenExp.generateInterpolatedString("x", "{id}-{title}-words.md"),
+    "`${x['id']}-${x['title']}-words.md`",
+  );
 
-  goal = "`words-${x['id']}-${x['title']}`";
-  assertEquals(generateInterpolatedString("x", "words-{id}-{title}"), goal);
+  assertEquals(
+    TokenExp.generateInterpolatedString("x", "words-{id}-{title}"),
+    "`words-${x['id']}-${x['title']}`",
+  );
 
-  goal = "`words--words.md`";
-  assertEquals(generateInterpolatedString("x", "words-{-words.md"), goal);
+  assertEquals(
+    TokenExp.generateInterpolatedString("x", "words-{-words.md"),
+    "`words--words.md`",
+  );
 
-  goal = "`words--words.md`";
-  assertEquals(generateInterpolatedString("x", "words-}-words.md"), goal);
+  assertEquals(
+    TokenExp.generateInterpolatedString("x", "words-}-words.md"),
+    "`words--words.md`",
+  );
 });

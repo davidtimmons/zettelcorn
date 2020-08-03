@@ -6,8 +6,8 @@ import {
 } from "./commands_types.ts";
 
 export default function command(commandModule: TCommandModule): TCommand {
-  return (options: TCommandOptions): TCommandResult =>
-    commandModule.run(options);
+  return async (options: TCommandOptions): TCommandResult =>
+    await commandModule.run(options);
 }
 
 export {

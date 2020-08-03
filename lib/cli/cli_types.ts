@@ -1,20 +1,14 @@
 import { CommandsTypes } from "./deps.ts";
 
-type TCACObject = any;
+export type TCACObject = any;
 
-interface TCLIInit {
+export interface TCLIInit {
   readonly appVersion: string;
   readonly appName: string;
   readonly renameFiles: CommandsTypes.TCommand;
 }
 
-interface TCLIRenameFilesOptions {
+export interface TCLIRenameFilesOptions {
   r?: boolean;
   recursive?: boolean;
 }
-
-export {
-  TCACObject,
-  TCLIInit,
-  TCLIRenameFilesOptions,
-};
