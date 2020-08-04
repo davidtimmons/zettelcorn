@@ -1,7 +1,6 @@
 import {
   assert,
   assertEquals,
-  assertStringContains,
   equal,
 } from "../../../deps.ts";
 import * as YAMLFrontmatter from "../../../../lib/commands/rename_files/parsers/yaml_frontmatter.ts";

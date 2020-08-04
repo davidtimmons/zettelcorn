@@ -11,7 +11,7 @@ export default function init({
   flags
     .command(
       "rename.files <path> <pattern>",
-      "Rename zettel files using their YAML frontmatter",
+      "Rename zettel files using their YAML frontmatter, and ignore files without frontmatter",
     )
     .option(
       "-r, --recursive",

@@ -23,15 +23,3 @@ export function parseYAML(yaml: string): object {
   const parsed = JSYAML.load(yaml) || {};
   return parsed;
 }
-
-import { __private__ } from "../rename_files.ts";
-const { _readFirstFile } = __private__;
-
-const contents = _readFirstFile([{
-  fileName: "test.md",
-  path: "/home/bert/projects/zettelcorn/test/test_data/test.md",
-  status: 0,
-  yaml: {},
-}]);
-
-parseFrontmatter(contents);
