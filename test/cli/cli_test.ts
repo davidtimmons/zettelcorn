@@ -16,8 +16,7 @@ Deno.test("should display help with no command given", (): void => {
   CLI.init({
     appName: "zettlecorn",
     appVersion: "0.0.0",
-    renameFiles: async (_options: object) =>
-      Promise.resolve({ status: 0, message: "" }),
+    renameFiles: async (_options: object) => Promise.resolve({ status: 0 }),
   });
 
   // cleanup

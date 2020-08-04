@@ -1,12 +1,7 @@
-import {
-  TCommand,
-  TCommandModule,
-  TCommandOptions,
-  TCommandResult,
-} from "./commands_types.ts";
+import * as T from "./types.ts";
 
-export default function command(commandModule: TCommandModule): TCommand {
-  return async (options: TCommandOptions): TCommandResult =>
+export default function command(commandModule: T.TCommandModule): T.TCommand {
+  return async (options: T.TCommandOptions): T.TCommandResult =>
     await commandModule.run(options);
 }
 

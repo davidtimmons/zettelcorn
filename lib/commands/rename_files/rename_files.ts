@@ -1,11 +1,11 @@
 import { FS, Path } from "./deps.ts";
-import * as CommandsTypes from "../commands_types.ts";
-import * as RenameFilesTypes from "./rename_files_types.ts";
+import * as CT from "../types.ts";
+import * as RFCT from "./types.ts";
 import * as TokenExpression from "./parsers/token_expression.ts";
 
 export default async function run(
-  options: RenameFilesTypes.TRenameFilesCommandOptions,
-): Promise<RenameFilesTypes.TRenameFilesCommandResult> {
+  options: RFCT.TRenameFilesCommandOptions,
+): Promise<RFCT.TRenameFilesCommandResult> {
   // TODO
   // path, pattern, recursive
   const parsedPattern = TokenExpression.generateInterpolatedString(
@@ -15,14 +15,15 @@ export default async function run(
   const transform = Function("yaml", "return " + parsedPattern);
 
   const walkResults = await _walkFiles(options);
+  const firstFileContent = _readFirstFile(walkResults);
 
-  return { message: "", status: CommandsTypes.TCommandStatus.OK };
+  return { status: CT.TStatus.OK };
 }
 
 async function _walkFiles(
-  options: RenameFilesTypes.TRenameFilesCommandOptions,
-): Promise<RenameFilesTypes.TRenameFilesReadResult[]> {
-  const walkDirectory = Deno.realPathSync(options.path);
+  options: RFCT.TRenameFilesCommandOptions,
+): Promise<RFCT.TRenameFilesReadResult[]> {
+  const walkDirectory = Deno.realPathSync(options.directory);
   const walkResults = [];
 
   for await (const entity of FS.walk(walkDirectory)) {
@@ -35,23 +36,30 @@ async function _walkFiles(
     if (options.recursive || walkDirectory === Path.dirname(thisPath)) {
       walkResults.push({
         fileName: name,
-        message: "",
         path: thisPath,
-        status: CommandsTypes.TCommandStatus.OK,
+        status: CT.TStatus.OK,
         yaml: {},
       });
     }
   }
+
   return walkResults;
 }
 
-async function _readFirst(
-  walkResults: RenameFilesTypes.TRenameFilesReadResult[],
-) {
-  const firstResult = walkResults[0];
+function _readFirstFile(walkResults: RFCT.TRenameFilesReadResult[]): string {
+  if (walkResults.length === 0) return "";
+  const contents = Deno.readTextFileSync(walkResults[0].path);
+  return contents;
 }
 
 // walkFiles({ path: "./", recursive: false }).then((x) => console.dir(x));
+// _readFirstFile([{
+//   fileName: "test.md",
+//   message: "",
+//   path: "/home/bert/projects/zettelcorn/test/test_data/test.md",
+//   status: 0,
+//   yaml: {},
+// }]);
 
 // async function write(
 //   options: RenameFilesTypes.TRenameFilesWriteOptions,
@@ -78,11 +86,7 @@ async function _readFirst(
 //   transform: (yaml: object) => `${yaml.id}-${yaml.title}-tmp.xyz`,
 // })
 
-const __private__ = {
-  _readFirst,
+export const __private__ = {
+  _readFirstFile,
   _walkFiles,
-};
-
-export {
-  __private__,
 };

@@ -4,7 +4,10 @@ enum TBracketIdentity {
   Other,
 }
 
-function generateInterpolatedString(varName: string, pattern: string): string {
+export function generateInterpolatedString(
+  varName: string,
+  pattern: string,
+): string {
   const patternBuffer: string[] = pattern.split("");
   const expression: string[] = [];
   let token: string[] = [];
@@ -42,7 +45,7 @@ function generateInterpolatedString(varName: string, pattern: string): string {
   return "`" + expression.join("") + "`";
 }
 
-function identifyCharacter(char: string): TBracketIdentity {
+export function identifyCharacter(char: string): TBracketIdentity {
   const reLeftBracket = /{/ig;
   const reRightBracket = /}/ig;
 
@@ -57,9 +60,4 @@ function identifyCharacter(char: string): TBracketIdentity {
 
 export const __private__ = {
   TBracketIdentity,
-};
-
-export {
-  generateInterpolatedString,
-  identifyCharacter,
 };
