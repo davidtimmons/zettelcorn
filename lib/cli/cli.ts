@@ -1,12 +1,12 @@
-import { cac } from "./deps.ts";
+import { CAC, IO } from "./deps.ts";
 import * as CLITypes from "./cli_types.ts";
 
-export default function init({
+export function init({
   appName,
   appVersion,
   renameFiles,
 }: CLITypes.TCLIInit): void {
-  const flags: CLITypes.TCACObject = cac(appName);
+  const flags: CLITypes.TCACObject = CAC(appName);
 
   flags
     .command(
@@ -52,10 +52,17 @@ function _tryParse(flags: CLITypes.TCACObject): void {
   }
 }
 
+export async function sendToUser(text: string): Promise<string> {
+  console.log(text);
+  // Listen to stdin for a new line
+  for await (const line of IO.readLines(Deno.stdin)) {
+    return line;
+  }
+  return "";
+}
+
 export const __private__ = {
   _tryParse,
 };
 
-export {
-  init,
-};
+export default init;

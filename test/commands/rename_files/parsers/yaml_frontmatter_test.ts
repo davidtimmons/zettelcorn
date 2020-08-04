@@ -1,8 +1,4 @@
-import {
-  assert,
-  assertEquals,
-  equal,
-} from "../../../deps.ts";
+import { assert, assertEquals, equal } from "../../../deps.ts";
 import * as YAMLFrontmatter from "../../../../lib/commands/rename_files/parsers/yaml_frontmatter.ts";
 
 Deno.test("should parse YAML content", (): void => {

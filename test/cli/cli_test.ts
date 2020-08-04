@@ -1,4 +1,4 @@
-import { assert, assertThrows } from "../deps.ts";
+import { assert, assertThrows, unimplemented } from "../deps.ts";
 import * as CLI from "../../lib/cli/cli.ts";
 const { _tryParse } = CLI.__private__;
 
@@ -50,4 +50,14 @@ Deno.test("should display a helpful error message", (): void => {
 
   // cleanup
   console.error = originalConsoleError;
+});
+
+Deno.test({
+  name: "should read text from the user",
+  ignore: true,
+  async fn() {
+    // TODO: Research best way to simulate input to stdin.
+    const input = await CLI.sendToUser("output");
+    unimplemented();
+  },
 });

@@ -1,7 +1,4 @@
-import {
-  assert,
-  assertEquals,
-} from "../deps.ts";
+import { assert, assertEquals } from "../deps.ts";
 import * as $ from "../../lib/utilities/utilities.ts";
 
 Deno.test("should return the argument identity", () => {

@@ -2,6 +2,7 @@ import { FS, Path, Utilities as $ } from "./deps.ts";
 import * as CT from "../types.ts";
 import * as RFCT from "./types.ts";
 import * as TokenExpression from "./parsers/token_expression.ts";
+import * as UI from "./ui/ui.ts";
 import * as YAMLFrontmatter from "./parsers/yaml_frontmatter.ts";
 
 export default async function run(
@@ -9,22 +10,31 @@ export default async function run(
 ): Promise<RFCT.TRenameFilesCommandResult> {
   // Build a queue of files to rename.
   const queue = await _buildFileQueue(options);
+
+  // Confirm change before renaming all files.
   const parsedPattern = TokenExpression.generateInterpolatedString(
     "yaml",
     options.pattern,
   );
-  const transform = Function("yaml", "return " + parsedPattern);
+  const applyPattern = Function("yaml", "return " + parsedPattern);
+  const hasFileWithYAML = Boolean(queue[0]);
+  const newFileName = $.doOnlyIf(hasFileWithYAML, applyPattern)(queue[0].yaml);
+  const userResponse = await UI.confirmChange({
+    newFileName,
+    oldFileName: queue[0].fileName,
+    pattern: options.pattern,
+  });
 
-  // Confirm before renaming all files.
-  const hasFile = Boolean(queue[0]);
-  const firstTitle = $.doOnlyIf(hasFile, transform)(queue[0].yaml);
+  // Process user response.
+  const changeRejected = userResponse.match(/[yY]/) === null;
+  if (changeRejected) Deno.exit();
 
-  // TODO
+  // TODO: if change accepted, then rename all the files
 
   return { status: CT.TStatus.OK };
 }
 
-export async function read(path: string): Promise<string> {
+async function _read(path: string): Promise<string> {
   if (path.length === 0) return "";
   const contents = await Deno.readTextFile(path);
   return contents;
@@ -44,22 +54,23 @@ async function _buildFileQueue(
     const inStartingDirectory = walkDirectory === Path.dirname(thisPath);
 
     if (options.recursive || inStartingDirectory) {
-      const fileYAML = YAMLFrontmatter.parseFrontmatter(await read(thisPath));
+      const fileYAML = YAMLFrontmatter.parseFrontmatter(await _read(thisPath));
       const hasYAML = Object.keys(fileYAML).length > 0;
-      $.doOnlyIf(hasYAML, Array.prototype.push.bind(walkResults))({
-        fileName: name,
-        path: thisPath,
-        status: CT.TStatus.OK,
-        yaml: fileYAML,
-      });
+
+      if (hasYAML) {
+        walkResults.push({
+          fileName: name,
+          path: thisPath,
+          status: CT.TStatus.OK,
+          yaml: fileYAML,
+        });
+      }
     }
   }
   return walkResults;
 }
 
-// _walkFiles({ directory: "./", recursive: true, pattern: "" }).then((x) => console.dir(x));
-
-// async function write(
+// async function _write(
 //   options: RenameFilesTypes.TRenameFilesWriteOptions,
 // ): Promise<RenameFilesTypes.TRenameFilesWriteResult> {
 //   const oldPath = Path.join.apply(null, [options.path, options.fileName]);
@@ -74,16 +85,7 @@ async function _buildFileQueue(
 //   return { message: "", status: CommandsTypes.TCommandStatus.OK };
 // }
 
-// write({
-//   path: '/home/bert/projects/zettelcorn/lib/parser',
-//   fileName: 'tmp',
-//   yaml: {
-//     id: 123,
-//     title: 'pasta',
-//   },
-//   transform: (yaml: object) => `${yaml.id}-${yaml.title}-tmp.xyz`,
-// })
-
 export const __private__ = {
   _buildFileQueue,
+  _read,
 };

@@ -1,3 +1,7 @@
+import { FS } from "./deps.ts";
+
+export const EOL = Deno.build.os === "windows" ? FS.EOL.CRLF : FS.EOL.LF;
+
 export function identity(x: any): any {
   return x;
 }

@@ -5,13 +5,13 @@ import {
   equal,
 } from "../../deps.ts";
 import * as RenameFiles from "../../../lib/commands/rename_files/rename_files.ts";
-const { _buildFileQueue } = RenameFiles.__private__;
+const { _buildFileQueue, _read } = RenameFiles.__private__;
 
 Deno.test("should read a text file at a path", async (): Promise<void> => {
-  let actual = await RenameFiles.read("test/test_data/test.md");
+  let actual = await _read("test/test_data/test.md");
   assertStringContains(actual, "This is a markdown file");
 
-  actual = await RenameFiles.read("");
+  actual = await _read("");
   assertStringContains(actual, "");
 });
 
