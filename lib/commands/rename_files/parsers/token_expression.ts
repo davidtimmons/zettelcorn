@@ -1,7 +1,20 @@
+/// TYPES ///
+
 enum TBracketIdentity {
   LeftBracket,
   RightBracket,
   Other,
+}
+
+/// LOGIC ///
+
+const LEFT_BRACKET = /{/ig;
+const RIGHT_BRACKET = /}/ig;
+
+export function hasToken(pattern: string): boolean {
+  const leftBracket = pattern.search(LEFT_BRACKET);
+  const rightBracket = pattern.search(RIGHT_BRACKET);
+  return leftBracket >= 0 && rightBracket >= 0 && leftBracket < rightBracket;
 }
 
 export function generateInterpolatedString(
@@ -9,7 +22,7 @@ export function generateInterpolatedString(
   pattern: string,
 ): string {
   const patternBuffer: string[] = pattern.split("");
-  const expression: string[] = [];
+  const resultBuffer: string[] = [];
   let token: string[] = [];
   let insideToken = false;
 
@@ -23,7 +36,7 @@ export function generateInterpolatedString(
         // This is only a token if there was a left bracket. Otherwise, the pattern is malformed.
         if (insideToken) {
           insideToken = false;
-          expression.push("${" + varName + "['" + token.join("") + "']}");
+          resultBuffer.push("${" + varName + "['" + token.join("") + "']}");
           token = [];
         }
         break;
@@ -31,7 +44,7 @@ export function generateInterpolatedString(
         if (insideToken) {
           token.push(patternBuffer[i]);
         } else {
-          expression.push(patternBuffer[i]);
+          resultBuffer.push(patternBuffer[i]);
         }
         break;
     }
@@ -39,19 +52,16 @@ export function generateInterpolatedString(
 
   // Swallow the bracket but include all other characters if the pattern was malformed.
   if (insideToken) {
-    expression.push(token.join(""));
+    resultBuffer.push(token.join(""));
   }
 
-  return "`" + expression.join("") + "`";
+  return "`" + resultBuffer.join("") + "`";
 }
 
 export function identifyCharacter(char: string): TBracketIdentity {
-  const reLeftBracket = /{/ig;
-  const reRightBracket = /}/ig;
-
-  if (char.match(reLeftBracket) !== null) {
+  if (char.match(LEFT_BRACKET) !== null) {
     return TBracketIdentity.LeftBracket;
-  } else if (char.match(reRightBracket) !== null) {
+  } else if (char.match(RIGHT_BRACKET) !== null) {
     return TBracketIdentity.RightBracket;
   } else {
     return TBracketIdentity.Other;

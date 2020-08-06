@@ -2,6 +2,17 @@ import { assertEquals } from "../../../deps.ts";
 import * as TokenExp from "../../../../lib/commands/rename_files/parsers/token_expression.ts";
 const { TBracketIdentity } = TokenExp.__private__;
 
+Deno.test("should determine if a pattern contains a token", (): void => {
+  assertEquals(TokenExp.hasToken(""), false);
+  assertEquals(TokenExp.hasToken("{"), false);
+  assertEquals(TokenExp.hasToken("}"), false);
+  assertEquals(TokenExp.hasToken("}{"), false);
+  assertEquals(TokenExp.hasToken("abc}def{ghi"), false);
+  assertEquals(TokenExp.hasToken("abc}defghi"), false);
+  assertEquals(TokenExp.hasToken("abcdef{ghi"), false);
+  assertEquals(TokenExp.hasToken("abc{def}ghi"), true);
+});
+
 Deno.test("should identify bracket and non-bracket characters", (): void => {
   assertEquals(TokenExp.identifyCharacter("{"), TBracketIdentity.LeftBracket);
   assertEquals(TokenExp.identifyCharacter("}"), TBracketIdentity.RightBracket);

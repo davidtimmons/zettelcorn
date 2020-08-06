@@ -16,6 +16,8 @@ export interface TCLIRenameFilesOptions {
   recursive: boolean;
   d?: boolean;
   dashed: boolean;
+  v?: boolean;
+  verbose: boolean;
 }
 
 /// LOGIC ///
@@ -60,6 +62,10 @@ function _mutateFlagsToAddRenameFiles(options: TCLIInit, flags: TCACObject) {
       "-r, --recursive",
       "Run command on a directory and all its sub-directories",
     )
+    .option(
+      "-v, --verbose",
+      "List all paths that changed along with each new value",
+    )
     .example("rename.files -r ./zettelkasten {id}-{title}.md")
     .example("rename.files --recursive ./zettelkasten {id}-{title}.md")
     .example("rename.files -rd ./zettelkasten {id}-{title}.md")
@@ -75,6 +81,7 @@ function _mutateFlagsToAddRenameFiles(options: TCLIInit, flags: TCACObject) {
           directory: path,
           dashed: Boolean(options.dashed),
           recursive: Boolean(options.recursive),
+          verbose: Boolean(options.verbose),
         });
       },
     );

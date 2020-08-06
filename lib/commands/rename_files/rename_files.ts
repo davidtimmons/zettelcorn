@@ -1,7 +1,7 @@
 import { CLI, FS, Path, Utilities as $ } from "./deps.ts";
 import * as T from "../types.ts";
 import * as Text from "./parsers/text.ts";
-import * as TokenExpression from "./parsers/token_expression.ts";
+import * as TokenExp from "./parsers/token_expression.ts";
 import * as YAMLFrontmatter from "./parsers/yaml_frontmatter.ts";
 import * as UI from "./ui/ui.ts";
 
@@ -18,6 +18,10 @@ interface TRenameFilesReadResult {
   readonly yaml: object;
 }
 
+interface TRenameFilesWriteOptions extends TRenameFilesRunOptions {
+  readonly applyPattern: TRenameFilesApplyPattern;
+}
+
 type TRenameFilesApplyPattern = TRenameFilesTransform | Function;
 
 type TRenameFilesTransform = (yaml: TRenameFilesYAML) => string;
@@ -29,16 +33,28 @@ type TRenameFilesYAML = { [key: string]: any };
 export async function run(
   options: TRenameFilesRunOptions,
 ): Promise<T.TRunResult> {
-  // TODO: Check if the pattern has tokens. If not, notify user and exit.
+  // The rename files feature is intended to work with YAML frontmatter.
+  const hasToken = TokenExp.hasToken(options.pattern);
+  if (!hasToken) {
+    UI.notifyUserOfExit({ pattern: options.pattern });
+    Deno.exit();
+  }
 
-  // Build a queue of files to rename.
-  const fileQueue = await _buildFileQueue(options);
+  // The file renaming function requires a valid file and YAML object.
+  let fileQueue: TRenameFilesReadResult[] = [];
+  try {
+    fileQueue = await _buildFileQueue(options);
+  } catch(err) {
+    UI.notifyUserOfExit({ error: err });
+    throw err;
+  }
+
   const applyPattern = $.composeFunctions()
     .apply(
       Function(
         "yaml",
         "return " +
-          TokenExpression.generateInterpolatedString("yaml", options.pattern),
+          TokenExp.generateInterpolatedString("yaml", options.pattern),
       ),
     )
     .applyIf(options.dashed, Text.dasherize)
@@ -64,9 +80,8 @@ export async function run(
   // Process user response.
   const changeRejected = userResponse.match(/[yY]/) === null;
   if (changeRejected) Deno.exit();
-  await _renameFiles(applyPattern, fileQueue);
 
-  // TODO: Report how many files changed.
+  await _renameFiles({ ...options, applyPattern }, fileQueue);
 
   return { status: T.TStatus.OK };
 }
@@ -74,6 +89,7 @@ export async function run(
 async function _buildFileQueue(
   options: TRenameFilesRunOptions,
 ): Promise<TRenameFilesReadResult[]> {
+  // TODO: Use a generator to avoid walking all files until user confirms intent.
   const walkDirectory: string = Deno.realPathSync(options.directory);
   const walkResults: TRenameFilesReadResult[] = [];
 
@@ -101,12 +117,30 @@ async function _buildFileQueue(
 }
 
 async function _renameFiles(
-  applyPattern: TRenameFilesApplyPattern,
-  files: TRenameFilesReadResult[],
+  options: TRenameFilesWriteOptions,
+  fileQueue: TRenameFilesReadResult[],
 ): Promise<void> {
-  files.forEach(async (file) => {
-    await _write(applyPattern, file);
+  if (options.verbose) {
+    UI.log("Renamed files:", {
+      padTop: true,
+      padBottom: false,
+      style: UI.TUIStyles.BOLD,
+    });
+  }
+
+  const promises = fileQueue.map(async (file) => {
+    return await _write(options, file);
   });
+
+  Promise
+    .all(promises)
+    .then(() => {
+      UI.log(`${fileQueue.length} files renamed.`, {
+        padTop: true,
+        padBottom: true,
+        style: UI.TUIStyles.BOLD,
+      });
+    });
 }
 
 async function _read(path: string): Promise<string> {
@@ -116,20 +150,18 @@ async function _read(path: string): Promise<string> {
 }
 
 async function _write(
-  applyPattern: TRenameFilesApplyPattern,
-  options: TRenameFilesReadResult,
+  options: TRenameFilesWriteOptions,
+  fileQueue: TRenameFilesReadResult,
 ): Promise<void> {
-  const basePath = Path.dirname(options.path);
-  const newName = applyPattern(options.yaml);
+  const basePath = Path.dirname(fileQueue.path);
+  const newName = options.applyPattern(fileQueue.yaml);
   const newPath = Path.join.apply(null, [basePath, newName]);
-  const oldPath = options.path;
+  const oldPath = fileQueue.path;
 
-  // TODO: Uncomment rename function, remove empty promise/logs.
-  // await Deno.rename(oldPath, newPath);
-  console.log(oldPath);
-  console.log(newPath);
-  console.log("");
-  await Promise.resolve();
+  // Overwrites files on path collision rather than failing.
+  await Deno.rename(oldPath, newPath);
+
+  if (options.verbose) UI.notifyUserOfChange(oldPath, newPath);
 }
 
 export const __private__ = {
@@ -142,8 +174,3 @@ export const __private__ = {
 export default {
   run,
 };
-
-// TEMP: Hide this before running tests to prevent resource leaks.
-// run(
-//   { directory: "./", recursive: true, dash: true, pattern: "{id}-{title}.md" },
-// );

@@ -24,6 +24,7 @@ Deno.test(
         directory: "test/test_data",
         pattern: "",
         recursive: false,
+        verbose: false,
       },
     );
     const md = results[0];
@@ -44,6 +45,7 @@ Deno.test(
         directory: "test/test_data",
         pattern: "",
         recursive: true,
+        verbose: false,
       },
     );
     const deepMd = results[0];
