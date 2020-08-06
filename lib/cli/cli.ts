@@ -1,33 +1,32 @@
 import { CAC, IO } from "./deps.ts";
-import * as CLITypes from "./cli_types.ts";
+import { CommandsTypes } from "./deps.ts";
 
-export function init({
-  appName,
-  appVersion,
-  renameFiles,
-}: CLITypes.TCLIInit): void {
-  const flags: CLITypes.TCACObject = CAC(appName);
+/// TYPES ///
 
-  flags
-    .command(
-      "rename.files <path> <pattern>",
-      "Rename zettel files using their YAML frontmatter, and ignore files without frontmatter",
-    )
-    .option(
-      "-r, --recursive",
-      "Run command on a directory and all its sub-directories",
-    )
-    .example("rename.files ./zettelkasten {id}-{title}.md")
-    .action((
-      path: string,
-      pattern: string,
-      options: CLITypes.TCLIRenameFilesOptions,
-    ): void => {
-      renameFiles({ path, pattern, recursive: Boolean(options.recursive) }); // TODO: Status report
-    });
+type TCACObject = any;
+
+interface TCLIInit {
+  readonly appVersion: string;
+  readonly appName: string;
+  readonly renameFiles: Function;
+}
+
+export interface TCLIRenameFilesOptions {
+  r?: boolean;
+  recursive: boolean;
+  d?: boolean;
+  dashed: boolean;
+}
+
+/// LOGIC ///
+
+export function init(options: TCLIInit): void {
+  const flags: TCACObject = CAC(options.appName);
+
+  _mutateFlagsToAddRenameFiles(options, flags);
 
   flags.help();
-  flags.version(appVersion);
+  flags.version(options.appVersion);
 
   if (Deno.args.length > 0) {
     _tryParse(flags);
@@ -36,7 +35,52 @@ export function init({
   }
 }
 
-function _tryParse(flags: CLITypes.TCACObject): void {
+export async function sendToUser(text: string): Promise<string> {
+  console.log(text);
+  // Listen to stdin for a new line
+  for await (const line of IO.readLines(Deno.stdin)) {
+    return line;
+  }
+  return "";
+}
+
+function _mutateFlagsToAddRenameFiles(options: TCLIInit, flags: TCACObject) {
+  const renameFiles = options.renameFiles;
+
+  flags
+    .command(
+      "rename.files <path> <pattern>",
+      "Rename files containing YAML frontmatter",
+    )
+    .option(
+      "-d, --dashed",
+      "Substitute dashes for spaces in the file name",
+    )
+    .option(
+      "-r, --recursive",
+      "Run command on a directory and all its sub-directories",
+    )
+    .example("rename.files -r ./zettelkasten {id}-{title}.md")
+    .example("rename.files --recursive ./zettelkasten {id}-{title}.md")
+    .example("rename.files -rd ./zettelkasten {id}-{title}.md")
+    .example("rename.files --recursive --dashed ./zettelkasten {id}-{title}.md")
+    .action(
+      async (
+        path: string,
+        pattern: string,
+        options: TCLIRenameFilesOptions,
+      ): Promise<void> => {
+        await renameFiles({
+          pattern,
+          directory: path,
+          dashed: Boolean(options.dashed),
+          recursive: Boolean(options.recursive),
+        });
+      },
+    );
+}
+
+function _tryParse(flags: TCACObject): void {
   try {
     flags.parse();
   } catch (err) {
@@ -52,16 +96,8 @@ function _tryParse(flags: CLITypes.TCACObject): void {
   }
 }
 
-export async function sendToUser(text: string): Promise<string> {
-  console.log(text);
-  // Listen to stdin for a new line
-  for await (const line of IO.readLines(Deno.stdin)) {
-    return line;
-  }
-  return "";
-}
-
 export const __private__ = {
+  _mutateFlagsToAddRenameFiles,
   _tryParse,
 };
 

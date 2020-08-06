@@ -8,11 +8,11 @@ export interface TCommandModule {
 }
 
 export interface TCommand {
-  (options: TCommandOptions): Promise<TCommandResult>;
+  (options: any): Promise<TRunResult>;
 }
 
-export interface TCommandOptions {}
+export interface TRunOptions {}
 
-export interface TCommandResult {
+export interface TRunResult {
   readonly status: TStatus;
 }

@@ -1,50 +1,81 @@
-import { FS, Path, Utilities as $ } from "./deps.ts";
-import * as CT from "../types.ts";
-import * as RFCT from "./types.ts";
+import { CLI, FS, Path, Utilities as $ } from "./deps.ts";
+import * as T from "../types.ts";
+import * as Text from "./parsers/text.ts";
 import * as TokenExpression from "./parsers/token_expression.ts";
-import * as UI from "./ui/ui.ts";
 import * as YAMLFrontmatter from "./parsers/yaml_frontmatter.ts";
+import * as UI from "./ui/ui.ts";
 
-export default async function run(
-  options: RFCT.TRenameFilesCommandOptions,
-): Promise<RFCT.TRenameFilesCommandResult> {
+/// TYPES ///
+
+interface TRenameFilesRunOptions
+  extends T.TRunOptions, CLI.TCLIRenameFilesOptions {
+  readonly directory: string;
+  readonly pattern: string;
+}
+interface TRenameFilesReadResult {
+  readonly fileName: string;
+  readonly path: string;
+  readonly yaml: object;
+}
+
+type TRenameFilesApplyPattern = TRenameFilesTransform | Function;
+
+type TRenameFilesTransform = (yaml: TRenameFilesYAML) => string;
+
+type TRenameFilesYAML = { [key: string]: any };
+
+/// LOGIC ///
+
+export async function run(
+  options: TRenameFilesRunOptions,
+): Promise<T.TRunResult> {
+  // TODO: Check if the pattern has tokens. If not, notify user and exit.
+
   // Build a queue of files to rename.
-  const queue = await _buildFileQueue(options);
+  const fileQueue = await _buildFileQueue(options);
+  const applyPattern = $.composeFunctions()
+    .apply(
+      Function(
+        "yaml",
+        "return " +
+          TokenExpression.generateInterpolatedString("yaml", options.pattern),
+      ),
+    )
+    .applyIf(options.dashed, Text.dasherize)
+    .compose;
 
   // Confirm change before renaming all files.
-  const parsedPattern = TokenExpression.generateInterpolatedString(
-    "yaml",
-    options.pattern,
-  );
-  const applyPattern = Function("yaml", "return " + parsedPattern);
-  const hasFileWithYAML = Boolean(queue[0]);
-  const newFileName = $.doOnlyIf(hasFileWithYAML, applyPattern)(queue[0].yaml);
+  const previewFileName = $.composeFunctions(fileQueue[0].yaml || {})
+    .apply(applyPattern)
+    .result;
+
+  const noFrontmatterFound = !Boolean(fileQueue[0]);
+  if (noFrontmatterFound) {
+    UI.notifyUserOfExit({ directory: options.directory });
+    Deno.exit();
+  }
+
   const userResponse = await UI.confirmChange({
-    newFileName,
-    oldFileName: queue[0].fileName,
+    newFileName: previewFileName,
+    oldFileName: fileQueue[0].fileName,
     pattern: options.pattern,
   });
 
   // Process user response.
   const changeRejected = userResponse.match(/[yY]/) === null;
   if (changeRejected) Deno.exit();
+  await _renameFiles(applyPattern, fileQueue);
 
-  // TODO: if change accepted, then rename all the files
+  // TODO: Report how many files changed.
 
-  return { status: CT.TStatus.OK };
-}
-
-async function _read(path: string): Promise<string> {
-  if (path.length === 0) return "";
-  const contents = await Deno.readTextFile(path);
-  return contents;
+  return { status: T.TStatus.OK };
 }
 
 async function _buildFileQueue(
-  options: RFCT.TRenameFilesCommandOptions,
-): Promise<RFCT.TRenameFilesReadResult[]> {
+  options: TRenameFilesRunOptions,
+): Promise<TRenameFilesReadResult[]> {
   const walkDirectory: string = Deno.realPathSync(options.directory);
-  const walkResults: RFCT.TRenameFilesReadResult[] = [];
+  const walkResults: TRenameFilesReadResult[] = [];
 
   for await (const entity of FS.walk(walkDirectory)) {
     const { path, name, isDirectory } = entity;
@@ -61,7 +92,6 @@ async function _buildFileQueue(
         walkResults.push({
           fileName: name,
           path: thisPath,
-          status: CT.TStatus.OK,
           yaml: fileYAML,
         });
       }
@@ -70,22 +100,50 @@ async function _buildFileQueue(
   return walkResults;
 }
 
-// async function _write(
-//   options: RenameFilesTypes.TRenameFilesWriteOptions,
-// ): Promise<RenameFilesTypes.TRenameFilesWriteResult> {
-//   const oldPath = Path.join.apply(null, [options.path, options.fileName]);
-//   const newPath = Path.join.apply(
-//     null,
-//     [options.path, options.transform(options.yaml)],
-//   );
+async function _renameFiles(
+  applyPattern: TRenameFilesApplyPattern,
+  files: TRenameFilesReadResult[],
+): Promise<void> {
+  files.forEach(async (file) => {
+    await _write(applyPattern, file);
+  });
+}
 
-//   const status = await Deno.rename(oldPath, newPath);
-//   console.log(status); // undefined on success (error on failure?)
+async function _read(path: string): Promise<string> {
+  if (path.length === 0) return "";
+  const contents = await Deno.readTextFile(path);
+  return contents;
+}
 
-//   return { message: "", status: CommandsTypes.TCommandStatus.OK };
-// }
+async function _write(
+  applyPattern: TRenameFilesApplyPattern,
+  options: TRenameFilesReadResult,
+): Promise<void> {
+  const basePath = Path.dirname(options.path);
+  const newName = applyPattern(options.yaml);
+  const newPath = Path.join.apply(null, [basePath, newName]);
+  const oldPath = options.path;
+
+  // TODO: Uncomment rename function, remove empty promise/logs.
+  // await Deno.rename(oldPath, newPath);
+  console.log(oldPath);
+  console.log(newPath);
+  console.log("");
+  await Promise.resolve();
+}
 
 export const __private__ = {
   _buildFileQueue,
   _read,
+  _renameFiles,
+  _write,
 };
+
+export default {
+  run,
+};
+
+// TEMP: Hide this before running tests to prevent resource leaks.
+// run(
+//   { directory: "./", recursive: true, dash: true, pattern: "{id}-{title}.md" },
+// );

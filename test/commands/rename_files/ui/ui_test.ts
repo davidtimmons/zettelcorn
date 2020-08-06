@@ -1,4 +1,4 @@
-import { unimplemented } from "../../../deps.ts";
+import { assert, unimplemented } from "../../../deps.ts";
 import * as UI from "../../../../lib/commands/rename_files/ui/ui.ts";
 
 Deno.test({
@@ -13,4 +13,21 @@ Deno.test({
     });
     unimplemented();
   },
+});
+
+Deno.test("should notify the user when exiting", (): void => {
+  // setup
+  const originalConsoleLog = console.log;
+
+  // test
+  console.log = (...args: any[]): void => {
+    const message: string = args[0];
+    assert(message.length > 0);
+    assert(message.indexOf("No files were changed.") > 0);
+  };
+
+  UI.notifyUserOfExit({ directory: "/test" });
+
+  // cleanup
+  console.log = originalConsoleLog;
 });

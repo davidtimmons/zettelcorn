@@ -19,14 +19,18 @@ Deno.test(
   "should build a non-recursive list of files with YAML objects",
   async (): Promise<void> => {
     const results = await _buildFileQueue(
-      { directory: "test/test_data", recursive: false, pattern: "" },
+      {
+        dashed: false,
+        directory: "test/test_data",
+        pattern: "",
+        recursive: false,
+      },
     );
     const md = results[0];
 
     assertEquals(results.length, 1);
     assertEquals(md.fileName, "test.md");
     assert(md.path.length > 0);
-    assertEquals(md.status, 0);
     assert(equal(md.yaml, { title: "My Test Data", id: 123 }));
   },
 );
@@ -35,14 +39,18 @@ Deno.test(
   "should build a recursive list of files with YAML objects",
   async (): Promise<void> => {
     const results = await _buildFileQueue(
-      { directory: "test/test_data", recursive: true, pattern: "" },
+      {
+        dashed: false,
+        directory: "test/test_data",
+        pattern: "",
+        recursive: true,
+      },
     );
     const deepMd = results[0];
 
     assertEquals(results.length, 2);
     assertEquals(deepMd.fileName, "test_deep.md");
     assert(deepMd.path.length > 0);
-    assertEquals(deepMd.status, 0);
     assert(
       equal(
         deepMd.yaml,
