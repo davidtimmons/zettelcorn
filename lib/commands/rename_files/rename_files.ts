@@ -43,8 +43,8 @@ export async function run(
   // The file renaming function requires a valid file and YAML object.
   let fileQueue: TRenameFilesReadResult[] = [];
   try {
-    fileQueue = await _buildFileQueue(options);
-  } catch(err) {
+    fileQueue = await _buildFileFrontmatterQueue(options);
+  } catch (err) {
     UI.notifyUserOfExit({ error: err });
     throw err;
   }
@@ -86,7 +86,7 @@ export async function run(
   return { status: T.TStatus.OK };
 }
 
-async function _buildFileQueue(
+async function _buildFileFrontmatterQueue(
   options: TRenameFilesRunOptions,
 ): Promise<TRenameFilesReadResult[]> {
   // TODO: Use a generator to avoid walking all files until user confirms intent.
@@ -128,6 +128,7 @@ async function _renameFiles(
     });
   }
 
+  // Resolve all writes first so UI success message does not appear early.
   const promises = fileQueue.map(async (file) => {
     return await _write(options, file);
   });
@@ -165,7 +166,7 @@ async function _write(
 }
 
 export const __private__ = {
-  _buildFileQueue,
+  _buildFileQueue: _buildFileFrontmatterQueue,
   _read,
   _renameFiles,
   _write,
