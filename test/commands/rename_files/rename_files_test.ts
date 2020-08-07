@@ -32,7 +32,12 @@ Deno.test(
     assertEquals(results.length, 1);
     assertEquals(md.fileName, "test.md");
     assert(md.path.length > 0);
-    assert(equal(md.yaml, { title: "My Test Data", id: 123 }));
+    assert(equal(md.yaml, {
+      title: "My Test Data",
+      id: "123",
+      keywords: "Deno,123,true",
+      dictionary: "string=Deno,number=123,bool=true",
+    }));
   },
 );
 
@@ -56,7 +61,7 @@ Deno.test(
     assert(
       equal(
         deepMd.yaml,
-        { title: "Deeper test data", id: 456, extra: "My extra key" },
+        { title: "Deeper test data", id: "456", extra: "My extra key" },
       ),
     );
   },

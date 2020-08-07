@@ -61,15 +61,15 @@ export async function run(
     .compose;
 
   // Confirm change before renaming all files.
-  const previewFileName = $.composeFunctions(fileQueue[0].yaml || {})
-    .apply(applyPattern)
-    .result;
-
   const noFrontmatterFound = !Boolean(fileQueue[0]);
   if (noFrontmatterFound) {
     UI.notifyUserOfExit({ directory: options.directory });
     Deno.exit();
   }
+
+  const previewFileName = $.composeFunctions(fileQueue[0]?.yaml || {})
+    .apply(applyPattern)
+    .result;
 
   const userResponse = await UI.confirmChange({
     newFileName: previewFileName,
@@ -108,7 +108,7 @@ async function _buildFileFrontmatterQueue(
         walkResults.push({
           fileName: name,
           path: thisPath,
-          yaml: fileYAML,
+          yaml: YAMLFrontmatter.proxyPrintOnAccess(fileYAML),
         });
       }
     }

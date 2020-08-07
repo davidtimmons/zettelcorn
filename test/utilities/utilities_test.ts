@@ -69,3 +69,13 @@ Deno.test("should return a single function depending on the condition", () => {
   $.doOnlyIf(false, willFail)();
   $.doOnlyIf(true, mayPass)(42);
 });
+
+Deno.test("should check if the argument is an object", () => {
+  assertEquals($.isObjectLiteral({}), true, "object literal");
+  assertEquals($.isObjectLiteral([]), false, "array");
+  assertEquals($.isObjectLiteral(null), false, "null");
+  assertEquals($.isObjectLiteral(5), false, "number");
+  assertEquals($.isObjectLiteral("peach"), false, "string");
+  assertEquals($.isObjectLiteral(true), false, "boolean");
+  assertEquals($.isObjectLiteral(undefined), false, "undefined");
+});

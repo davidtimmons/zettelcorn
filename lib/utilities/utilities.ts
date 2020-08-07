@@ -37,7 +37,7 @@ export function composeFunctions(arg?: any) {
   };
 }
 
-export function identity(x: any): any {
+export function identity(x: unknown): unknown {
   return x;
 }
 
@@ -59,4 +59,9 @@ export function doOnlyIf(condition: boolean, right: Function): Function {
   } else {
     return identity;
   }
+}
+
+export function isObjectLiteral(maybeObject: unknown): boolean {
+  return typeof maybeObject === "object" && maybeObject !== null &&
+    !Array.isArray(maybeObject);
 }
