@@ -6,7 +6,7 @@ import RenameFiles from "./commands/rename_files/rename_files.ts";
 // Required Deno flags: --unstable --allow-read --allow-write
 
 CLI({
-  appVersion: Env.ZETTLECORN_VERSION,
-  appName: Env.ZETTLECORN_APP_NAME,
+  appVersion: Env.ZETTELCORN_VERSION,
+  appName: Env.ZETTELCORN_APP_NAME,
   renameFiles: Commands(RenameFiles),
 });

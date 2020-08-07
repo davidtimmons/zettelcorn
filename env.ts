@@ -1,4 +1,4 @@
 export default Object.freeze({
-  ZETTLECORN_APP_NAME: "zettlecorn",
-  ZETTLECORN_VERSION: "0.1.0",
+  ZETTELCORN_APP_NAME: "ZETTELCORN",
+  ZETTELCORN_VERSION: "0.1.0",
 });

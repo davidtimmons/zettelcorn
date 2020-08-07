@@ -10,11 +10,11 @@ Deno.test("should display help with no command given", (): void => {
   console.log = (...args: any[]): void => {
     const message: string = args[0];
     assert(message.length > 0);
-    assert(message.indexOf("zettlecorn <command> [options]") > 0);
+    assert(message.indexOf("zettelcorn <command> [options]") > 0);
   };
 
   CLI.init({
-    appName: "zettlecorn",
+    appName: "zettelcorn",
     appVersion: "0.0.0",
     renameFiles: async (_options: object) => Promise.resolve({ status: 0 }),
   });
