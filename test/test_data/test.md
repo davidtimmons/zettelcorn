@@ -1,5 +1,5 @@
 ---
-title: "My Test Data"
+title: My Test Data
 id: 123
 keywords:
   - Deno
