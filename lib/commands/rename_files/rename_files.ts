@@ -166,12 +166,10 @@ async function _write(
 }
 
 export const __private__ = {
-  _buildFileQueue: _buildFileFrontmatterQueue,
+  _buildFileFrontmatterQueue,
   _read,
   _renameFiles,
   _write,
 };
 
-export default {
-  run,
-};
+export default { run };

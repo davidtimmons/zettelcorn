@@ -5,7 +5,7 @@ import {
   equal,
 } from "../../deps.ts";
 import * as RenameFiles from "../../../lib/commands/rename_files/rename_files.ts";
-const { _buildFileQueue, _read, _write } = RenameFiles.__private__;
+const { _buildFileFrontmatterQueue, _read, _write } = RenameFiles.__private__;
 
 Deno.test("should read a text file at a path", async (): Promise<void> => {
   let actual = await _read("test/test_data/test.md");
@@ -18,7 +18,7 @@ Deno.test("should read a text file at a path", async (): Promise<void> => {
 Deno.test(
   "should build a non-recursive list of files with YAML objects",
   async (): Promise<void> => {
-    const results = await _buildFileQueue(
+    const results = await _buildFileFrontmatterQueue(
       {
         dashed: false,
         directory: "test/test_data",
@@ -44,7 +44,7 @@ Deno.test(
 Deno.test(
   "should build a recursive list of files with YAML objects",
   async (): Promise<void> => {
-    const results = await _buildFileQueue(
+    const results = await _buildFileFrontmatterQueue(
       {
         dashed: false,
         directory: "test/test_data",
