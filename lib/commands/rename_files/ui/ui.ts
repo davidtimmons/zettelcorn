@@ -1,4 +1,4 @@
-import { CLI, Colors, FS, Utilities as $ } from "../deps.ts";
+import { CLI, Colors, FS, Utilities as $ } from "../../deps.ts";
 
 /// TYPES ///
 

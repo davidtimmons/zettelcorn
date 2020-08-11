@@ -1,5 +1,11 @@
 import { FS } from "./deps.ts";
 
+/// TYPES ///
+
+type TDictionary = { [key: string]: any };
+
+/// LOGIC ///
+
 export const EOL = Deno.build.os === "windows" ? FS.EOL.CRLF : FS.EOL.LF;
 
 export function composeFunctions(arg?: any) {
@@ -64,4 +70,32 @@ export function doOnlyIf(condition: boolean, right: Function): Function {
 export function isObjectLiteral(maybeObject: unknown): boolean {
   return typeof maybeObject === "object" && maybeObject !== null &&
     !Array.isArray(maybeObject);
+}
+
+export function proxyPrintOnAccess(jsObject: TDictionary): TDictionary {
+  const handler = {
+    get(map: TDictionary, key: string): any {
+      if (!isObjectLiteral(map[key])) {
+        return `${map[key]}`;
+      }
+
+      const getStrings = (obj: TDictionary): string => {
+        return Object.entries(obj)
+          .map((tuple: [string, any]) => {
+            if (isObjectLiteral(tuple[1])) {
+              // TODO: Decide how best to print deeply nested objects.
+              // const deepStrings = getStrings(tuple[1]);
+              // return `${tuple[0]}=${deepStrings}`;
+              return getStrings(tuple[1]);
+            }
+            return `${tuple[0]}=${tuple[1]}`;
+          })
+          .join(",");
+      };
+
+      return getStrings(map[key]);
+    },
+  };
+
+  return new Proxy(jsObject, handler);
 }

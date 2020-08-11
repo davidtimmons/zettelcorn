@@ -1,8 +1,7 @@
-import { CLI, FS, Path, Utilities as $ } from "./deps.ts";
+import { CLI, Path, Utilities as $ } from "../deps.ts";
 import * as T from "../types.ts";
 import * as Text from "./parsers/text.ts";
 import * as TokenExp from "./parsers/token_expression.ts";
-import * as YAMLFrontmatter from "./parsers/yaml_frontmatter.ts";
 import * as UI from "./ui/ui.ts";
 
 /// TYPES ///
@@ -12,6 +11,7 @@ interface TRenameFilesRunOptions
   readonly directory: string;
   readonly pattern: string;
 }
+
 interface TRenameFilesReadResult {
   readonly fileName: string;
   readonly path: string;
@@ -41,9 +41,12 @@ export async function run(
   }
 
   // The file renaming function requires a valid file and YAML object.
-  let fileQueue: TRenameFilesReadResult[] = [];
+  let fileQueue: $.TReadResult[] = [];
   try {
-    fileQueue = await _buildFileFrontmatterQueue(options);
+    fileQueue = await $.buildFileFrontmatterQueue({
+      ...options,
+      yamlTransformation: $.proxyPrintOnAccess,
+    });
   } catch (err) {
     UI.notifyUserOfExit({ error: err });
     throw err;
@@ -86,36 +89,6 @@ export async function run(
   return { status: T.TStatus.OK };
 }
 
-async function _buildFileFrontmatterQueue(
-  options: TRenameFilesRunOptions,
-): Promise<TRenameFilesReadResult[]> {
-  // TODO: Use a generator to avoid walking all files until user confirms intent.
-  const walkDirectory: string = Deno.realPathSync(options.directory);
-  const walkResults: TRenameFilesReadResult[] = [];
-
-  for await (const entity of FS.walk(walkDirectory)) {
-    const { path, name, isDirectory } = entity;
-
-    if (isDirectory) continue;
-    const thisPath = Deno.realPathSync(path);
-    const inStartingDirectory = walkDirectory === Path.dirname(thisPath);
-
-    if (options.recursive || inStartingDirectory) {
-      const fileYAML = YAMLFrontmatter.parseFrontmatter(await _read(thisPath));
-      const hasYAML = Object.keys(fileYAML).length > 0;
-
-      if (hasYAML) {
-        walkResults.push({
-          fileName: name,
-          path: thisPath,
-          yaml: YAMLFrontmatter.proxyPrintOnAccess(fileYAML),
-        });
-      }
-    }
-  }
-  return walkResults;
-}
-
 async function _renameFiles(
   options: TRenameFilesWriteOptions,
   fileQueue: TRenameFilesReadResult[],
@@ -144,12 +117,6 @@ async function _renameFiles(
     });
 }
 
-async function _read(path: string): Promise<string> {
-  if (path.length === 0) return "";
-  const contents = await Deno.readTextFile(path);
-  return contents;
-}
-
 async function _write(
   options: TRenameFilesWriteOptions,
   fileQueue: TRenameFilesReadResult,
@@ -166,8 +133,6 @@ async function _write(
 }
 
 export const __private__ = {
-  _buildFileFrontmatterQueue,
-  _read,
   _renameFiles,
   _write,
 };

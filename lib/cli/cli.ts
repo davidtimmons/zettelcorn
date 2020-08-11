@@ -1,14 +1,19 @@
 import { CAC, IO } from "./deps.ts";
-import { CommandsTypes } from "./deps.ts";
 
 /// TYPES ///
 
 type TCACObject = any;
 
-interface TCLIInit {
+interface TInit {
   readonly appVersion: string;
   readonly appName: string;
-  readonly renameFiles: Function;
+  readonly injectKeywords?: Function;
+  readonly renameFiles?: Function;
+}
+
+export interface TCLIInjectKeywordsOptions {
+  r?: boolean;
+  recursive: boolean;
 }
 
 export interface TCLIRenameFilesOptions {
@@ -22,9 +27,10 @@ export interface TCLIRenameFilesOptions {
 
 /// LOGIC ///
 
-export function init(options: TCLIInit): void {
+export function init(options: TInit): void {
   const flags: TCACObject = CAC(options.appName);
 
+  _mutateFlagsToAddInjectKeywords(options, flags);
   _mutateFlagsToAddRenameFiles(options, flags);
 
   flags.help();
@@ -46,8 +52,38 @@ export async function sendToUser(text: string): Promise<string> {
   return "";
 }
 
-function _mutateFlagsToAddRenameFiles(options: TCLIInit, flags: TCACObject) {
+function _mutateFlagsToAddInjectKeywords(options: TInit, flags: TCACObject) {
+  const injectKeywords = options.injectKeywords;
+  if (!injectKeywords) return;
+
+  flags
+    .command(
+      "inject.keywords",
+      "Inject topic tags found in the text as a keyword list in the YAML frontmatter",
+    )
+    .option(
+      "-r, --recursive",
+      "Run command on a directory and all its sub-directories",
+    )
+    .example("inject.keywords -r ./zettelkasten")
+    .action(
+      async (
+        path: string,
+        pattern: string,
+        options: TCLIInjectKeywordsOptions,
+      ): Promise<void> => {
+        await injectKeywords({
+          pattern,
+          directory: path,
+          recursive: Boolean(options.recursive),
+        });
+      },
+    );
+}
+
+function _mutateFlagsToAddRenameFiles(options: TInit, flags: TCACObject) {
   const renameFiles = options.renameFiles;
+  if (!renameFiles) return;
 
   flags
     .command(
@@ -104,6 +140,7 @@ function _tryParse(flags: TCACObject): void {
 }
 
 export const __private__ = {
+  _mutateFlagsToAddInjectKeywords,
   _mutateFlagsToAddRenameFiles,
   _tryParse,
 };
