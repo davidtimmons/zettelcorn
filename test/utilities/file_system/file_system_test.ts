@@ -15,20 +15,19 @@ Deno.test("should read a text file at a path", async (): Promise<void> => {
 });
 
 Deno.test(
-  "should build a non-recursive list of files with YAML objects",
+  "should build a non-recursive list of files",
   async (): Promise<void> => {
-    const results = await FS$.buildFileFrontmatterQueue(
-      {
-        dashed: false,
-        directory: "test/test_data",
-        pattern: "",
-        recursive: false,
-        verbose: false,
-      },
-    );
-    const md = results[0];
+    const results = await FS$.buildFileQueue({
+      directory: "test/test_data",
+      recursive: false,
+    });
 
-    assertEquals(results.length, 1);
+    assertEquals(results.length, 2);
+
+    const js = results[0];
+    assertEquals(js.fileName, "test.js");
+
+    const md = results[1];
     assertEquals(md.fileName, "test.md");
     assert(md.path.length > 0);
     assert(equal(md.yaml, {
@@ -43,18 +42,14 @@ Deno.test(
 Deno.test(
   "should build a recursive list of files with YAML objects",
   async (): Promise<void> => {
-    const results = await FS$.buildFileFrontmatterQueue(
-      {
-        dashed: false,
-        directory: "test/test_data",
-        pattern: "",
-        recursive: true,
-        verbose: false,
-      },
-    );
-    const deepMd = results[0];
+    const results = await FS$.buildFileQueue({
+      directory: "test/test_data",
+      recursive: true,
+      requireYaml: true,
+    });
 
-    assertEquals(results.length, 2);
+    const deepMd = results[0];
+    assertEquals(results.length, 3);
     assertEquals(deepMd.fileName, "test_deep.md");
     assert(deepMd.path.length > 0);
     assert(equal(deepMd.yaml, {
@@ -62,5 +57,26 @@ Deno.test(
       id: 456,
       extra: "My extra key",
     }));
+  },
+);
+
+Deno.test(
+  "should build a recursive list of Markdown files",
+  async (): Promise<void> => {
+    const results01 = await FS$.buildFileQueue({
+      directory: "test/test_data",
+      recursive: true,
+      requireMarkdown: true,
+    });
+
+    assertEquals(results01.length, 2);
+
+    const results02 = await FS$.buildFileQueue({
+      directory: "test/test_data",
+      recursive: true,
+      requireMarkdown: false,
+    });
+
+    assertEquals(results02.length, 4);
   },
 );

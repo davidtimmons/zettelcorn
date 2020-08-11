@@ -10,6 +10,7 @@ interface TRenameFilesRunOptions
   extends T.TRunOptions, CLI.TCLIRenameFilesOptions {
   readonly directory: string;
   readonly pattern: string;
+  readonly silent?: boolean;
 }
 
 interface TRenameFilesReadResult {
@@ -43,8 +44,9 @@ export async function run(
   // The file renaming function requires a valid file and YAML object.
   let fileQueue: $.TReadResult[] = [];
   try {
-    fileQueue = await $.buildFileFrontmatterQueue({
+    fileQueue = await $.buildFileQueue({
       ...options,
+      requireYaml: true,
       yamlTransformation: $.proxyPrintOnAccess,
     });
   } catch (err) {
@@ -74,7 +76,7 @@ export async function run(
     .apply(applyPattern)
     .result;
 
-  const userResponse = await UI.confirmChange({
+  const userResponse = options.silent ? "Y" : await UI.confirmChange({
     newFileName: previewFileName,
     oldFileName: fileQueue[0].fileName,
     pattern: options.pattern,
@@ -102,13 +104,14 @@ async function _renameFiles(
   }
 
   // Resolve all writes first so UI success message does not appear early.
-  const promises = fileQueue.map(async (file) => {
-    return await _write(options, file);
+  const promises = fileQueue.map((file) => {
+    return _write(options, file);
   });
 
-  Promise
+  await Promise
     .all(promises)
     .then(() => {
+      if (options.silent) return;
       UI.log(`${fileQueue.length} files renamed.`, {
         padTop: true,
         padBottom: true,

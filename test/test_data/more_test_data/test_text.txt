@@ -1,0 +1,4 @@
+---
+id: 1849
+---
+This is a valid zettel that just happens to be in a text file.

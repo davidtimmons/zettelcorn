@@ -1,9 +1,4 @@
-import {
-  assert,
-  assertEquals,
-  assertStringContains,
-  equal,
-} from "../../deps.ts";
+import { assert } from "../../deps.ts";
 import * as RenameFiles from "../../../lib/commands/rename_files/rename_files.ts";
 const { _write } = RenameFiles.__private__;
 
@@ -31,4 +26,39 @@ Deno.test("should rename a file", async (): Promise<void> => {
 
   // cleanup
   Deno.renameSync(afterPath, beforePath);
+});
+
+Deno.test("should rename all files", async (): Promise<void> => {
+  // setup
+  const beforePath01 = Deno.realPathSync(
+    "test/test_data/more_test_data/test_deep.md",
+  );
+  const beforePath02 = Deno.realPathSync(
+    "test/test_data/more_test_data/test_text.txt",
+  );
+  assert(beforePath01.length > 0);
+  assert(beforePath02.length > 0);
+
+  // test
+  await RenameFiles.run({
+    dashed: true,
+    directory: "./test/test_data/more_test_data/",
+    pattern: "{id}-hello.md",
+    recursive: false,
+    silent: true,
+    verbose: false,
+  });
+
+  const afterPath01 = Deno.realPathSync(
+    "test/test_data/more_test_data/456-hello.md",
+  );
+  const afterPath02 = Deno.realPathSync(
+    "test/test_data/more_test_data/1849-hello.md",
+  );
+  assert(afterPath01.length > 0);
+  assert(afterPath02.length > 0);
+
+  // cleanup
+  Deno.renameSync(afterPath01, beforePath01);
+  Deno.renameSync(afterPath02, beforePath02);
 });
