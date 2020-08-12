@@ -1,5 +1,5 @@
 import { FS, Path } from "../deps.ts";
-import * as $ from "../utilities.ts";
+import * as H$ from "../helpers/helpers.ts";
 import * as Y$ from "../parsers/yaml_frontmatter.ts";
 
 /// TYPES ///
@@ -7,16 +7,38 @@ import * as Y$ from "../parsers/yaml_frontmatter.ts";
 export interface TRunOptions {
   readonly [key: string]: any;
   readonly directory: string;
+  readonly getFileContent?: boolean;
   readonly recursive: boolean;
   readonly requireMarkdown?: boolean;
+  readonly requireMeta?: boolean;
   readonly requireYaml?: boolean;
-  readonly yamlTransformation?: Function;
+  readonly metaTransformation?: TTransformation;
+  readonly yamlTransformation?: TTransformationYAML;
 }
 
 export interface TReadResult {
+  readonly fileContent: string;
   readonly fileName: string;
+  readonly meta: any;
   readonly path: string;
-  readonly yaml: object;
+  readonly yaml: { [key: string]: any };
+}
+
+export interface TTransformationOptions {
+  readonly extension: string;
+  readonly fileContent: string;
+  readonly isDirectory: boolean;
+  readonly name: string;
+  readonly path: string;
+  readonly fileYAML: { [key: string]: any };
+}
+
+interface TTransformation {
+  (options: TTransformationOptions): any;
+}
+
+interface TTransformationYAML {
+  (options: TTransformationOptions): { [key: string]: any };
 }
 
 /// LOGIC ///
@@ -25,9 +47,14 @@ export async function buildFileQueue(
   options: TRunOptions,
 ): Promise<TReadResult[]> {
   // TODO: Use a generator to avoid walking all files until user confirms intent.
+  // TODO: Explore using byte arrays to work with textual file content.
   const walkDirectory: string = Deno.realPathSync(options.directory);
   const walkResults: TReadResult[] = [];
-  const yamlTransformation = options.yamlTransformation || $.identity;
+
+  const metaTransformation: TTransformation = options.metaTransformation ||
+    (() => null);
+  const yamlTransformation: TTransformationYAML = options.yamlTransformation ||
+    (({ fileYAML }) => fileYAML);
 
   for await (const entity of FS.walk(walkDirectory)) {
     const { path, name, isDirectory } = entity;
@@ -40,22 +67,36 @@ export async function buildFileQueue(
     const inStartingDirectory = walkDirectory === Path.dirname(thisPath);
 
     if (options.recursive || inStartingDirectory) {
-      const fileYAML = Y$.parseFrontmatter(await read(thisPath));
-      const hasYAML = Object.keys(fileYAML).length > 0;
-      const walkResult = {
-        fileName: name,
-        path: thisPath,
-        yaml: yamlTransformation(fileYAML),
+      const fileContent = await read(thisPath);
+      const fileYAML = Y$.parseFrontmatter(fileContent);
+
+      const transformationOptions: TTransformationOptions = {
+        extension,
+        fileContent,
+        fileYAML,
+        isDirectory,
+        name,
+        path,
       };
 
-      switch (options.requireYaml) {
-        case true:
-          if (hasYAML) walkResults.push(walkResult);
-          break;
-        case false:
-        default:
-          walkResults.push(walkResult);
-          break;
+      const walkResult = {
+        fileContent: options.getFileContent ? fileContent : "",
+        fileName: name,
+        path: thisPath,
+        meta: metaTransformation(transformationOptions),
+        yaml: yamlTransformation(transformationOptions),
+      };
+
+      const noRequirements = !(options.requireMeta || options.requireYaml);
+      const hasMeta = !H$.isEmpty(walkResult.meta);
+      const hasYAML = !H$.isEmpty(walkResult.yaml);
+
+      if (noRequirements) {
+        walkResults.push(walkResult);
+      } else if (options.requireMeta && hasMeta) {
+        walkResults.push(walkResult);
+      } else if (options.requireYaml && hasYAML) {
+        walkResults.push(walkResult);
       }
     }
   }

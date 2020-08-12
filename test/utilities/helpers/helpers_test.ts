@@ -1,10 +1,10 @@
-import { assert, assertEquals, assertThrows } from "../deps.ts";
-import * as $ from "../../lib/utilities/utilities.ts";
+import { assert, assertEquals, assertThrows } from "../../deps.ts";
+import * as H$ from "../../../lib/utilities/helpers/helpers.ts";
 
-Deno.test("should compose functions", (): void => {
+Deno.test("should compose functions", () => {
   const addOne = (x: number) => x + 1;
 
-  let actual01 = $.composeFunctions()
+  let actual01 = H$.composeFunctions()
     .apply(addOne)
     .apply(addOne)
     .applyIf(true, addOne)
@@ -13,7 +13,7 @@ Deno.test("should compose functions", (): void => {
   assertThrows(() => actual01.result);
   assertEquals(actual01.compose(0), 3);
 
-  let actual02 = $.composeFunctions(0)
+  let actual02 = H$.composeFunctions(0)
     .apply(addOne)
     .apply(addOne)
     .applyIf(true, addOne)
@@ -23,10 +23,10 @@ Deno.test("should compose functions", (): void => {
   assertEquals(actual02.compose(0), 3);
 });
 
-Deno.test("should not calculate the result if there was no argument", (): void => {
+Deno.test("should not calculate the result if there was no argument", () => {
   const getValue = (obj: any) => obj.key1.key2;
 
-  let actual = $.composeFunctions()
+  let actual = H$.composeFunctions()
     .apply(getValue)
     .apply(getValue)
     .compose;
@@ -35,7 +35,7 @@ Deno.test("should not calculate the result if there was no argument", (): void =
 });
 
 Deno.test("should return the argument identity", () => {
-  assert($.identity("hello"), "hello");
+  assert(H$.identity("hello"), "hello");
 });
 
 Deno.test("should return either function depending on the condition", () => {
@@ -49,9 +49,9 @@ Deno.test("should return either function depending on the condition", () => {
     assert(false);
   };
 
-  $.doIf(true, willPass, willFail)();
-  $.doIf(false, willFail, willPass)();
-  $.doIf(true, mayPass, willFail)(42);
+  H$.doIf(true, willPass, willFail)();
+  H$.doIf(false, willFail, willPass)();
+  H$.doIf(true, mayPass, willFail)(42);
 });
 
 Deno.test("should return a single function depending on the condition", () => {
@@ -65,23 +65,44 @@ Deno.test("should return a single function depending on the condition", () => {
     assert(false);
   };
 
-  $.doOnlyIf(true, willPass)();
-  $.doOnlyIf(false, willFail)();
-  $.doOnlyIf(true, mayPass)(42);
+  H$.doOnlyIf(true, willPass)();
+  H$.doOnlyIf(false, willFail)();
+  H$.doOnlyIf(true, mayPass)(42);
 });
 
 Deno.test("should check if the argument is an object", () => {
-  assertEquals($.isObjectLiteral({}), true, "object literal");
-  assertEquals($.isObjectLiteral([]), false, "array");
-  assertEquals($.isObjectLiteral(null), false, "null");
-  assertEquals($.isObjectLiteral(5), false, "number");
-  assertEquals($.isObjectLiteral("peach"), false, "string");
-  assertEquals($.isObjectLiteral(true), false, "boolean");
-  assertEquals($.isObjectLiteral(undefined), false, "undefined");
+  [
+    [{}, true, "object literal"],
+    [[], false, "array"],
+    [null, false, "null"],
+    [5, false, "number"],
+    ["peach", false, "string"],
+    [true, false, "boolean"],
+    [undefined, false, "undefined"],
+  ].forEach((test) => {
+    const actual = H$.isObjectLiteral(test[0]);
+    assertEquals(actual, test[1], test[2] as string);
+  });
 });
 
-Deno.test("should inject pretty print into a dictionary object", (): void => {
-  const actual = $.proxyPrintOnAccess({
+Deno.test("should check if the argument is empty", () => {
+  [
+    [null, true, "null"],
+    [undefined, true, "undefined"],
+    ["", true, "empty string"],
+    [[], true, "empty array"],
+    [{}, true, "empty object"],
+    ["peach", false, "string is not empty"],
+    [[1, 2, 3], false, "array is not empty"],
+    [{ hello: "world" }, false, "object is not empty"],
+  ].forEach((test) => {
+    const actual = H$.isEmpty(test[0]);
+    assertEquals(actual, test[1], test[2] as string);
+  });
+});
+
+Deno.test("should inject pretty print into a dictionary object", () => {
+  const actual = H$.proxyPrintOnAccess({
     number: 42,
     boolean: true,
     array: ["hello", "world"],

@@ -8,9 +8,7 @@ import * as UI from "./ui/ui.ts";
 
 interface TRenameFilesRunOptions
   extends T.TRunOptions, CLI.TCLIRenameFilesOptions {
-  readonly directory: string;
   readonly pattern: string;
-  readonly silent?: boolean;
 }
 
 interface TRenameFilesReadResult {
@@ -47,7 +45,7 @@ export async function run(
     fileQueue = await $.buildFileQueue({
       ...options,
       requireYaml: true,
-      yamlTransformation: $.proxyPrintOnAccess,
+      yamlTransformation: ({ fileYAML }) => $.proxyPrintOnAccess(fileYAML),
     });
   } catch (err) {
     UI.notifyUserOfExit({ error: err });
@@ -96,10 +94,10 @@ async function _renameFiles(
   fileQueue: TRenameFilesReadResult[],
 ): Promise<void> {
   if (options.verbose) {
-    UI.log("Renamed files:", {
+    $.log("Renamed files:", {
       padTop: true,
       padBottom: false,
-      style: UI.TUIStyles.BOLD,
+      style: $.TUIStyles.BOLD,
     });
   }
 
@@ -112,27 +110,27 @@ async function _renameFiles(
     .all(promises)
     .then(() => {
       if (options.silent) return;
-      UI.log(`${fileQueue.length} files renamed.`, {
+      $.log(`${fileQueue.length} files renamed.`, {
         padTop: true,
         padBottom: true,
-        style: UI.TUIStyles.BOLD,
+        style: $.TUIStyles.BOLD,
       });
     });
 }
 
 async function _write(
   options: TRenameFilesWriteOptions,
-  fileQueue: TRenameFilesReadResult,
+  file: TRenameFilesReadResult,
 ): Promise<void> {
-  const basePath = Path.dirname(fileQueue.path);
-  const newName = options.applyPattern(fileQueue.yaml);
+  const basePath = Path.dirname(file.path);
+  const newName = options.applyPattern(file.yaml);
   const newPath = Path.join.apply(null, [basePath, newName]);
-  const oldPath = fileQueue.path;
+  const oldPath = file.path;
 
   // Overwrites files on path collision rather than failing.
   await Deno.rename(oldPath, newPath);
 
-  if (options.verbose) UI.notifyUserOfChange(oldPath, newPath);
+  if (options.verbose) $.notifyUserOfChange(oldPath, newPath);
 }
 
 export const __private__ = {

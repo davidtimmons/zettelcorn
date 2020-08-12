@@ -14,6 +14,8 @@ interface TInit {
 export interface TCLIInjectKeywordsOptions {
   r?: boolean;
   recursive: boolean;
+  v?: boolean;
+  verbose: boolean;
 }
 
 export interface TCLIRenameFilesOptions {
@@ -58,24 +60,30 @@ function _mutateFlagsToAddInjectKeywords(options: TInit, flags: TCACObject) {
 
   flags
     .command(
-      "inject.keywords",
-      "Inject topic tags found in the text as a keyword list in the YAML frontmatter",
+      "inject.keywords <path>",
+      'Inject topic tags found in the text as a "keywords" list in the YAML frontmatter',
     )
     .option(
       "-r, --recursive",
       "Run command on a directory and all its sub-directories",
     )
+    .option(
+      "-v, --verbose",
+      "List all files where keywords were injected",
+    )
     .example("inject.keywords -r ./zettelkasten")
+    .example("inject.keywords --recursive ./zettelkasten")
+    .example("inject.keywords -rv ./zettelkasten")
+    .example("inject.keywords --recursive --verbose ./zettelkasten")
     .action(
       async (
         path: string,
-        pattern: string,
         options: TCLIInjectKeywordsOptions,
       ): Promise<void> => {
         await injectKeywords({
-          pattern,
           directory: path,
           recursive: Boolean(options.recursive),
+          verbose: Boolean(options.verbose),
         });
       },
     );

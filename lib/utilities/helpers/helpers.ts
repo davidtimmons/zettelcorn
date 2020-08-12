@@ -1,12 +1,8 @@
-import { FS } from "./deps.ts";
-
 /// TYPES ///
 
 type TDictionary = { [key: string]: any };
 
 /// LOGIC ///
-
-export const EOL = Deno.build.os === "windows" ? FS.EOL.CRLF : FS.EOL.LF;
 
 export function composeFunctions(arg?: any) {
   let _arg = arg;
@@ -70,6 +66,23 @@ export function doOnlyIf(condition: boolean, right: Function): Function {
 export function isObjectLiteral(maybeObject: unknown): boolean {
   return typeof maybeObject === "object" && maybeObject !== null &&
     !Array.isArray(maybeObject);
+}
+
+export function isEmpty(maybeEmpty: unknown): boolean {
+  const isNull = maybeEmpty === null || maybeEmpty === undefined;
+  if (isNull) return true;
+
+  const isEmptyString = maybeEmpty === "";
+  if (isEmptyString) return true;
+
+  const isEmptyArray = Array.isArray(maybeEmpty) && maybeEmpty.length <= 0;
+  if (isEmptyArray) return true;
+
+  const isEmptyObject = isObjectLiteral(maybeEmpty) &&
+    Object.keys(maybeEmpty as object).length <= 0;
+  if (isEmptyObject) return true;
+
+  return false;
 }
 
 export function proxyPrintOnAccess(jsObject: TDictionary): TDictionary {

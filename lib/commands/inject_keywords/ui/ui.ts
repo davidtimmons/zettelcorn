@@ -3,15 +3,13 @@ import { CLI, Colors, Utilities as $ } from "../../deps.ts";
 /// TYPES ///
 
 interface TConfirmChangeOptions {
-  oldFileName: string;
-  newFileName: string;
-  pattern: string;
+  fileName: string;
+  keywords: string;
 }
 
 interface TNotifyUserOfExitOptions {
   error?: Error;
   directory?: string;
-  pattern?: string;
 }
 
 type TUserResponse = string;
@@ -22,14 +20,21 @@ export async function confirmChange(
   options: TConfirmChangeOptions,
 ): Promise<TUserResponse> {
   const message = [
-    "This is the pattern you entered:",
-    Colors.cyan(options.pattern),
+    "This is an example file:",
+    Colors.cyan(options.fileName),
     "",
-    "Here is an example of an existing file name:",
-    Colors.cyan(options.oldFileName),
+    "Here are the topic tags found in it:",
+    Colors.cyan(options.keywords),
     "",
-    "This is how that file name will change:",
-    Colors.yellow(options.newFileName),
+    Colors.yellow(
+      "1. YAML frontmatter will be created within this file if one does not exist.",
+    ),
+    Colors.yellow(
+      "2. These topic tags will be inserted into the YAML frontmatter within this file.",
+    ),
+    Colors.yellow(
+      "3. Duplicate topic tags within the frontmatter will be removed.",
+    ),
     "",
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,
   ];
@@ -45,18 +50,11 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
       Colors.bold("This is the directory you entered:"),
       Colors.cyan(options.directory),
       "",
-      "None of the files within this directory contained YAML frontmatter. No files were changed.",
-    ];
-  } else if (options.pattern) {
-    message = [
-      Colors.bold("This is the pattern you entered:"),
-      Colors.cyan(options.pattern),
-      "",
-      "A valid pattern must include a token, e.g. {title}, from the YAML frontmatter. No files were changed.",
+      "None of the files within this directory contained topic tags. No files were changed.",
     ];
   } else if (options.error) {
     message = [
-      "There was an unexpected error when attempting to rename the files.",
+      "There was an unexpected error when attempting to inject the files.",
       "",
       "No files were changed.",
       "",

@@ -30,12 +30,12 @@ Deno.test(
     const md = results[1];
     assertEquals(md.fileName, "test.md");
     assert(md.path.length > 0);
-    assert(equal(md.yaml, {
+    assertEquals(md.yaml, {
       title: "My Test Data",
       id: 123,
       keywords: ["Deno", 123, true],
       dictionary: { string: "Deno", number: 123, bool: true },
-    }));
+    });
   },
 );
 

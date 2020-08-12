@@ -31,10 +31,10 @@ Deno.test("should rename a file", async (): Promise<void> => {
 Deno.test("should rename all files", async (): Promise<void> => {
   // setup
   const beforePath01 = Deno.realPathSync(
-    "test/test_data/more_test_data/test_deep.md",
+    "test/test_data/recursion_test_data/test_deep.md",
   );
   const beforePath02 = Deno.realPathSync(
-    "test/test_data/more_test_data/test_text.txt",
+    "test/test_data/recursion_test_data/test_text.txt",
   );
   assert(beforePath01.length > 0);
   assert(beforePath02.length > 0);
@@ -42,7 +42,7 @@ Deno.test("should rename all files", async (): Promise<void> => {
   // test
   await RenameFiles.run({
     dashed: true,
-    directory: "./test/test_data/more_test_data/",
+    directory: "./test/test_data/recursion_test_data/",
     pattern: "{id}-hello.md",
     recursive: false,
     silent: true,
@@ -50,10 +50,10 @@ Deno.test("should rename all files", async (): Promise<void> => {
   });
 
   const afterPath01 = Deno.realPathSync(
-    "test/test_data/more_test_data/456-hello.md",
+    "test/test_data/recursion_test_data/456-hello.md",
   );
   const afterPath02 = Deno.realPathSync(
-    "test/test_data/more_test_data/1849-hello.md",
+    "test/test_data/recursion_test_data/1849-hello.md",
   );
   assert(afterPath01.length > 0);
   assert(afterPath02.length > 0);
