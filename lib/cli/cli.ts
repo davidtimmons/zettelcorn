@@ -61,7 +61,7 @@ function _mutateFlagsToAddInjectKeywords(options: TInit, flags: TCACObject) {
   flags
     .command(
       "inject.keywords <path>",
-      'Inject found topic tags into a "keywords" list inside the YAML frontmatter',
+      'Inject topic tags into a "keywords" list inside the YAML frontmatter',
     )
     .option(
       "-r, --recursive",
