@@ -27,13 +27,16 @@ export async function confirmChange(
     Colors.cyan(options.keywords),
     "",
     Colors.yellow(
-      "1. YAML frontmatter will be created within this file if one does not exist.",
+      "1. YAML frontmatter will be created within this file if it does not exist.",
     ),
     Colors.yellow(
-      "2. These topic tags will be inserted into the YAML frontmatter within this file.",
+      '2. A "keywords" key will be added to the frontmatter if it does not exist.',
     ),
     Colors.yellow(
-      "3. Duplicate topic tags within the frontmatter will be removed.",
+      '3. Found topic tags will be inserted into "keywords".',
+    ),
+    Colors.yellow(
+      '4. All duplicate topic tags within "keywords" will be removed.',
     ),
     "",
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,

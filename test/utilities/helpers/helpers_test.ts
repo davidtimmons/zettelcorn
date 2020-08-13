@@ -1,4 +1,5 @@
 import { assert, assertEquals, assertThrows } from "../../deps.ts";
+import * as FS$ from "../../../lib/utilities/file_system/file_system.ts";
 import * as H$ from "../../../lib/utilities/helpers/helpers.ts";
 
 Deno.test("should compose functions", () => {
@@ -127,4 +128,24 @@ Deno.test("should inject pretty print into a dictionary object", () => {
   assertEquals(actual.array, "hello,world");
   assertEquals(actual.null, "null");
   assertEquals(actual.map, "a=1,b=peach,c=true,e=2,f=3,h=4,i=5");
+});
+
+Deno.test("should find the first example", () => {
+  const filler: FS$.TReadResult = {
+    fileContent: "",
+    fileName: "",
+    meta: false,
+    path: "",
+    yaml: {},
+  };
+
+  const list: FS$.TReadResult[] = [
+    {} as FS$.TReadResult,
+    { ...filler, fileName: "match", meta: true },
+    { ...filler, fileName: "no match" },
+  ];
+
+  const test = (arg: FS$.TReadResult) => arg.fileName === "match";
+  const firstExample = H$.findFirstExample(list, test);
+  assertEquals(firstExample?.meta, true);
 });

@@ -112,3 +112,25 @@ export function proxyPrintOnAccess(jsObject: TDictionary): TDictionary {
 
   return new Proxy(jsObject, handler);
 }
+
+/**
+ * Find the first example in a list that passes the selection test.
+ */
+export function findFirstExample<T>(
+  list: T[],
+  test: (arg: T) => boolean,
+): T | null {
+  if (list.length <= 0) return null;
+
+  let firstExample: T | null = null;
+  let i = 0;
+  const len = list.length;
+  do {
+    const isFirstExample = test(list[i]);
+    if (isFirstExample) {
+      firstExample = list[i];
+    }
+    i += 1;
+  } while (i < len && isEmpty(firstExample));
+  return firstExample;
+}

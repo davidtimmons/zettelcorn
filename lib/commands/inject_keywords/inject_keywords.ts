@@ -20,31 +20,24 @@ export async function run(
     fileQueue = await $.buildFileQueue({
       ...options,
       getFileContent: true,
-      yamlTransformation: _yamlTransformation,
+      requireMeta: true,
       metaTransformation: ({ fileContent }) => $.findTags(fileContent),
+      yamlTransformation: _yamlTransformation,
     });
   } catch (err) {
     UI.notifyUserOfExit({ error: err });
     throw err;
   }
 
-  // Remove all files where topic tags were not found.
-  fileQueue = fileQueue.filter((file) => !$.isEmpty(file.meta));
-  console.log(fileQueue);
-
-  // TODO: Generalize this block into a utility.
   // Find the first file example with keywords in the YAML object.
-  let firstExample = {} as $.TReadResult;
-  let i = 0;
-  const len = fileQueue.length;
-  do {
-    const maybeExample = fileQueue[i];
-    const maybeKeywords = maybeExample?.yaml.keywords;
+  let firstExample = $.findFirstExample(fileQueue, (file) => {
+    const maybeKeywords = file.yaml.keywords;
     if (maybeKeywords?.length > 0) {
-      firstExample = maybeExample;
+      return true;
+    } else {
+      return false;
     }
-    i += 1;
-  } while (i < len && $.isEmpty(firstExample));
+  });
 
   // Confirm change before injecting keywords into files.
   const noKeywordsFound = $.isEmpty(firstExample);
@@ -54,8 +47,8 @@ export async function run(
   }
 
   const userResponse = options.silent ? "Y" : await UI.confirmChange({
-    fileName: firstExample.fileName,
-    keywords: firstExample.yaml.keywords.join(", "),
+    fileName: firstExample?.fileName || "",
+    keywords: firstExample?.yaml.keywords.join(", ") || "",
   });
 
   // Process user response.
@@ -76,32 +69,28 @@ function _yamlTransformation(options: $.TTransformationOptions): object {
   const hasNoKeywords = keywords.length <= 0;
   if (hasNoKeywords) return options.fileYAML;
 
-  switch ($.isEmpty(options.fileYAML.keywords)) {
-    case true:
-      return {
-        ...options.fileYAML,
-        keywords,
-      };
-      break;
-    case false:
-    default:
-      const kwSet = new Set(keywords);
+  if ($.isEmpty(options.fileYAML.keywords)) {
+    return {
+      ...options.fileYAML,
+      keywords,
+    };
+  } else {
+    const kwSet = new Set(keywords);
 
-      if (!Array.isArray(options.fileYAML.keywords)) {
-        throw new TypeError(
-          'The "keywords" key in the YAML frontmatter must be empty or contain a list.',
-        );
-      }
+    if (!Array.isArray(options.fileYAML.keywords)) {
+      throw new TypeError(
+        'The "keywords" key in the YAML frontmatter must be empty or contain a list.',
+      );
+    }
 
-      for (let elem of options.fileYAML.keywords) {
-        kwSet.add(elem);
-      }
+    for (let elem of options.fileYAML.keywords) {
+      kwSet.add(elem);
+    }
 
-      return {
-        ...options.fileYAML,
-        keywords: [...kwSet],
-      };
-      break;
+    return {
+      ...options.fileYAML,
+      keywords: [...kwSet],
+    };
   }
 }
 
@@ -126,7 +115,7 @@ async function _injectKeywords(
     .all(promises)
     .then(() => {
       if (options.silent) return;
-      $.log(`${fileQueue.length} files injected with keywords.`, {
+      $.log(`${fileQueue.length} files injected with YAML keywords.`, {
         padTop: true,
         padBottom: true,
         style: $.TUIStyles.BOLD,
@@ -140,7 +129,8 @@ async function _write(
 ): Promise<void> {
   const path = file.path;
   const content = $.prependFrontmatter(file.fileContent, file.yaml);
-  // await Deno.writeTextFile(path, content, { create: false });
+
+  await Deno.writeTextFile(path, content, { create: false });
 
   if (options.verbose) $.notifyUserOfChange(path, file.yaml.keywords);
 }
@@ -151,9 +141,3 @@ export const __private__ = {
 };
 
 export default { run };
-
-// run({
-//   directory: "./test/test_data/",
-//   recursive: true,
-//   verbose: true,
-// });

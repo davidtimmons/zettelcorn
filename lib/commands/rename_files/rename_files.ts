@@ -52,6 +52,13 @@ export async function run(
     throw err;
   }
 
+  // Confirm change before renaming all files.
+  const noFrontmatterFound = $.isEmpty(fileQueue);
+  if (noFrontmatterFound) {
+    UI.notifyUserOfExit({ directory: options.directory });
+    Deno.exit();
+  }
+
   const applyPattern = $.composeFunctions()
     .apply(
       Function(
@@ -63,20 +70,11 @@ export async function run(
     .applyIf(options.dashed, Text.dasherize)
     .compose;
 
-  // Confirm change before renaming all files.
-  const noFrontmatterFound = !Boolean(fileQueue[0]);
-  if (noFrontmatterFound) {
-    UI.notifyUserOfExit({ directory: options.directory });
-    Deno.exit();
-  }
-
-  const previewFileName = $.composeFunctions(fileQueue[0]?.yaml || {})
-    .apply(applyPattern)
-    .result;
-
+  const firstExample = fileQueue[0];
+  const previewFileName = applyPattern(firstExample.yaml || {});
   const userResponse = options.silent ? "Y" : await UI.confirmChange({
     newFileName: previewFileName,
-    oldFileName: fileQueue[0].fileName,
+    oldFileName: firstExample.fileName,
     pattern: options.pattern,
   });
 
