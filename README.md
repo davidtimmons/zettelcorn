@@ -3,11 +3,10 @@
 CLI utilities for managing your Zettelkasten.
 
 - [x] Compatible with Linux
-- [ ] Not tested in macOS but _should_ work
-- [ ] Not tested in Windows but _may_ work
+- [x] Compatible with Windows
+- [ ] Not tested in macOS but [_should_ work](https://github.com/davidtimmons/zettelcorn/issues/1)
 
 ![Zettelcorn](./media/promo.png)
-<!-- ![Zettelcorn](https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/media/promo.png) -->
 
 ## [⬑](#zettelcorn) Table of Contents
 
@@ -17,7 +16,7 @@ CLI utilities for managing your Zettelkasten.
 4. [Credits](#-credits)
 5. [License](#-license)
 
-## [▲](#-table-of-contents) Install
+## [🠕](#-table-of-contents) Install
 
 1. Install Deno by following [the steps on the official website](https://deno.land/#installation).
 2. Open a terminal window.
@@ -28,7 +27,8 @@ $> deno run --unstable --allow-read --allow-write
 https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.ts
 ```
 
-After running Zettelcorn, Deno will cache all its dependencies. You will need to include a `--reload` flag whenever you want Deno to update your cache to use the latest Zettelcorn version.
+After running Zettelcorn, Deno will cache all its dependencies. You will need to include a
+`--reload` flag whenever you want Deno to update your cache to use the latest Zettelcorn version.
 
 ### Deno Flags
 
@@ -39,34 +39,60 @@ After running Zettelcorn, Deno will cache all its dependencies. You will need to
 
 ### Linux
 
-Consider creating an alias in your `.bashrc` (or equivalent) configuration file to make running Zettelcorn easier.
+Consider creating an alias in your `.bashrc` (or equivalent) configuration file to make
+running Zettelcorn easier.
 
 ```bash
-alias zettelcorn="deno run --unstable --allow-read --allow-write
-https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.ts"
+alias zettelcorn="deno run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.ts"
 ```
 
 ```bash
 $> zettelcorn
 ```
 
+### Windows
+
+Consider adding a function to your PowerShell profile to make running Zettelcorn easier.
+To do so, first create a profile that will load scripts when opening PowerShell.
+
+```powershell
+$> Set-ExecutionPolicy -Scope CurrentUser Unrestricted
+$> New-Item $profile -Type File -Force
+$> notepad $profile
+```
+
+Then, paste a `zettelcorn` function into the profile open in Notepad.
+
+```powershell
+function zettelcorn {
+  deno.exe run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.ts @args
+}
+```
+
+Finally, run `zettelcorn` from a PowerShell prompt.
+
+```powershell
+$> zettelcorn
+```
+
 ### Precaution
 
-Zettelcorn modifies files in your Zettelkasten. While Zettelcorn is well-tested, be sure to back up your files before using it. The only undo is the one you provide!
+Zettelcorn modifies files in your Zettelkasten. While Zettelcorn is well-tested, be sure to back up
+your files before using it. The only undo is the one you provide!
 
-## [▲](#-table-of-contents) Documentation
+## [🠕](#-table-of-contents) Documentation
 
 1. [`zettelcorn`](#-zettelcorn)
 2. [`inject.keywords`](#-injectkeywords-options-path)
 3. [`rename.files`](#-renamefiles-options-path-pattern)
 
-### [◄](#-documentation) `zettelcorn`
+### [🠔](#-documentation) `zettelcorn`
 
 _Alias:_ `zettelcorn -h`, `zettelcorn --help`
 
 Display the help menu.
 
-### [◄](#-documentation) `inject.keywords [options] <path>`
+### [🠔](#-documentation) `inject.keywords [options] <path>`
 
 Inject topic tags into a "keywords" list inside the YAML frontmatter.
 
@@ -101,7 +127,8 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-Running `inject.keywords` with the following command would inject frontmatter and found topic tags into it for all zettels saved in and under that directory.
+Running `inject.keywords` with the following command would inject frontmatter and found topic tags
+into it for all zettels saved in and under that directory.
 
 ```bash
 $> zettelcorn inject.keywords -rv ./my-directory
@@ -123,20 +150,20 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-### [◄](#-documentation) `rename.files [options] <path> <pattern>`
+### [🠔](#-documentation) `rename.files [options] <path> <pattern>`
 
 Rename files containing YAML frontmatter.
 
 #### Notes
 
 - All files that do not contain frontmatter are skipped.
-- It will fail if the YAML keys used in the pattern are not found in every file that contains frontmatter.
+- It will fail if YAML keys used in the pattern are not found in every file containing frontmatter.
 
 #### API
 
 - `path` - The directory to search for zettels
 - `pattern` - The pattern to use when renaming files
-- _[options]:_
+- [options]:
   - `-d, --dashed` - Substitute dashes for spaces in the file name
   - `-r, --recursive` - Run command on a directory and all its sub-directories
   - `-v, --verbose` - List all paths that changed along with each new value
@@ -163,7 +190,8 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-Running `rename.files` with the following command would change the file name for all zettels saved in and under that directory.
+Running `rename.files` with the following command would change the file name for all zettels
+saved in and under that directory.
 
 ```bash
 $> zettelcorn rename.files -drv ./my-directory Movies-{id}-{title}-{keywords}.md
@@ -175,14 +203,16 @@ The example zettel would get a new name.
 Movies-12345-Alien-had-an-estimated-$11M-USD-budget-Alien,movie,budget.md
 ```
 
-## [▲](#-table-of-contents) Contribute
+## [🠕](#-table-of-contents) Contribute
 
-Is there a feature you want that Zettelcorn doesn't have? [Suggestions](https://github.com/davidtimmons/zettelcorn/issues) and [contributions](https://github.com/davidtimmons/zettelcorn/pulls) are welcome!
+Is there a feature you want that Zettelcorn doesn't have?
+[Suggestions](https://github.com/davidtimmons/zettelcorn/issues) and
+[contributions](https://github.com/davidtimmons/zettelcorn/pulls) are welcome!
 
-## [▲](#-table-of-contents) Credits
+## [🠕](#-table-of-contents) Credits
 
 The illustration above is from [unDraw](https://undraw.co/).
 
-## [▲](#-table-of-contents) License
+## [🠕](#-table-of-contents) License
 
 Licensed under the MIT license.

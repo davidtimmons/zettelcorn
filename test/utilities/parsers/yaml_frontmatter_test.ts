@@ -83,7 +83,7 @@ Deno.test("should convert a YAML object to frontmatter", () => {
       title: "My Title",
       keywords: ["alpha", "numeric", "!!"],
     }),
-    [
+    $.formatWithEOL([
       "---",
       "id: 123",
       "title: My Title",
@@ -92,7 +92,7 @@ Deno.test("should convert a YAML object to frontmatter", () => {
       "  - numeric",
       "  - '!!'",
       "---",
-    ].join("\n"),
+    ]),
   );
 });
 

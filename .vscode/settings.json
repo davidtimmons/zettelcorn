@@ -1,11 +1,3 @@
 {
-    "cSpell.ignoreWords": [
-        "deno",
-        "init",
-        "object",
-        "tcac",
-        "tcac object",
-        "tcli",
-        "tcli init"
-    ]
+    "deno.enable": true,
 }
