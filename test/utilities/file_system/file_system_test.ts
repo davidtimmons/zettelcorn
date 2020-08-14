@@ -11,16 +11,13 @@ Deno.test("should read a text file at a path", async () => {
 
 Deno.test("should build a non-recursive list of files", async () => {
   const results = await FS$.buildFileQueue({
-    directory: "test/test_data/filtering",
+    directory: "test/test_data/recursion",
     recursive: false,
   });
 
-  assertEquals(results.length, 2);
+  assertEquals(results.length, 1);
 
-  const js = results[0];
-  assertEquals(js.fileName, "test.js");
-
-  const md = results[1];
+  const md = results[0];
   assertEquals(md.fileName, "test.md");
   assert(md.path.length > 0);
   assertEquals(md.yaml, {
@@ -74,7 +71,7 @@ Deno.test("should collect files with custom meta data", async () => {
     metaTransformation: ({ name }) => name,
   });
 
-  assertEquals(results01.length, 2);
+  assertEquals(results01.length, 3);
   results01.forEach((result01) => assert(result01.meta.length > 0));
 
   const results02 = await FS$.buildFileQueue({
@@ -82,7 +79,7 @@ Deno.test("should collect files with custom meta data", async () => {
     recursive: false,
     requireMeta: true,
     metaTransformation: ({ extension }) => {
-      if (extension === ".md") return true;
+      if (extension === ".js") return true;
     },
   });
 
