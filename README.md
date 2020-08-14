@@ -107,9 +107,10 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 #### API
 
 - `path` - The directory to search for zettels
-- _[options]:_
+- [options]:
+  - `-u, --heuristic` - Attempt to detect all lines dedicated to listing topic tags
   - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-v, --verbose` - List all files where keywords were injected
+  - `-b, --verbose` - List all files where keywords were injected
   - `-h, --help` - Display the help message for this command
 
 #### Example
@@ -131,7 +132,7 @@ Running `inject.keywords` with the following command would inject frontmatter an
 into it for all zettels saved in and under that directory.
 
 ```bash
-$> zettelcorn inject.keywords -rv ./my-directory
+$> zettelcorn inject.keywords -rb ./my-directory
 ```
 
 The example zettel would now look like this.
@@ -150,6 +151,48 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
+#### Example (Using the Heuristic Option)
+
+The `--heuristic` option looks for rows in a zettel that end with at least two topic tags.
+If the heuristic fails to find anything, Zettelcorn will fall back to searching for _anything_
+in the document that appears to be a topic tag.
+
+This is an example zettel.
+
+```text
+#history #social-media
+
+The hashtag (i.e. #hashtag) came into popular usage with social media platforms. #win
+```
+
+Using the `--heuristic` option results in this updated zettel.
+
+```text
+---
+keywords:
+  - history
+  - social-media
+---
+#history #social-media
+
+The hashtag (i.e. #hashtag) came into popular usage with social media platforms. #win
+```
+
+Without the `--heuristic` option, the zettel would instead look like this.
+
+```text
+---
+keywords:
+  - history
+  - social-media
+  - hashtag
+  - win
+---
+#history #social-media
+
+The hashtag (i.e. #hashtag) came into popular usage with social media platforms. #win
+```
+
 ### [🠔](#-documentation) `rename.files [options] <path> <pattern>`
 
 Rename files containing YAML frontmatter.
@@ -166,7 +209,7 @@ Rename files containing YAML frontmatter.
 - [options]:
   - `-d, --dashed` - Substitute dashes for spaces in the file name
   - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-v, --verbose` - List all paths that changed along with each new value
+  - `-b, --verbose` - List all paths that changed along with each new value
   - `-h, --help` - Display the help message for this command
 
 #### Example
@@ -194,7 +237,7 @@ Running `rename.files` with the following command would change the file name for
 saved in and under that directory.
 
 ```bash
-$> zettelcorn rename.files -drv ./my-directory Movies-{id}-{title}-{keywords}.md
+$> zettelcorn rename.files -drb ./my-directory Movies-{id}-{title}-{keywords}.md
 ```
 
 The example zettel would get a new name.

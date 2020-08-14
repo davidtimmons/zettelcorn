@@ -21,8 +21,8 @@ export async function run(
       ...options,
       getFileContent: true,
       requireMeta: true,
-      metaTransformation: ({ fileContent }) => $.findTags(fileContent),
-      yamlTransformation: _yamlTransformation,
+      metaTransformation: _metaTransformation.bind(null, options.heuristic),
+      yamlTransformation: _yamlTransformation.bind(null, options.heuristic),
     });
   } catch (err) {
     UI.notifyUserOfExit({ error: err });
@@ -61,11 +61,28 @@ export async function run(
 }
 
 /**
+ * Use one of two different approaches to detect topic tags in a document. Either look for
+ * rows that appear to be dedicated to listing topic tags, or simply find everything in a
+ * document that appears to be a topic tag.
+ */
+function _metaTransformation(
+  useHeuristic: boolean,
+  options: $.TTransformationOptions,
+): string[] {
+  return useHeuristic
+    ? $.findHeuristicTags(options.fileContent)
+    : $.findAllTags(options.fileContent);
+}
+
+/**
  * Extend the YAML object extracted from a read file with all keywords found in the file contents.
  * Throws an error when "keywords" exists in the frontmatter but is not a list.
  */
-function _yamlTransformation(options: $.TTransformationOptions): object {
-  const keywords = $.findKeywords(options.fileContent);
+function _yamlTransformation(
+  useHeuristic: boolean,
+  options: $.TTransformationOptions,
+): object {
+  const keywords = $.findKeywords(useHeuristic, options.fileContent);
   const hasNoKeywords = keywords.length <= 0;
   if (hasNoKeywords) return options.fileYAML;
 
@@ -137,6 +154,7 @@ async function _write(
 
 export const __private__ = {
   _injectKeywords,
+  _metaTransformation,
   _yamlTransformation,
 };
 

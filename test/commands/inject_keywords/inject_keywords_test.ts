@@ -5,9 +5,34 @@ import {
   Utilities as $,
 } from "../../deps.ts";
 import * as InjectKeywords from "../../../lib/commands/inject_keywords/inject_keywords.ts";
-const { _yamlTransformation } = InjectKeywords.__private__;
+const { _metaTransformation, _yamlTransformation } = InjectKeywords.__private__;
+
+Deno.test("should find topic tags in a document", () => {
+  // setup
+  const document = $.formatWithEOL([
+    "#topic #tag #row",
+    "Hello world!",
+    "Another #thing down here.",
+  ]);
+  const options: $.TTransformationOptions = {
+    extension: "",
+    fileContent: document,
+    fileYAML: {},
+    isDirectory: false,
+    name: "",
+    path: "",
+  };
+
+  // test
+  assertEquals(_metaTransformation(true, options), ["#topic", "#tag", "#row"]);
+  assertEquals(
+    _metaTransformation(false, options),
+    ["#topic", "#tag", "#row", "#thing"],
+  );
+});
 
 Deno.test("should add keywords to a YAML object", () => {
+  const yt = _yamlTransformation.bind(null, false);
   const filler = {
     extension: "",
     fileContent: "",
@@ -17,9 +42,9 @@ Deno.test("should add keywords to a YAML object", () => {
     path: "",
   };
 
-  assertEquals(_yamlTransformation({ ...filler }), {});
+  assertEquals(yt({ ...filler }), {});
   assertEquals(
-    _yamlTransformation({
+    yt({
       ...filler,
       fileContent: "#hello #world",
       fileYAML: { keywords: ["hello", "world"] },
@@ -27,7 +52,7 @@ Deno.test("should add keywords to a YAML object", () => {
     { keywords: ["hello", "world"] },
   );
   assertEquals(
-    _yamlTransformation({
+    yt({
       ...filler,
       fileContent: "#hello #world",
       fileYAML: { keywords: ["foo"] },
@@ -35,9 +60,7 @@ Deno.test("should add keywords to a YAML object", () => {
     { keywords: ["hello", "world", "foo"] },
   );
   assertThrows(() =>
-    _yamlTransformation(
-      { ...filler, fileContent: "#hi", fileYAML: { keywords: 42 } },
-    )
+    yt({ ...filler, fileContent: "#hi", fileYAML: { keywords: 42 } })
   );
 });
 
@@ -58,6 +81,7 @@ Deno.test("should inject keywords into all files", async () => {
   // modify files
   await InjectKeywords.run({
     directory: basePath,
+    heuristic: false,
     recursive: false,
     silent: true,
     verbose: false,

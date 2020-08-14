@@ -12,18 +12,20 @@ interface TInit {
 }
 
 export interface TCLIInjectKeywordsOptions {
+  u?: boolean;
+  heuristic: boolean;
   r?: boolean;
   recursive: boolean;
-  v?: boolean;
+  b?: boolean;
   verbose: boolean;
 }
 
 export interface TCLIRenameFilesOptions {
-  r?: boolean;
-  recursive: boolean;
   d?: boolean;
   dashed: boolean;
-  v?: boolean;
+  r?: boolean;
+  recursive: boolean;
+  b?: boolean;
   verbose: boolean;
 }
 
@@ -64,17 +66,21 @@ function _mutateFlagsToAddInjectKeywords(options: TInit, flags: TCACObject) {
       'Inject topic tags into a "keywords" list inside the YAML frontmatter',
     )
     .option(
+      "-u, --heuristic",
+      "Attempt to detect all lines dedicated to listing topic tags",
+    )
+    .option(
       "-r, --recursive",
       "Run command on a directory and all its sub-directories",
     )
     .option(
-      "-v, --verbose",
+      "-b, --verbose",
       "List all files where keywords were injected",
     )
     .example("inject.keywords -r ./zettelkasten")
     .example("inject.keywords --recursive ./zettelkasten")
-    .example("inject.keywords -rv ./zettelkasten")
-    .example("inject.keywords --recursive --verbose ./zettelkasten")
+    .example("inject.keywords -urb ./zettelkasten")
+    .example("inject.keywords --heuristic --recursive --verbose ./zettelkasten")
     .action(
       async (
         path: string,
@@ -82,6 +88,7 @@ function _mutateFlagsToAddInjectKeywords(options: TInit, flags: TCACObject) {
       ): Promise<void> => {
         await injectKeywords({
           directory: path,
+          heuristic: Boolean(options.heuristic),
           recursive: Boolean(options.recursive),
           verbose: Boolean(options.verbose),
         });
@@ -107,7 +114,7 @@ function _mutateFlagsToAddRenameFiles(options: TInit, flags: TCACObject) {
       "Run command on a directory and all its sub-directories",
     )
     .option(
-      "-v, --verbose",
+      "-b, --verbose",
       "List all paths that changed along with each new value",
     )
     .example("rename.files -r ./zettelkasten {id}-{title}.md")
