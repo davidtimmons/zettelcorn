@@ -2,6 +2,12 @@ import { CAC, IO } from "./deps.ts";
 
 /// TYPES ///
 
+export type TCLIInjectKeywordsOptions =
+  & TStandardOptions
+  & TInjectKeywordsOptions;
+
+export type TCLIRenameFilesOptions = TStandardOptions & TRenameFilesOptions;
+
 type TCACObject = any;
 
 interface TInit {
@@ -11,22 +17,23 @@ interface TInit {
   readonly renameFiles?: Function;
 }
 
-export interface TCLIInjectKeywordsOptions {
-  u?: boolean;
-  heuristic: boolean;
+interface TStandardOptions {
   r?: boolean;
   recursive: boolean;
+  m?: boolean;
+  markdown: boolean;
   b?: boolean;
   verbose: boolean;
 }
 
-export interface TCLIRenameFilesOptions {
+interface TInjectKeywordsOptions {
+  u?: boolean;
+  heuristic: boolean;
+}
+
+interface TRenameFilesOptions {
   d?: boolean;
   dashed: boolean;
-  r?: boolean;
-  recursive: boolean;
-  b?: boolean;
-  verbose: boolean;
 }
 
 /// LOGIC ///
@@ -74,6 +81,10 @@ function _mutateFlagsToAddInjectKeywords(options: TInit, flags: TCACObject) {
       "Run command on a directory and all its sub-directories",
     )
     .option(
+      "-m, --markdown",
+      "Only modify Markdown files by looking for the *.md extension",
+    )
+    .option(
       "-b, --verbose",
       "List all files where keywords were injected",
     )
@@ -90,6 +101,7 @@ function _mutateFlagsToAddInjectKeywords(options: TInit, flags: TCACObject) {
           directory: path,
           heuristic: Boolean(options.heuristic),
           recursive: Boolean(options.recursive),
+          markdown: Boolean(options.markdown),
           verbose: Boolean(options.verbose),
         });
       },
@@ -114,6 +126,10 @@ function _mutateFlagsToAddRenameFiles(options: TInit, flags: TCACObject) {
       "Run command on a directory and all its sub-directories",
     )
     .option(
+      "-m, --markdown",
+      "Only modify Markdown files by looking for the *.md extension",
+    )
+    .option(
       "-b, --verbose",
       "List all paths that changed along with each new value",
     )
@@ -132,6 +148,7 @@ function _mutateFlagsToAddRenameFiles(options: TInit, flags: TCACObject) {
           directory: path,
           dashed: Boolean(options.dashed),
           recursive: Boolean(options.recursive),
+          markdown: Boolean(options.markdown),
           verbose: Boolean(options.verbose),
         });
       },

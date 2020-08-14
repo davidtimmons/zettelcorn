@@ -16,6 +16,7 @@ Deno.test("should rename a file", async () => {
     applyPattern: (_x: any) => "hello.md",
     dashed: true,
     directory: basePath,
+    markdown: false,
     pattern: "hello-",
     recursive: false,
     verbose: false,
@@ -44,6 +45,7 @@ Deno.test("should rename all files", async () => {
   await RenameFiles.run({
     dashed: true,
     directory: basePath,
+    markdown: false,
     pattern: "{id}-hello.md",
     recursive: false,
     silent: true,

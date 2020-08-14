@@ -82,6 +82,7 @@ Deno.test("should inject keywords into all files", async () => {
   await InjectKeywords.run({
     directory: basePath,
     heuristic: false,
+    markdown: false,
     recursive: false,
     silent: true,
     verbose: false,

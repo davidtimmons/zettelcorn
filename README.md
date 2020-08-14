@@ -110,6 +110,7 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 - [options]:
   - `-u, --heuristic` - Attempt to detect all lines dedicated to listing topic tags
   - `-r, --recursive` - Run command on a directory and all its sub-directories
+  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
   - `-b, --verbose` - List all files where keywords were injected
   - `-h, --help` - Display the help message for this command
 
@@ -209,6 +210,7 @@ Rename files containing YAML frontmatter.
 - [options]:
   - `-d, --dashed` - Substitute dashes for spaces in the file name
   - `-r, --recursive` - Run command on a directory and all its sub-directories
+  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
   - `-b, --verbose` - List all paths that changed along with each new value
   - `-h, --help` - Display the help message for this command
 

@@ -6,10 +6,9 @@ import * as UI from "./ui/ui.ts";
 
 /// TYPES ///
 
-interface TRenameFilesRunOptions
-  extends T.TRunOptions, CLI.TCLIRenameFilesOptions {
+type TRenameFilesRunOptions = T.TRunOptions & CLI.TCLIRenameFilesOptions & {
   readonly pattern: string;
-}
+};
 
 interface TRenameFilesReadResult {
   readonly fileName: string;
@@ -17,15 +16,11 @@ interface TRenameFilesReadResult {
   readonly yaml: object;
 }
 
-interface TRenameFilesWriteOptions extends TRenameFilesRunOptions {
-  readonly applyPattern: TRenameFilesApplyPattern;
-}
+type TRenameFilesWriteOptions = TRenameFilesRunOptions & {
+  readonly applyPattern: TRenameFilesTransform | Function;
+};
 
-type TRenameFilesApplyPattern = TRenameFilesTransform | Function;
-
-type TRenameFilesTransform = (yaml: TRenameFilesYAML) => string;
-
-type TRenameFilesYAML = { [key: string]: any };
+type TRenameFilesTransform = (yaml: { [key: string]: any }) => string;
 
 /// LOGIC ///
 
@@ -44,6 +39,7 @@ export async function run(
   try {
     fileQueue = await $.buildFileQueue({
       ...options,
+      requireMarkdown: options.markdown,
       requireYaml: true,
       yamlTransformation: ({ fileYAML }) => $.proxyPrintOnAccess(fileYAML),
     });

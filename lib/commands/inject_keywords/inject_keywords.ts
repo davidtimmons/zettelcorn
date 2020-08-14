@@ -4,10 +4,9 @@ import * as UI from "./ui/ui.ts";
 
 /// TYPES ///
 
-interface TInjectKeywordsRunOptions
-  extends T.TRunOptions, CLI.TCLIInjectKeywordsOptions {}
+type TInjectKeywordsRunOptions = T.TRunOptions & CLI.TCLIInjectKeywordsOptions;
 
-interface TInjectKeywordsWriteOptions extends TInjectKeywordsRunOptions {}
+type TInjectKeywordsWriteOptions = TInjectKeywordsRunOptions;
 
 /// LOGIC ///
 
@@ -20,6 +19,7 @@ export async function run(
     fileQueue = await $.buildFileQueue({
       ...options,
       getFileContent: true,
+      requireMarkdown: options.markdown,
       requireMeta: true,
       metaTransformation: _metaTransformation.bind(null, options.heuristic),
       yamlTransformation: _yamlTransformation.bind(null, options.heuristic),
