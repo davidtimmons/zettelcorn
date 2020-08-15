@@ -42,7 +42,8 @@ Deno.test("should add keywords to a YAML object", () => {
     path: "",
   };
 
-  assertEquals(yt({ ...filler }), {});
+  assertEquals(yt({ ...filler }), { keywords: [] });
+
   assertEquals(
     yt({
       ...filler,
@@ -51,6 +52,7 @@ Deno.test("should add keywords to a YAML object", () => {
     }),
     { keywords: ["hello", "world"] },
   );
+
   assertEquals(
     yt({
       ...filler,
@@ -59,6 +61,7 @@ Deno.test("should add keywords to a YAML object", () => {
     }),
     { keywords: ["hello", "world", "foo"] },
   );
+
   assertThrows(() =>
     yt({ ...filler, fileContent: "#hi", fileYAML: { keywords: 42 } })
   );
@@ -66,7 +69,7 @@ Deno.test("should add keywords to a YAML object", () => {
 
 Deno.test("should inject keywords into all files", async () => {
   // setup
-  const basePath = "./test/test_data/injecting";
+  const basePath = "./test/test_data/injecting/keywords";
   const test01Path = Deno.realPathSync(Path.join(basePath, "test01.md"));
   const test02Path = Deno.realPathSync(Path.join(basePath, "test02.md"));
   const test01Content = Deno.readTextFileSync(test01Path);

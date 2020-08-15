@@ -75,16 +75,23 @@ function _metaTransformation(
 }
 
 /**
- * Extend the YAML object extracted from a read file with all keywords found in the file contents.
+ * Extend the YAML object extracted from the file with all keywords found in the file contents.
  * Throws an error when "keywords" exists in the frontmatter but is not a list.
  */
 function _yamlTransformation(
   useHeuristic: boolean,
   options: $.TTransformationOptions,
 ): object {
-  const keywords = $.findKeywords(useHeuristic, options.fileContent);
-  const hasNoKeywords = keywords.length <= 0;
-  if (hasNoKeywords) return options.fileYAML;
+  const newKeywords = $.findKeywords(useHeuristic, options.fileContent);
+  const foundNoKeywords = newKeywords.length <= 0;
+  const hasNoKeywordsKey = $.isEmpty(options.fileYAML.keywords);
+
+  let keywords = newKeywords;
+  if (foundNoKeywords && hasNoKeywordsKey) {
+    keywords = [];
+  } else if (foundNoKeywords) {
+    return options.fileYAML;
+  }
 
   if ($.isEmpty(options.fileYAML.keywords)) {
     return {

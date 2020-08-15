@@ -4,7 +4,7 @@ import { CLI, Colors, Utilities as $ } from "../../deps.ts";
 
 interface TConfirmChangeOptions {
   fileName: string;
-  keywords: string;
+  title: string;
 }
 
 interface TNotifyUserOfExitOptions {
@@ -23,23 +23,20 @@ export async function confirmChange(
     "This is an example file:",
     Colors.cyan(options.fileName),
     "",
-    "Here are the topic tags found in it:",
-    Colors.cyan(options.keywords),
+    "Here is the title found within its text:",
+    Colors.cyan(options.title),
     "",
     Colors.yellow(
       "1. YAML frontmatter will be injected into the file if it does not exist.",
     ),
     Colors.yellow(
-      '2. A "keywords" key will be added to the frontmatter if it does not exist.',
+      '2. A "title" key will be added to the frontmatter if it does not exist.',
     ),
     Colors.yellow(
-      '3. Found topic tags will be injected into "keywords".',
+      '3. If a title is found it will be injected into "title".',
     ),
     Colors.yellow(
-      '4. If "keywords" exists and already contains a list, topic tags are merged into the existing list.',
-    ),
-    Colors.yellow(
-      '5. If "keywords" exists but is not a list, the script will fail.',
+      '4. If a title is found but one already exists in "title", it will be overwritten.',
     ),
     "",
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,
@@ -56,7 +53,7 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
       Colors.bold("This is the directory you entered:"),
       Colors.cyan(options.directory),
       "",
-      "None of the files within this directory contained topic tags. No files were changed.",
+      "None of the files within this directory contained a Markdown title. No files were changed.",
     ];
   } else if (options.error) {
     message = [

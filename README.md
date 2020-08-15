@@ -84,6 +84,7 @@ your files before using it. The only undo is the one you provide!
 
 1. [`zettelcorn`](#-zettelcorn)
 2. [`inject.keywords`](#-injectkeywords-options-path)
+2. [`inject.title`](#-injecttitle-options-path)
 3. [`rename.files`](#-renamefiles-options-path-pattern)
 
 ### [🠔](#-documentation) `zettelcorn`
@@ -99,8 +100,9 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 #### Notes
 
 - Topic tags are defined as a hash followed by a word, for example `#foo` or `#foo-bar-baz`.
-- If a topic tag is found and no frontmatter exists, frontmatter is first injected into the file.
-- Topic tags are injected into "keywords" inside the frontmatter.
+- YAML frontmatter will be injected into the file if it does not exist.
+- A "keywords" key will be added to the frontmatter if it does not exist.
+- Found topic tags will be injected into "keywords".
 - If "keywords" exists and already contains a list, topic tags are merged into the existing list.
 - If "keywords" exists but is not a list, the script will fail.
 
@@ -192,6 +194,61 @@ keywords:
 #history #social-media
 
 The hashtag (i.e. #hashtag) came into popular usage with social media platforms. #win
+```
+
+### [🠔](#-documentation) `inject.title [options] <path>`
+
+Inject the detected title into a "title" key inside the YAML frontmatter.
+
+#### Notes
+
+- The script attempts to detect the H1 title using Markdown syntax, for example `# My Title`.
+- YAML frontmatter will be injected into the file if it does not exist.
+- A "title" key will be added to the frontmatter if it does not exist.
+- If a title is found it will be injected into "title".
+- If a title is found but one already exists in "title", it will be overwritten.
+
+#### API
+
+- `path` - The directory to search for zettels
+- [options]:
+  - `-r, --recursive` - Run command on a directory and all its sub-directories
+  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
+  - `-b, --verbose` - List all files where titles were injected
+  - `-h, --help` - Display the help message for this command
+
+#### Example
+
+Suppose you have this zettel saved in your Zettelkasten.
+
+```text
+my-zettel.md
+```
+
+```text
+# Alien debuted in 1979 with a multi-million USD budget
+
+The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
+In 2020, that same amount would be worth roughly $39,000,000 USD.
+```
+
+Running `inject.title` with the following command would inject frontmatter and the found title
+into it for all zettels saved in and under that directory.
+
+```bash
+$> zettelcorn inject.title -rb ./my-directory
+```
+
+The example zettel would now look like this.
+
+```text
+---
+title: Alien debuted in 1979 with a multi-million USD budget
+---
+# Alien debuted in 1979 with a multi-million USD budget
+
+The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
+In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
 ### [🠔](#-documentation) `rename.files [options] <path> <pattern>`
