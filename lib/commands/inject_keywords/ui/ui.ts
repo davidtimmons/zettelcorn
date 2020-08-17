@@ -1,4 +1,4 @@
-import { CLI, Colors, Utilities as $ } from "../../deps.ts";
+import { Colors, Utilities as $ } from "../deps.ts";
 
 /// TYPES ///
 
@@ -45,7 +45,7 @@ export async function confirmChange(
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,
   ];
 
-  return await CLI.sendToUser($.formatWithEOL(message));
+  return await $.sendToUser($.formatWithEOL(message));
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {

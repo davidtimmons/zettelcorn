@@ -1,6 +1,6 @@
 import { assert, assertEquals, equal } from "../../deps.ts";
 import * as $ from "../../../lib/utilities/mod.ts";
-import * as Y$ from "../../../lib/utilities/parsers/yaml_frontmatter.ts";
+import { ParsersUtilities as Y$ } from "../../../lib/utilities/mod.ts";
 
 Deno.test("should get frontmatter delimiter positions", () => {
   assertEquals(Y$.getDelimiterPositions(""), [-1, -1]);

@@ -1,5 +1,5 @@
-import { assert } from "../../deps.ts";
-import * as UI$ from "../../../lib/utilities/ui/ui.ts";
+import { assert, unimplemented } from "../../deps.ts";
+import { UIUtilities as UI$ } from "../../../lib/utilities/mod.ts";
 const { _paint } = UI$.__private__;
 
 Deno.test("should notify the user of change", (): void => {
@@ -18,6 +18,16 @@ Deno.test("should notify the user of change", (): void => {
 
   // cleanup
   console.log = originalConsoleLog;
+});
+
+Deno.test({
+  name: "should read text from the user",
+  ignore: true,
+  async fn() {
+    // TODO: Research best way to simulate input to stdin.
+    const input = await UI$.sendToUser("output");
+    unimplemented();
+  },
 });
 
 Deno.test("should formatted log text", (): void => {

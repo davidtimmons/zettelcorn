@@ -1,5 +1,5 @@
 import { assertEquals } from "../../deps.ts";
-import * as TE$ from "../../../lib/utilities/parsers/token_expression.ts";
+import { ParsersUtilities as TE$ } from "../../../lib/utilities/mod.ts";
 
 Deno.test("should determine if a pattern contains a token", () => {
   assertEquals(TE$.hasTokenExp(""), false);

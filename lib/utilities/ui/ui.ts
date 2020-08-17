@@ -1,4 +1,4 @@
-import { Colors, FS } from "../deps.ts";
+import { Colors, FS, IO } from "../deps.ts";
 
 /// TYPES ///
 
@@ -40,6 +40,15 @@ export function notifyUserOfChange(firstValue: any, lastValue?: any) {
   ];
   if (lastValue) message.push(lastValue);
   formatWithEOL(message, true);
+}
+
+export async function sendToUser(text: string): Promise<string> {
+  console.log(text);
+  // Listen to stdin for a new line
+  for await (const line of IO.readLines(Deno.stdin)) {
+    return line;
+  }
+  return "";
 }
 
 export function log(value: any, options: TLogOptions) {

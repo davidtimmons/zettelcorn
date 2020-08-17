@@ -1,6 +1,8 @@
 import { assert, assertEquals, assertThrows } from "../../deps.ts";
-import * as FS$ from "../../../lib/utilities/file_system/file_system.ts";
-import * as H$ from "../../../lib/utilities/helpers/helpers.ts";
+import {
+  FileSystemUtilities as FS$,
+  HelpersUtilities as H$,
+} from "../../../lib/utilities/mod.ts";
 
 Deno.test("should compose functions", () => {
   const addOne = (x: number) => x + 1;

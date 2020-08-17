@@ -1,10 +1,10 @@
-import { CLI, Path, Utilities as $ } from "../deps.ts";
-import * as T from "../types.ts";
-import * as UI from "./ui/ui.ts";
+import * as CT from "../types.ts";
+import { Utilities as $ } from "./deps.ts";
+import { Flags, UI } from "./mod.ts";
 
 /// TYPES ///
 
-type TInjectKeywordsRunOptions = T.TRunOptions & CLI.TCLIInjectKeywordsOptions;
+type TInjectKeywordsRunOptions = CT.TRunOptions & Flags.TInjectKeywordsOptions;
 
 type TInjectKeywordsWriteOptions = TInjectKeywordsRunOptions;
 
@@ -12,7 +12,7 @@ type TInjectKeywordsWriteOptions = TInjectKeywordsRunOptions;
 
 export async function run(
   options: TInjectKeywordsRunOptions,
-): Promise<T.TRunResult> {
+): Promise<CT.TRunResult> {
   // Read all files while extending any found YAML frontmatter with keywords.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -57,7 +57,7 @@ export async function run(
 
   await _injectKeywords(options, fileQueue);
 
-  return Promise.resolve({ status: T.TStatus.OK });
+  return Promise.resolve({ status: CT.TStatus.OK });
 }
 
 /**

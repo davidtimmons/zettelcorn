@@ -1,10 +1,10 @@
-import { CLI, Path, Utilities as $ } from "../deps.ts";
-import * as T from "../types.ts";
-import * as UI from "./ui/ui.ts";
+import * as CT from "../types.ts";
+import { Utilities as $ } from "./deps.ts";
+import { Flags, UI } from "./mod.ts";
 
 /// TYPES ///
 
-type TInjectTitleRunOptions = T.TRunOptions & CLI.TCLIInjectTitleOptions;
+type TInjectTitleRunOptions = CT.TRunOptions & Flags.TInjectTitleOptions;
 
 type TInjectTitleWriteOptions = TInjectTitleRunOptions;
 
@@ -12,7 +12,7 @@ type TInjectTitleWriteOptions = TInjectTitleRunOptions;
 
 export async function run(
   options: TInjectTitleRunOptions,
-): Promise<T.TRunResult> {
+): Promise<CT.TRunResult> {
   // Read all files while extending any found YAML frontmatter with a title.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -55,7 +55,7 @@ export async function run(
 
   await _injectTitle(options, fileQueue);
 
-  return Promise.resolve({ status: T.TStatus.OK });
+  return Promise.resolve({ status: CT.TStatus.OK });
 }
 
 /**

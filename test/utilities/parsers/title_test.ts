@@ -1,5 +1,5 @@
 import { assertEquals, Utilities as $ } from "../../deps.ts";
-import * as T$ from "../../../lib/utilities/parsers/title.ts";
+import { ParsersUtilities as T$ } from "../../../lib/utilities/mod.ts";
 
 Deno.test("should find the H1 Markdown title in a document", () => {
   assertEquals(T$.findH1Title(""), "");

@@ -1,10 +1,10 @@
-import { CLI, Path, Utilities as $ } from "../deps.ts";
-import * as T from "../types.ts";
-import * as UI from "./ui/ui.ts";
+import * as CT from "../types.ts";
+import { Path, Utilities as $ } from "./deps.ts";
+import { Flags, UI } from "./mod.ts";
 
 /// TYPES ///
 
-type TRenameFilesRunOptions = T.TRunOptions & CLI.TCLIRenameFilesOptions & {
+type TRenameFilesRunOptions = CT.TRunOptions & Flags.TRenameFilesOptions & {
   readonly pattern: string;
 };
 
@@ -24,7 +24,7 @@ type TRenameFilesTransform = (yaml: { [key: string]: any }) => string;
 
 export async function run(
   options: TRenameFilesRunOptions,
-): Promise<T.TRunResult> {
+): Promise<CT.TRunResult> {
   // The rename files feature is intended to work with YAML frontmatter.
   const hasToken = $.hasTokenExp(options.pattern);
   if (!hasToken) {
@@ -72,7 +72,7 @@ export async function run(
 
   await _renameFiles({ ...options, applyPattern }, fileQueue);
 
-  return { status: T.TStatus.OK };
+  return { status: CT.TStatus.OK };
 }
 
 async function _renameFiles(

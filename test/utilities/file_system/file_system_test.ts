@@ -1,5 +1,5 @@
 import { assert, assertEquals, assertStringContains } from "../../deps.ts";
-import * as FS$ from "../../../lib/utilities/file_system/file_system.ts";
+import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
 Deno.test("should read a text file at a path", async () => {
   let actual = await FS$.read("test/test_data/filtering/test.md");
