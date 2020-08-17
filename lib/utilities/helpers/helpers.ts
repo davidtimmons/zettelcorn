@@ -85,6 +85,13 @@ export function isEmpty(maybeEmpty: unknown): boolean {
   return false;
 }
 
+/**
+ * Replace all specific characters in a string with a dash. By default, it replaces all spaces.
+ */
+export function dasherize(text: string, charToReplace = " "): string {
+  return text.replaceAll(charToReplace, "-");
+}
+
 export function proxyPrintOnAccess(jsObject: TDictionary): TDictionary {
   const handler = {
     get(map: TDictionary, key: string): any {

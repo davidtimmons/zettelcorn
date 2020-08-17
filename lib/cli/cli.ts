@@ -209,6 +209,7 @@ function _tryParse(flags: TCACObject): void {
 
 export const __private__ = {
   _mutateFlagsToAddInjectKeywords,
+  _mutateFlagsToAddInjectTitle,
   _mutateFlagsToAddRenameFiles,
   _tryParse,
 };

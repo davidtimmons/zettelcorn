@@ -1,7 +1,5 @@
 import { CLI, Path, Utilities as $ } from "../deps.ts";
 import * as T from "../types.ts";
-import * as Text from "./parsers/text.ts";
-import * as TokenExp from "./parsers/token_expression.ts";
 import * as UI from "./ui/ui.ts";
 
 /// TYPES ///
@@ -28,7 +26,7 @@ export async function run(
   options: TRenameFilesRunOptions,
 ): Promise<T.TRunResult> {
   // The rename files feature is intended to work with YAML frontmatter.
-  const hasToken = TokenExp.hasToken(options.pattern);
+  const hasToken = $.hasTokenExp(options.pattern);
   if (!hasToken) {
     UI.notifyUserOfExit({ pattern: options.pattern });
     Deno.exit();
@@ -56,14 +54,8 @@ export async function run(
   }
 
   const applyPattern = $.composeFunctions()
-    .apply(
-      Function(
-        "yaml",
-        "return " +
-          TokenExp.generateInterpolatedString("yaml", options.pattern),
-      ),
-    )
-    .applyIf(options.dashed, Text.dasherize)
+    .apply($.generateGetterFromTokenExp(options.pattern))
+    .applyIf(options.dashed, $.dasherize)
     .compose;
 
   const firstExample = fileQueue[0];

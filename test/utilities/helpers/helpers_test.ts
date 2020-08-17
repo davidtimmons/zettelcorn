@@ -102,6 +102,14 @@ Deno.test("should check if the argument is empty", () => {
   });
 });
 
+Deno.test("should replace spaces with dashes", (): void => {
+  let actual = H$.dasherize("hello world and hi there");
+  assertEquals(actual, "hello-world-and-hi-there");
+
+  actual = H$.dasherize("");
+  assertEquals(actual, "");
+});
+
 Deno.test("should inject pretty print into a dictionary object", () => {
   const actual = H$.proxyPrintOnAccess({
     number: 42,

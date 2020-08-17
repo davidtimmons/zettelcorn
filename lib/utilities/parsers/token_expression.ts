@@ -1,6 +1,6 @@
 /// TYPES ///
 
-enum TBracketIdentity {
+export enum TTokenExpBracket {
   LeftBracket,
   RightBracket,
   Other,
@@ -11,13 +11,34 @@ enum TBracketIdentity {
 const LEFT_BRACKET = /{/ig;
 const RIGHT_BRACKET = /}/ig;
 
-export function hasToken(pattern: string): boolean {
+export function hasTokenExp(pattern: string): boolean {
   const leftBracket = pattern.search(LEFT_BRACKET);
   const rightBracket = pattern.search(RIGHT_BRACKET);
   return leftBracket >= 0 && rightBracket >= 0 && leftBracket < rightBracket;
 }
 
-export function generateInterpolatedString(
+/**
+ * Given a token expression, generate a getter function that will populate a template string
+ * with data extracted from an object argument.
+ * @example
+ * // returns function(data) { return `this-${data.id}.md` }
+ * generateGetterFromTokenExp("this-{id}.md")
+ */
+export function generateGetterFromTokenExp(pattern: string): Function {
+  return Function(
+    "data",
+    "return " + generateTemplateStrFromTokenExp("data", pattern),
+  );
+}
+
+/**
+ * Given a token expression, generate a JavaScript template string. The generated string assumes
+ * variables are populated based on object access.
+ * @example
+ * // returns `this-${yaml.id}.md`
+ * generateTemplateStrFromTokenExp("yaml", "this-{id}.md")
+ */
+export function generateTemplateStrFromTokenExp(
   varName: string,
   pattern: string,
 ): string {
@@ -27,12 +48,12 @@ export function generateInterpolatedString(
   let insideToken = false;
 
   for (let i = 0; i < patternBuffer.length; i += 1) {
-    const id = identifyCharacter(patternBuffer[i]);
+    const id = identifyBracket(patternBuffer[i]);
     switch (id) {
-      case TBracketIdentity.LeftBracket:
+      case TTokenExpBracket.LeftBracket:
         insideToken = true;
         break;
-      case TBracketIdentity.RightBracket:
+      case TTokenExpBracket.RightBracket:
         // This is only a token if there was a left bracket. Otherwise, the pattern is malformed.
         if (insideToken) {
           insideToken = false;
@@ -58,16 +79,12 @@ export function generateInterpolatedString(
   return "`" + resultBuffer.join("") + "`";
 }
 
-export function identifyCharacter(char: string): TBracketIdentity {
+export function identifyBracket(char: string): TTokenExpBracket {
   if (char.match(LEFT_BRACKET) !== null) {
-    return TBracketIdentity.LeftBracket;
+    return TTokenExpBracket.LeftBracket;
   } else if (char.match(RIGHT_BRACKET) !== null) {
-    return TBracketIdentity.RightBracket;
+    return TTokenExpBracket.RightBracket;
   } else {
-    return TBracketIdentity.Other;
+    return TTokenExpBracket.Other;
   }
 }
-
-export const __private__ = {
-  TBracketIdentity,
-};
