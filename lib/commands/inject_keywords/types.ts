@@ -1,0 +1,19 @@
+import * as CT from "../types.ts";
+import { CLITypes } from "./deps.ts";
+
+export type TInjectKeywordsOptions = CLITypes.TCLIStandardOptions & {
+  u?: boolean;
+  heuristic: boolean;
+  g?: boolean;
+  merge: boolean;
+};
+
+export type TInjectKeywordsRunOptions = CT.TRunOptions & TInjectKeywordsOptions;
+
+export type TInjectKeywordsRunResult = CT.TRunResult;
+
+export interface TInjectKeywordsRun {
+  (options: TInjectKeywordsRunOptions): TInjectKeywordsRunResult;
+}
+
+export type TInjectKeywordsWriteOptions = TInjectKeywordsRunOptions;

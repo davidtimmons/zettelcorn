@@ -1,16 +1,10 @@
 import { TStatus } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
-import { Flags, UI } from "./mod.ts";
-
-/// TYPES ///
-
-type TInjectTitleWriteOptions = Flags.TInjectTitleRunOptions;
-
-/// LOGIC ///
+import { Types, UI } from "./mod.ts";
 
 export async function run(
-  options: Flags.TInjectTitleRunOptions,
-): Flags.TInjectTitleRunResult {
+  options: Types.TInjectTitleRunOptions,
+): Types.TInjectTitleRunResult {
   // Read all files while extending any found YAML frontmatter with a title.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -83,7 +77,7 @@ function _yamlTransformation(options: $.TTransformOptions): object {
 }
 
 async function _write(
-  options: TInjectTitleWriteOptions,
+  options: Types.TInjectTitleWriteOptions,
   file: $.TReadResult,
 ): Promise<void> {
   const path = file.path;

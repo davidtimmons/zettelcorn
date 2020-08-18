@@ -1,23 +1,9 @@
-import * as CT from "../../types.ts";
-import { CLITypes as T } from "../deps.ts";
-
-/// TYPES ///
-
-export type TInjectTitleOptions = T.TCLIStandardOptions;
-
-export type TInjectTitleRunOptions = CT.TRunOptions & TInjectTitleOptions;
-
-export type TInjectTitleRunResult = CT.TRunResult;
-
-export interface TInjectTitleRun {
-  (options: TInjectTitleRunOptions): TInjectTitleRunResult;
-}
-
-/// LOGIC ///
+import { CLITypes } from "../deps.ts";
+import { Types } from "../mod.ts";
 
 export function addInjectTitleCommand(
-  options: T.TCLIInit,
-  flags: T.TCLIFlags,
+  options: CLITypes.TCLIInit,
+  flags: CLITypes.TCLIFlags,
 ): void {
   const injectTitle = options.injectTitle;
   if (!injectTitle) return;
@@ -44,7 +30,7 @@ export function addInjectTitleCommand(
     .action(
       async (
         path: string,
-        options: TInjectTitleOptions,
+        options: Types.TInjectTitleOptions,
       ): Promise<void> => {
         await injectTitle({
           directory: path,

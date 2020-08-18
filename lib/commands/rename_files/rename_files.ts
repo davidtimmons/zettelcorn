@@ -1,20 +1,10 @@
 import { TStatus } from "../types.ts";
 import { Path, Utilities as $ } from "./deps.ts";
-import { Flags, UI } from "./mod.ts";
-
-/// TYPES ///
-
-type TRenameFilesWriteOptions = Flags.TRenameFilesRunOptions & {
-  readonly applyPattern: TRenameFilesTransform | Function;
-};
-
-type TRenameFilesTransform = (yaml: { [key: string]: any }) => string;
-
-/// LOGIC ///
+import { Types, UI } from "./mod.ts";
 
 export async function run(
-  options: Flags.TRenameFilesRunOptions,
-): Flags.TRenameFilesRunResult {
+  options: Types.TRenameFilesRunOptions,
+): Types.TRenameFilesRunResult {
   // The rename files feature is intended to work with YAML frontmatter.
   const hasToken = $.hasTokenExp(options.pattern);
   if (!hasToken) {
@@ -71,7 +61,7 @@ export async function run(
 }
 
 async function _write(
-  options: TRenameFilesWriteOptions,
+  options: Types.TRenameFilesWriteOptions,
   file: $.TReadResult,
 ): Promise<void> {
   const basePath = Path.dirname(file.path);

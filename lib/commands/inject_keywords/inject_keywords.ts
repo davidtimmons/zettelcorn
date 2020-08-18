@@ -1,16 +1,10 @@
-import * as CT from "../types.ts";
+import { TStatus } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
-import { Flags, UI } from "./mod.ts";
-
-/// TYPES ///
-
-type TInjectKeywordsWriteOptions = Flags.TInjectKeywordsRunOptions;
-
-/// LOGIC ///
+import { Types, UI } from "./mod.ts";
 
 export async function run(
-  options: Flags.TInjectKeywordsRunOptions,
-): Flags.TInjectKeywordsRunResult {
+  options: Types.TInjectKeywordsRunOptions,
+): Types.TInjectKeywordsRunResult {
   // Read all files while extending any found YAML frontmatter with keywords.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -58,7 +52,7 @@ export async function run(
     endWorkMsg: `${fileQueue.length} files injected with YAML keywords.`,
   }, fileQueue);
 
-  return Promise.resolve({ status: CT.TStatus.OK });
+  return Promise.resolve({ status: TStatus.OK });
 }
 
 /**
@@ -66,7 +60,7 @@ export async function run(
  * Throws an error when "keywords" exists in the frontmatter but is not a list.
  */
 function _yamlTransformation(
-  menuOptions: Flags.TInjectKeywordsRunOptions,
+  menuOptions: Types.TInjectKeywordsRunOptions,
   transformOptions: $.TTransformOptions,
 ): object {
   const rawContent = $.removeFrontmatter(transformOptions.fileContent);
@@ -108,7 +102,7 @@ function _yamlTransformation(
 }
 
 async function _write(
-  options: TInjectKeywordsWriteOptions,
+  options: Types.TInjectKeywordsWriteOptions,
   file: $.TReadResult,
 ): Promise<void> {
   const path = file.path;

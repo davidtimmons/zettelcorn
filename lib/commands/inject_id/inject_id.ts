@@ -1,16 +1,10 @@
 import { TStatus } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
-import { Flags, UI } from "./mod.ts";
-
-/// TYPES ///
-
-type TInjectIdWriteOptions = Flags.TInjectIdRunOptions;
-
-/// LOGIC ///
+import { Types, UI } from "./mod.ts";
 
 export async function run(
-  options: Flags.TInjectIdRunOptions,
-): Flags.TInjectIdRunResult {
+  options: Types.TInjectIdRunOptions,
+): Types.TInjectIdRunResult {
   // Read all files while extending any found YAML frontmatter with an ID.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -88,7 +82,7 @@ function _yamlTransformation(
 }
 
 async function _write(
-  options: TInjectIdWriteOptions,
+  options: Types.TInjectIdWriteOptions,
   file: $.TReadResult,
 ): Promise<void> {
   const path = file.path;

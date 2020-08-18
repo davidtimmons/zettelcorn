@@ -1,28 +1,9 @@
-import * as CT from "../../types.ts";
-import { CLITypes as T } from "../deps.ts";
-
-/// TYPES ///
-
-export type TRenameFilesOptions = T.TCLIStandardOptions & {
-  d?: boolean;
-  dashed: boolean;
-};
-
-export type TRenameFilesRunOptions = CT.TRunOptions & TRenameFilesOptions & {
-  readonly pattern: string;
-};
-
-export type TRenameFilesRunResult = CT.TRunResult;
-
-export interface TRenameFilesRun {
-  (options: TRenameFilesRunOptions): TRenameFilesRunResult;
-}
-
-/// LOGIC ///
+import { CLITypes } from "../deps.ts";
+import { Types } from "../mod.ts";
 
 export function addRenameFilesCommand(
-  options: T.TCLIInit,
-  flags: T.TCLIFlags,
+  options: CLITypes.TCLIInit,
+  flags: CLITypes.TCLIFlags,
 ): void {
   const renameFiles = options.renameFiles;
   if (!renameFiles) return;
@@ -56,7 +37,7 @@ export function addRenameFilesCommand(
       async (
         path: string,
         pattern: string,
-        options: TRenameFilesOptions,
+        options: Types.TRenameFilesOptions,
       ): Promise<void> => {
         await renameFiles({
           pattern,

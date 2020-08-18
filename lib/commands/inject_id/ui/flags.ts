@@ -1,26 +1,9 @@
-import * as CT from "../../types.ts";
-import { CLITypes as T } from "../deps.ts";
-
-/// TYPES ///
-
-export type TInjectIdOptions = T.TCLIStandardOptions & {
-  x?: RegExp;
-  regex: RegExp;
-};
-
-export type TInjectIdRunOptions = CT.TRunOptions & TInjectIdOptions;
-
-export type TInjectIdRunResult = CT.TRunResult;
-
-export interface TInjectIdRun {
-  (options: TInjectIdRunOptions): TInjectIdRunResult;
-}
-
-/// LOGIC ///
+import { CLITypes } from "../deps.ts";
+import { Types } from "../mod.ts";
 
 export function addInjectIdCommand(
-  options: T.TCLIInit,
-  flags: T.TCLIFlags,
+  options: CLITypes.TCLIInit,
+  flags: CLITypes.TCLIFlags,
 ): void {
   const injectId = options.injectId;
   if (!injectId) return;
@@ -56,7 +39,7 @@ export function addInjectIdCommand(
     .action(
       async (
         path: string,
-        options: TInjectIdOptions,
+        options: Types.TInjectIdOptions,
       ): Promise<void> => {
         await injectId({
           directory: path,

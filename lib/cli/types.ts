@@ -1,8 +1,8 @@
 import {
-  InjectIdFlags,
-  InjectKeywordsFlags,
-  InjectTitleFlags,
-  RenameFilesFlags,
+  InjectIdTypes,
+  InjectKeywordsTypes,
+  InjectTitleTypes,
+  RenameFilesTypes,
 } from "./deps.ts";
 
 export type TCLIFlags = any; // cacjs library object
@@ -10,10 +10,10 @@ export type TCLIFlags = any; // cacjs library object
 export interface TCLIInit {
   readonly appVersion: string;
   readonly appName: string;
-  readonly injectId?: InjectIdFlags.TInjectIdRun;
-  readonly injectKeywords?: InjectKeywordsFlags.TInjectKeywordsRun;
-  readonly injectTitle?: InjectTitleFlags.TInjectTitleRun;
-  readonly renameFiles?: RenameFilesFlags.TRenameFilesRun;
+  readonly injectId?: InjectIdTypes.TInjectIdRun;
+  readonly injectKeywords?: InjectKeywordsTypes.TInjectKeywordsRun;
+  readonly injectTitle?: InjectTitleTypes.TInjectTitleRun;
+  readonly renameFiles?: RenameFilesTypes.TRenameFilesRun;
 }
 
 export interface TCLIStandardOptions {

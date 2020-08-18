@@ -1,28 +1,9 @@
-import * as CT from "../../types.ts";
-import { CLITypes as T } from "../deps.ts";
-
-/// TYPES ///
-
-export type TInjectKeywordsOptions = T.TCLIStandardOptions & {
-  u?: boolean;
-  heuristic: boolean;
-  g?: boolean;
-  merge: boolean;
-};
-
-export type TInjectKeywordsRunOptions = CT.TRunOptions & TInjectKeywordsOptions;
-
-export type TInjectKeywordsRunResult = CT.TRunResult;
-
-export interface TInjectKeywordsRun {
-  (options: TInjectKeywordsRunOptions): TInjectKeywordsRunResult;
-}
-
-/// LOGIC ///
+import { CLITypes } from "../deps.ts";
+import { Types } from "../mod.ts";
 
 export function addInjectKeywordsCommand(
-  options: T.TCLIInit,
-  flags: T.TCLIFlags,
+  options: CLITypes.TCLIInit,
+  flags: CLITypes.TCLIFlags,
 ): void {
   const injectKeywords = options.injectKeywords;
   if (!injectKeywords) return;
@@ -59,7 +40,7 @@ export function addInjectKeywordsCommand(
     .action(
       async (
         path: string,
-        options: TInjectKeywordsOptions,
+        options: Types.TInjectKeywordsOptions,
       ): Promise<void> => {
         await injectKeywords({
           directory: path,
