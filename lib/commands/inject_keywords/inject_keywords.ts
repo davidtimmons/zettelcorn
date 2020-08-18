@@ -4,15 +4,13 @@ import { Flags, UI } from "./mod.ts";
 
 /// TYPES ///
 
-type TInjectKeywordsRunOptions = CT.TRunOptions & Flags.TInjectKeywordsOptions;
-
-type TInjectKeywordsWriteOptions = TInjectKeywordsRunOptions;
+type TInjectKeywordsWriteOptions = Flags.TInjectKeywordsRunOptions;
 
 /// LOGIC ///
 
 export async function run(
-  options: TInjectKeywordsRunOptions,
-): Promise<CT.TRunResult> {
+  options: Flags.TInjectKeywordsRunOptions,
+): Flags.TInjectKeywordsRunResult {
   // Read all files while extending any found YAML frontmatter with keywords.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -20,7 +18,7 @@ export async function run(
       ...options,
       getFileContent: true,
       requireMarkdown: options.markdown,
-      yamlTransformation: _yamlTransformation.bind(null, options.heuristic),
+      yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
     UI.notifyUserOfExit({ error: err });
@@ -47,6 +45,7 @@ export async function run(
   const userResponse = options.silent ? "Y" : await UI.confirmChange({
     fileName: firstExample?.fileName || "",
     keywords: firstExample?.yaml.keywords.join(", ") || "",
+    willMerge: options.merge,
   });
 
   // Process user response.
@@ -67,41 +66,42 @@ export async function run(
  * Throws an error when "keywords" exists in the frontmatter but is not a list.
  */
 function _yamlTransformation(
-  useHeuristic: boolean,
-  options: $.TTransformationOptions,
+  menuOptions: Flags.TInjectKeywordsRunOptions,
+  transformOptions: $.TTransformOptions,
 ): object {
-  const rawContent = $.removeFrontmatter(options.fileContent);
-  const newKeywords = $.findKeywords(useHeuristic, rawContent);
+  const rawContent = $.removeFrontmatter(transformOptions.fileContent);
+  const newKeywords = $.findKeywords(menuOptions.heuristic, rawContent);
   const foundNoKeywords = newKeywords.length <= 0;
-  const hasNoKeywordsKey = $.isEmpty(options.fileYAML.keywords);
+  const hasNoKeywordsKey = !("keywords" in transformOptions.fileYAML);
+  const hasEmptyKeywordsKey = $.isEmpty(transformOptions.fileYAML.keywords);
 
   let keywords = newKeywords;
   if (foundNoKeywords && hasNoKeywordsKey) {
     keywords = [];
   } else if (foundNoKeywords) {
-    return options.fileYAML;
+    keywords = transformOptions.fileYAML.keywords;
   }
 
-  if ($.isEmpty(options.fileYAML.keywords)) {
+  if (!menuOptions.merge || hasEmptyKeywordsKey) {
     return {
-      ...options.fileYAML,
+      ...transformOptions.fileYAML,
       keywords,
     };
   } else {
     const kwSet = new Set(keywords);
 
-    if (!Array.isArray(options.fileYAML.keywords)) {
+    if (!Array.isArray(transformOptions.fileYAML.keywords)) {
       throw new TypeError(
         'The "keywords" key in the YAML frontmatter must be empty or contain a list.',
       );
     }
 
-    for (let elem of options.fileYAML.keywords) {
+    for (let elem of transformOptions.fileYAML.keywords) {
       kwSet.add(elem);
     }
 
     return {
-      ...options.fileYAML,
+      ...transformOptions.fileYAML,
       keywords: [...kwSet],
     };
   }

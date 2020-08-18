@@ -8,8 +8,16 @@ import * as InjectKeywords from "../../../lib/commands/inject_keywords/inject_ke
 const { _yamlTransformation } = InjectKeywords.__private__;
 
 Deno.test("should add keywords to a YAML object", () => {
-  const yt = _yamlTransformation.bind(null, false);
-  const filler = {
+  // setup
+  const menuOptions = {
+    directory: "",
+    heuristic: false,
+    markdown: false,
+    merge: false,
+    recursive: false,
+    verbose: false,
+  };
+  const transformOptions = {
     extension: "",
     fileContent: "",
     fileYAML: {},
@@ -18,29 +26,44 @@ Deno.test("should add keywords to a YAML object", () => {
     path: "",
   };
 
-  assertEquals(yt({ ...filler }), { keywords: [] });
+  // test
+  const actual01 = _yamlTransformation(menuOptions, { ...transformOptions });
+  assertEquals(actual01, { keywords: [] });
 
-  assertEquals(
-    yt({
-      ...filler,
-      fileContent: "#hello #world",
-      fileYAML: { keywords: ["hello", "world"] },
-    }),
-    { keywords: ["hello", "world"] },
-  );
+  const actual02 = _yamlTransformation(menuOptions, {
+    ...transformOptions,
+    fileContent: "#hello #world",
+    fileYAML: { keywords: ["hello", "world"] },
+  });
+  assertEquals(actual02, { keywords: ["hello", "world"] });
 
-  assertEquals(
-    yt({
-      ...filler,
-      fileContent: "#hello #world",
-      fileYAML: { keywords: ["foo"] },
-    }),
-    { keywords: ["hello", "world", "foo"] },
-  );
+  const actual03 = _yamlTransformation(menuOptions, {
+    ...transformOptions,
+    fileContent: "#hello #world",
+    fileYAML: { keywords: ["foo"] },
+  });
+  assertEquals(actual03, { keywords: ["hello", "world"] });
 
-  assertThrows(() =>
-    yt({ ...filler, fileContent: "#hi", fileYAML: { keywords: 42 } })
-  );
+  const actual04 = _yamlTransformation({
+    ...menuOptions,
+    merge: true,
+  }, {
+    ...transformOptions,
+    fileContent: "#hello #world",
+    fileYAML: { keywords: ["foo"] },
+  });
+  assertEquals(actual04, { keywords: ["hello", "world", "foo"] });
+
+  const shouldThrow = () =>
+    _yamlTransformation({
+      ...menuOptions,
+      merge: true,
+    }, {
+      ...transformOptions,
+      fileContent: "#hi",
+      fileYAML: { keywords: 42 },
+    });
+  assertThrows(shouldThrow);
 });
 
 Deno.test("should find all keywords and inject them into files", async () => {
@@ -61,6 +84,7 @@ Deno.test("should find all keywords and inject them into files", async () => {
   await InjectKeywords.run({
     directory: basePath,
     heuristic: false,
+    merge: true,
     markdown: false,
     recursive: false,
     silent: true,

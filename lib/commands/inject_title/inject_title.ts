@@ -1,18 +1,16 @@
-import * as CT from "../types.ts";
+import { TStatus } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
 import { Flags, UI } from "./mod.ts";
 
 /// TYPES ///
 
-type TInjectTitleRunOptions = CT.TRunOptions & Flags.TInjectTitleOptions;
-
-type TInjectTitleWriteOptions = TInjectTitleRunOptions;
+type TInjectTitleWriteOptions = Flags.TInjectTitleRunOptions;
 
 /// LOGIC ///
 
 export async function run(
-  options: TInjectTitleRunOptions,
-): Promise<CT.TRunResult> {
+  options: Flags.TInjectTitleRunOptions,
+): Flags.TInjectTitleRunResult {
   // Read all files while extending any found YAML frontmatter with a title.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -59,13 +57,13 @@ export async function run(
     endWorkMsg: `${fileQueue.length} files injected with a YAML title.`,
   }, fileQueue);
 
-  return Promise.resolve({ status: CT.TStatus.OK });
+  return Promise.resolve({ status: TStatus.OK });
 }
 
 /**
  * Extend the YAML object extracted from the file with a Markdown title found in the file contents.
  */
-function _yamlTransformation(options: $.TTransformationOptions): object {
+function _yamlTransformation(options: $.TTransformOptions): object {
   const rawContent = $.removeFrontmatter(options.fileContent);
   const newTitle = $.findTitle(rawContent);
   const foundNoTitle = newTitle.length <= 0;

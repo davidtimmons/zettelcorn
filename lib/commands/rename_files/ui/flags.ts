@@ -1,3 +1,4 @@
+import * as CT from "../../types.ts";
 import { CLITypes as T } from "../deps.ts";
 
 /// TYPES ///
@@ -6,6 +7,16 @@ export type TRenameFilesOptions = T.TCLIStandardOptions & {
   d?: boolean;
   dashed: boolean;
 };
+
+export type TRenameFilesRunOptions = CT.TRunOptions & TRenameFilesOptions & {
+  readonly pattern: string;
+};
+
+export type TRenameFilesRunResult = CT.TRunResult;
+
+export interface TRenameFilesRun {
+  (options: TRenameFilesRunOptions): TRenameFilesRunResult;
+}
 
 /// LOGIC ///
 

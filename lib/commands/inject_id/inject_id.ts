@@ -1,18 +1,16 @@
-import * as CT from "../types.ts";
+import { TStatus } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
 import { Flags, UI } from "./mod.ts";
 
 /// TYPES ///
 
-type TInjectIdRunOptions = CT.TRunOptions & Flags.TInjectIdOptions;
-
-type TInjectIdWriteOptions = TInjectIdRunOptions;
+type TInjectIdWriteOptions = Flags.TInjectIdRunOptions;
 
 /// LOGIC ///
 
 export async function run(
-  options: TInjectIdRunOptions,
-): Promise<CT.TRunResult> {
+  options: Flags.TInjectIdRunOptions,
+): Flags.TInjectIdRunResult {
   // Read all files while extending any found YAML frontmatter with an ID.
   let fileQueue: $.TReadResult[] = [];
   try {
@@ -59,7 +57,7 @@ export async function run(
     endWorkMsg: `${fileQueue.length} files injected with a YAML ID.`,
   }, fileQueue);
 
-  return Promise.resolve({ status: CT.TStatus.OK });
+  return Promise.resolve({ status: TStatus.OK });
 }
 
 /**
@@ -67,7 +65,7 @@ export async function run(
  */
 function _yamlTransformation(
   regex: RegExp,
-  options: $.TTransformationOptions,
+  options: $.TTransformOptions,
 ): object {
   const rawContent = $.removeFrontmatter(options.fileContent);
   const rawId = rawContent.match(regex)?.[0] ?? "";

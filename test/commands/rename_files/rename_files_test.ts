@@ -21,7 +21,9 @@ Deno.test("should rename a file", async () => {
     recursive: false,
     verbose: false,
   }, {
+    fileContent: "",
     fileName: "test.md",
+    meta: {},
     path: oldPath,
     yaml: {},
   });

@@ -160,14 +160,22 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 - YAML frontmatter will be injected into the file if it does not exist.
 - A "keywords" key will be added to the frontmatter if it does not exist.
 - Found topic tags will be injected into "keywords".
-- If "keywords" exists and already contains a list, topic tags are merged into the existing list.
+
+##### Default
+
+- If topic tags are found but "keywords" already exists, it will be overwritten.
+
+##### Merge Option
+
+- If "keywords" exists and already contains a list, topic tags will be merged into the existing list.
 - If "keywords" exists but is not a list, the script will fail.
 
 #### API
 
 - `path` - The directory to search for zettels
 - [options]:
-  - `-u, --heuristic` - Attempt to detect all lines dedicated to listing topic tags
+  - `-u, --heuristic` - Attempt to detect lines dedicated to listing topic tags
+  - `-g, --merge` - Merge found topic tags into frontmatter "keywords" instead of overwriting them
   - `-r, --recursive` - Run command on a directory and all its sub-directories
   - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
   - `-b, --verbose` - List all files where keywords were injected

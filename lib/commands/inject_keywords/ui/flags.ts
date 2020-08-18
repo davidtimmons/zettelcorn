@@ -1,3 +1,4 @@
+import * as CT from "../../types.ts";
 import { CLITypes as T } from "../deps.ts";
 
 /// TYPES ///
@@ -5,7 +6,17 @@ import { CLITypes as T } from "../deps.ts";
 export type TInjectKeywordsOptions = T.TCLIStandardOptions & {
   u?: boolean;
   heuristic: boolean;
+  g?: boolean;
+  merge: boolean;
 };
+
+export type TInjectKeywordsRunOptions = CT.TRunOptions & TInjectKeywordsOptions;
+
+export type TInjectKeywordsRunResult = CT.TRunResult;
+
+export interface TInjectKeywordsRun {
+  (options: TInjectKeywordsRunOptions): TInjectKeywordsRunResult;
+}
 
 /// LOGIC ///
 
@@ -23,7 +34,11 @@ export function addInjectKeywordsCommand(
     )
     .option(
       "-u, --heuristic",
-      "Attempt to detect all lines dedicated to listing topic tags",
+      "Attempt to detect lines dedicated to listing topic tags",
+    )
+    .option(
+      "-g, --merge",
+      'Merge found topic tags into frontmatter "keywords" instead of overwriting them',
     )
     .option(
       "-r, --recursive",
@@ -51,6 +66,7 @@ export function addInjectKeywordsCommand(
           heuristic: Boolean(options.heuristic),
           recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
+          merge: Boolean(options.merge),
           verbose: Boolean(options.verbose),
         });
       },

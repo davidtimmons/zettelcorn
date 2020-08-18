@@ -11,8 +11,8 @@ export interface TRunOptions {
   readonly requireMarkdown?: boolean;
   readonly requireMeta?: boolean;
   readonly requireYaml?: boolean;
-  readonly metaTransformation?: TTransformation;
-  readonly yamlTransformation?: TTransformationYAML;
+  readonly metaTransformation?: TTransform;
+  readonly yamlTransformation?: TTransformYAML;
 }
 
 export interface TReadResult {
@@ -23,7 +23,7 @@ export interface TReadResult {
   readonly yaml: { [key: string]: any };
 }
 
-export interface TTransformationOptions {
+export interface TTransformOptions {
   readonly extension: string;
   readonly fileContent: string;
   readonly isDirectory: boolean;
@@ -32,12 +32,12 @@ export interface TTransformationOptions {
   readonly fileYAML: { [key: string]: any };
 }
 
-interface TTransformation {
-  (options: TTransformationOptions): any;
+interface TTransform {
+  (options: TTransformOptions): any;
 }
 
-interface TTransformationYAML {
-  (options: TTransformationOptions): { [key: string]: any };
+interface TTransformYAML {
+  (options: TTransformOptions): { [key: string]: any };
 }
 
 /// LOGIC ///
@@ -50,9 +50,9 @@ export async function buildFileQueue(
   const walkDirectory: string = Deno.realPathSync(options.directory);
   const walkResults: TReadResult[] = [];
 
-  const metaTransformation: TTransformation = options.metaTransformation ||
+  const metaTransformation: TTransform = options.metaTransformation ||
     (() => null);
-  const yamlTransformation: TTransformationYAML = options.yamlTransformation ||
+  const yamlTransformation: TTransformYAML = options.yamlTransformation ||
     (({ fileYAML }) => fileYAML);
 
   for await (const entity of FS.walk(walkDirectory)) {
@@ -69,7 +69,7 @@ export async function buildFileQueue(
       const fileContent = await readTextFile(thisPath);
       const fileYAML = P$.parseFrontmatter(fileContent);
 
-      const transformationOptions: TTransformationOptions = {
+      const transformationOptions: TTransformOptions = {
         extension,
         fileContent,
         fileYAML,

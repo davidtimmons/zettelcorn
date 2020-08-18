@@ -8,7 +8,7 @@ export interface TCommandModule {
 }
 
 export interface TCommand {
-  (options: any): Promise<TRunResult>;
+  (options: any): TRunResult;
 }
 
 export interface TRunOptions {
@@ -16,6 +16,6 @@ export interface TRunOptions {
   readonly silent?: boolean;
 }
 
-export interface TRunResult {
+export type TRunResult = Promise<{
   readonly status: TStatus;
-}
+}>;

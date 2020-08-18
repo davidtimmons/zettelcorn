@@ -5,6 +5,7 @@ import { Colors, Utilities as $ } from "../deps.ts";
 interface TConfirmChangeOptions {
   fileName: string;
   keywords: string;
+  willMerge: boolean;
 }
 
 interface TNotifyUserOfExitOptions {
@@ -19,7 +20,7 @@ type TUserResponse = string;
 export async function confirmChange(
   options: TConfirmChangeOptions,
 ): Promise<TUserResponse> {
-  const message = [
+  const standardMsg = [
     "This is an example file:",
     Colors.cyan(options.fileName),
     "",
@@ -35,17 +36,34 @@ export async function confirmChange(
     Colors.yellow(
       '3. Found topic tags will be injected into "keywords".',
     ),
+  ];
+
+  const mergeMsg = [
     Colors.yellow(
-      '4. If "keywords" exists and already contains a list, topic tags are merged into the existing list.',
+      '4. If "keywords" exists and already contains a list, topic tags will be merged into the existing list.',
     ),
     Colors.yellow(
       '5. If "keywords" exists but is not a list, the script will fail.',
     ),
+  ];
+
+  const overwriteMsg = [
+    Colors.yellow(
+      '4. If topic tags are found but "keywords" already exists, it will be overwritten.',
+    ),
+  ];
+
+  const finalMsg = [
     "",
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,
   ];
 
-  return await $.sendToUser($.formatWithEOL(message));
+  const msg = standardMsg.concat(
+    options.willMerge ? mergeMsg : overwriteMsg,
+    finalMsg,
+  );
+
+  return await $.sendToUser($.formatWithEOL(msg));
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {

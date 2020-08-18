@@ -1,3 +1,4 @@
+import * as CT from "../../types.ts";
 import { CLITypes as T } from "../deps.ts";
 
 /// TYPES ///
@@ -6,6 +7,14 @@ export type TInjectIdOptions = T.TCLIStandardOptions & {
   x?: RegExp;
   regex: RegExp;
 };
+
+export type TInjectIdRunOptions = CT.TRunOptions & TInjectIdOptions;
+
+export type TInjectIdRunResult = CT.TRunResult;
+
+export interface TInjectIdRun {
+  (options: TInjectIdRunOptions): TInjectIdRunResult;
+}
 
 /// LOGIC ///
 

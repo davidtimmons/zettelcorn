@@ -1,8 +1,17 @@
+import * as CT from "../../types.ts";
 import { CLITypes as T } from "../deps.ts";
 
 /// TYPES ///
 
 export type TInjectTitleOptions = T.TCLIStandardOptions;
+
+export type TInjectTitleRunOptions = CT.TRunOptions & TInjectTitleOptions;
+
+export type TInjectTitleRunResult = CT.TRunResult;
+
+export interface TInjectTitleRun {
+  (options: TInjectTitleRunOptions): TInjectTitleRunResult;
+}
 
 /// LOGIC ///
 
