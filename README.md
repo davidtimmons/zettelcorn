@@ -111,6 +111,7 @@ Inject the detected ID into an "id" key inside the YAML frontmatter.
 - `path` - The directory to search for zettels
 - [options]:
   - `-x, --regex [pattern]` - Detect the ID using a regular expression (default: `\d{14}`)
+  - `-s, --skip` - Skip files that contain an "id" frontmatter key
   - `-r, --recursive` - Run command on a directory and all its sub-directories
   - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
   - `-b, --verbose` - List all files where IDs were injected
@@ -176,6 +177,7 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 - [options]:
   - `-u, --heuristic` - Attempt to detect lines dedicated to listing topic tags
   - `-g, --merge` - Merge found topic tags into frontmatter "keywords" instead of overwriting them
+  - `-s, --skip` - Skip files that contain a "keywords" frontmatter key
   - `-r, --recursive` - Run command on a directory and all its sub-directories
   - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
   - `-b, --verbose` - List all files where keywords were injected
@@ -277,6 +279,7 @@ Inject the detected title into a "title" key inside the YAML frontmatter.
 
 - `path` - The directory to search for zettels
 - [options]:
+  - `-s, --skip` - Skip files that contain a "title" frontmatter key
   - `-r, --recursive` - Run command on a directory and all its sub-directories
   - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
   - `-b, --verbose` - List all files where titles were injected

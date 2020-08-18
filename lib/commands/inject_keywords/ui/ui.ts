@@ -6,6 +6,7 @@ interface TConfirmChangeOptions {
   fileName: string;
   keywords: string;
   willMerge: boolean;
+  willSkip: boolean;
 }
 
 interface TNotifyUserOfExitOptions {
@@ -53,6 +54,13 @@ export async function confirmChange(
     ),
   ];
 
+  const skipMsg = [
+    "",
+    Colors.red(
+      'If topic tags are found but "keywords" already exists, that file will be skipped.',
+    ),
+  ];
+
   const finalMsg = [
     "",
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,
@@ -60,6 +68,7 @@ export async function confirmChange(
 
   const msg = standardMsg.concat(
     options.willMerge ? mergeMsg : overwriteMsg,
+    options.willSkip ? skipMsg : [],
     finalMsg,
   );
 

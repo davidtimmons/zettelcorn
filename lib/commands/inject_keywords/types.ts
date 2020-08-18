@@ -6,6 +6,8 @@ export type TInjectKeywordsOptions = CLITypes.TCLIStandardOptions & {
   heuristic: boolean;
   g?: boolean;
   merge: boolean;
+  s?: boolean;
+  skip: boolean;
 };
 
 export type TInjectKeywordsRunOptions = CT.TRunOptions & TInjectKeywordsOptions;

@@ -21,6 +21,10 @@ export function addInjectIdCommand(
       },
     )
     .option(
+      "-s, --skip",
+      'Skip files that contain an "id" frontmatter key',
+    )
+    .option(
       "-r, --recursive",
       "Run command on a directory and all its sub-directories",
     )
@@ -44,6 +48,7 @@ export function addInjectIdCommand(
         await injectId({
           directory: path,
           regex: new RegExp(options.regex),
+          skip: Boolean(options.skip),
           recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
           verbose: Boolean(options.verbose),

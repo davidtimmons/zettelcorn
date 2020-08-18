@@ -40,6 +40,7 @@ export async function run(
     fileName: firstExample?.fileName || "",
     keywords: firstExample?.yaml.keywords.join(", ") || "",
     willMerge: options.merge,
+    willSkip: options.skip,
   });
 
   // Process user response.
@@ -63,11 +64,15 @@ function _yamlTransformation(
   menuOptions: Types.TInjectKeywordsRunOptions,
   transformOptions: $.TTransformOptions,
 ): object {
+  const hasEmptyKeywordsKey = $.isEmpty(transformOptions.fileYAML.keywords);
+  if (menuOptions.skip && !hasEmptyKeywordsKey) {
+    return transformOptions.fileYAML;
+  }
+
   const rawContent = $.removeFrontmatter(transformOptions.fileContent);
   const newKeywords = $.findKeywords(menuOptions.heuristic, rawContent);
   const foundNoKeywords = newKeywords.length <= 0;
   const hasNoKeywordsKey = !("keywords" in transformOptions.fileYAML);
-  const hasEmptyKeywordsKey = $.isEmpty(transformOptions.fileYAML.keywords);
 
   let keywords = newKeywords;
   if (foundNoKeywords && hasNoKeywordsKey) {

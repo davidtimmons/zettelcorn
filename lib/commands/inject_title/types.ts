@@ -1,7 +1,10 @@
 import * as CT from "../types.ts";
 import { CLITypes } from "./deps.ts";
 
-export type TInjectTitleOptions = CLITypes.TCLIStandardOptions;
+export type TInjectTitleOptions = CLITypes.TCLIStandardOptions & {
+  s?: boolean;
+  skip: boolean;
+};
 
 export type TInjectTitleRunOptions = CT.TRunOptions & TInjectTitleOptions;
 

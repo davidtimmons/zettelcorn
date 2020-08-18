@@ -22,6 +22,10 @@ export function addInjectKeywordsCommand(
       'Merge found topic tags into frontmatter "keywords" instead of overwriting them',
     )
     .option(
+      "-s, --skip",
+      'Skip files that contain a "keywords" frontmatter key',
+    )
+    .option(
       "-r, --recursive",
       "Run command on a directory and all its sub-directories",
     )
@@ -45,6 +49,7 @@ export function addInjectKeywordsCommand(
         await injectKeywords({
           directory: path,
           heuristic: Boolean(options.heuristic),
+          skip: Boolean(options.skip),
           recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
           merge: Boolean(options.merge),

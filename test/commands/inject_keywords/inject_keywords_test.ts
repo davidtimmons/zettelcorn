@@ -7,63 +7,75 @@ import {
 import * as InjectKeywords from "../../../lib/commands/inject_keywords/inject_keywords.ts";
 const { _yamlTransformation } = InjectKeywords.__private__;
 
-Deno.test("should add keywords to a YAML object", () => {
-  // setup
-  const menuOptions = {
-    directory: "",
-    heuristic: false,
-    markdown: false,
-    merge: false,
-    recursive: false,
-    verbose: false,
-  };
-  const transformOptions = {
-    extension: "",
-    fileContent: "",
-    fileYAML: {},
-    isDirectory: false,
-    name: "",
-    path: "",
-  };
+const MENU_OPTIONS = Object.freeze({
+  directory: "",
+  heuristic: false,
+  markdown: false,
+  merge: false,
+  skip: false,
+  recursive: false,
+  verbose: false,
+});
 
-  // test
-  const actual01 = _yamlTransformation(menuOptions, { ...transformOptions });
+const TRANSFORM_OPTIONS = Object.freeze({
+  extension: "",
+  fileContent: "",
+  fileYAML: Object.freeze({}),
+  isDirectory: false,
+  name: "",
+  path: "",
+});
+
+Deno.test("should inject topic tags into a YAML object", () => {
+  const actual01 = _yamlTransformation(MENU_OPTIONS, { ...TRANSFORM_OPTIONS });
   assertEquals(actual01, { keywords: [] });
 
-  const actual02 = _yamlTransformation(menuOptions, {
-    ...transformOptions,
+  const actual02 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
     fileContent: "#hello #world",
     fileYAML: { keywords: ["hello", "world"] },
   });
   assertEquals(actual02, { keywords: ["hello", "world"] });
 
-  const actual03 = _yamlTransformation(menuOptions, {
-    ...transformOptions,
+  const actual03 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
     fileContent: "#hello #world",
     fileYAML: { keywords: ["foo"] },
   });
   assertEquals(actual03, { keywords: ["hello", "world"] });
 
-  const actual04 = _yamlTransformation({
-    ...menuOptions,
-    merge: true,
-  }, {
-    ...transformOptions,
-    fileContent: "#hello #world",
-    fileYAML: { keywords: ["foo"] },
-  });
-  assertEquals(actual04, { keywords: ["hello", "world", "foo"] });
-
   const shouldThrow = () =>
     _yamlTransformation({
-      ...menuOptions,
+      ...MENU_OPTIONS,
       merge: true,
     }, {
-      ...transformOptions,
+      ...TRANSFORM_OPTIONS,
       fileContent: "#hi",
       fileYAML: { keywords: 42 },
     });
   assertThrows(shouldThrow);
+});
+
+Deno.test("should handle menu options when injecting topic tags", () => {
+  const actual01 = _yamlTransformation({
+    ...MENU_OPTIONS,
+    skip: true,
+  }, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "#hello #world",
+    fileYAML: { keywords: ["foo"] },
+  });
+  assertEquals(actual01, { keywords: ["foo"] }, "skip");
+
+  const actual02 = _yamlTransformation({
+    ...MENU_OPTIONS,
+    merge: true,
+  }, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "#hello #world",
+    fileYAML: { keywords: ["foo"] },
+  });
+  assertEquals(actual02, { keywords: ["hello", "world", "foo"] }, "merge");
 });
 
 Deno.test("should find all keywords and inject them into files", async () => {
@@ -82,13 +94,10 @@ Deno.test("should find all keywords and inject them into files", async () => {
 
   // modify files
   await InjectKeywords.run({
+    ...MENU_OPTIONS,
     directory: basePath,
-    heuristic: false,
     merge: true,
-    markdown: false,
-    recursive: false,
     silent: true,
-    verbose: false,
   });
 
   const test01NewContent = Deno.readTextFileSync(test01Path);

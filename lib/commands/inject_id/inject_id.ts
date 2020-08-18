@@ -12,7 +12,7 @@ export async function run(
       ...options,
       getFileContent: true,
       requireMarkdown: options.markdown,
-      yamlTransformation: _yamlTransformation.bind(null, options.regex),
+      yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
     UI.notifyUserOfExit({ error: err });
@@ -39,6 +39,7 @@ export async function run(
   const userResponse = options.silent ? "Y" : await UI.confirmChange({
     fileName: firstExample?.fileName || "",
     id: firstExample?.yaml.id.toString(),
+    willSkip: options.skip,
   });
 
   // Process user response.
@@ -58,25 +59,28 @@ export async function run(
  * Extend the YAML object extracted from the file with an ID found in the file contents.
  */
 function _yamlTransformation(
-  regex: RegExp,
-  options: $.TTransformOptions,
+  menuOptions: Types.TInjectIdRunOptions,
+  transformOptions: $.TTransformOptions,
 ): object {
-  const rawContent = $.removeFrontmatter(options.fileContent);
-  const rawId = rawContent.match(regex)?.[0] ?? "";
-  const newId = parseInt(rawId) || rawId;
+  const hasEmptyIdKey = $.isEmpty(transformOptions.fileYAML.id);
+  if (menuOptions.skip && !hasEmptyIdKey) {
+    return transformOptions.fileYAML;
+  }
 
+  const rawContent = $.removeFrontmatter(transformOptions.fileContent);
+  const rawId = rawContent.match(menuOptions.regex)?.[0] ?? "";
+  const newId = parseInt(rawId) || rawId;
   const foundNoId = $.isEmpty(newId);
-  const hasNoIdKey = $.isEmpty(options.fileYAML.id);
 
   let id: string | number | null = newId;
-  if (foundNoId && hasNoIdKey) {
+  if (foundNoId && hasEmptyIdKey) {
     id = null;
   } else if (foundNoId) {
-    id = options.fileYAML.id;
+    id = transformOptions.fileYAML.id;
   }
 
   return {
-    ...options.fileYAML,
+    ...transformOptions.fileYAML,
     id,
   };
 }

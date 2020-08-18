@@ -2,52 +2,66 @@ import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
 import { InjectId } from "../../../lib/commands/inject_id/mod.ts";
 const { _yamlTransformation } = InjectId.__private__;
 
-Deno.test("should add an ID to a YAML object", () => {
-  const filler = {
-    extension: "",
+const MENU_OPTIONS = Object.freeze({
+  directory: "",
+  regex: /\d{14}/,
+  skip: false,
+  markdown: false,
+  merge: false,
+  recursive: false,
+  verbose: false,
+});
+
+const TRANSFORM_OPTIONS = Object.freeze({
+  extension: "",
+  fileContent: "",
+  fileYAML: Object.freeze({}),
+  isDirectory: false,
+  name: "",
+  path: "",
+});
+
+Deno.test("should inject an ID into a YAML object", () => {
+  const actual01 = _yamlTransformation(MENU_OPTIONS, { ...TRANSFORM_OPTIONS });
+  assertEquals(actual01, { id: null });
+
+  const actual02 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "12345678987654",
+  });
+  assertEquals(actual02, { id: 12345678987654 });
+
+  const actual03 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "12345678987654",
+    fileYAML: { id: 123 },
+  });
+  assertEquals(actual03, { id: 12345678987654 });
+
+  const actual04 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
     fileContent: "",
-    fileYAML: {},
-    isDirectory: false,
-    name: "",
-    path: "",
-  };
-  const re = /\d{14}/;
+    fileYAML: { id: 123 },
+  });
+  assertEquals(actual04, { id: 123 });
 
-  assertEquals(_yamlTransformation(re, { ...filler }), { id: null });
+  const actual05 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "---\r\nid: 12345678987654\r\n---\r\n98765432123456",
+  });
+  assertEquals(actual05, { id: 98765432123456 });
+});
 
-  assertEquals(
-    _yamlTransformation(re, {
-      ...filler,
-      fileContent: "12345678987654",
-    }),
-    { id: 12345678987654 },
-  );
-
-  assertEquals(
-    _yamlTransformation(re, {
-      ...filler,
-      fileContent: "12345678987654",
-      fileYAML: { id: 123 },
-    }),
-    { id: 12345678987654 },
-  );
-
-  assertEquals(
-    _yamlTransformation(re, {
-      ...filler,
-      fileContent: "",
-      fileYAML: { id: 123 },
-    }),
-    { id: 123 },
-  );
-
-  assertEquals(
-    _yamlTransformation(re, {
-      ...filler,
-      fileContent: "---\r\nid: 12345678987654\r\n---\r\n98765432123456",
-    }),
-    { id: 98765432123456 },
-  );
+Deno.test("should handle menu options when injecting an ID", () => {
+  const actual = _yamlTransformation({
+    ...MENU_OPTIONS,
+    skip: true,
+  }, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "12345678987654",
+    fileYAML: { id: 123 },
+  });
+  assertEquals(actual, { id: 123 }, "skip: true");
 });
 
 Deno.test("should inject IDs into all files", async () => {
@@ -70,12 +84,9 @@ Deno.test("should inject IDs into all files", async () => {
 
   // modify files
   await InjectId.run({
+    ...MENU_OPTIONS,
     directory: basePath,
-    regex: /\d{14}/,
-    markdown: false,
-    recursive: false,
     silent: true,
-    verbose: false,
   });
 
   const test01NewContent = Deno.readTextFileSync(test01Path);

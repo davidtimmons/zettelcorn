@@ -12,7 +12,7 @@ export async function run(
       ...options,
       getFileContent: true,
       requireMarkdown: options.markdown,
-      yamlTransformation: _yamlTransformation,
+      yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
     UI.notifyUserOfExit({ error: err });
@@ -39,6 +39,7 @@ export async function run(
   const userResponse = options.silent ? "Y" : await UI.confirmChange({
     fileName: firstExample?.fileName || "",
     title: firstExample?.yaml.title || "",
+    willSkip: options.skip,
   });
 
   // Process user response.
@@ -57,21 +58,28 @@ export async function run(
 /**
  * Extend the YAML object extracted from the file with a Markdown title found in the file contents.
  */
-function _yamlTransformation(options: $.TTransformOptions): object {
-  const rawContent = $.removeFrontmatter(options.fileContent);
+function _yamlTransformation(
+  menuOptions: Types.TInjectTitleRunOptions,
+  transformOptions: $.TTransformOptions,
+): object {
+  const hasEmptyTitleKey = $.isEmpty(transformOptions.fileYAML.title);
+  if (menuOptions.skip && !hasEmptyTitleKey) {
+    return transformOptions.fileYAML;
+  }
+
+  const rawContent = $.removeFrontmatter(transformOptions.fileContent);
   const newTitle = $.findTitle(rawContent);
   const foundNoTitle = newTitle.length <= 0;
-  const hasNoTitleKey = $.isEmpty(options.fileYAML.title);
 
   let title = newTitle;
-  if (foundNoTitle && hasNoTitleKey) {
+  if (foundNoTitle && hasEmptyTitleKey) {
     title = "";
   } else if (foundNoTitle) {
-    title = options.fileYAML.title;
+    title = transformOptions.fileYAML.title;
   }
 
   return {
-    ...options.fileYAML,
+    ...transformOptions.fileYAML,
     title,
   };
 }

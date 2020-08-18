@@ -2,43 +2,59 @@ import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
 import { InjectTitle } from "../../../lib/commands/inject_title/mod.ts";
 const { _yamlTransformation } = InjectTitle.__private__;
 
-Deno.test("should add a title to a YAML object", () => {
-  const filler = {
-    extension: "",
-    fileContent: "",
-    fileYAML: {},
-    isDirectory: false,
-    name: "",
-    path: "",
-  };
+const MENU_OPTIONS = Object.freeze({
+  directory: "",
+  skip: false,
+  markdown: false,
+  merge: false,
+  recursive: false,
+  verbose: false,
+});
 
-  assertEquals(_yamlTransformation({ ...filler }), { title: "" });
+const TRANSFORM_OPTIONS = Object.freeze({
+  extension: "",
+  fileContent: "",
+  fileYAML: Object.freeze({}),
+  isDirectory: false,
+  name: "",
+  path: "",
+});
 
-  assertEquals(
-    _yamlTransformation({
-      ...filler,
-      fileContent: "# Hello World",
-    }),
-    { title: "Hello World" },
-  );
+Deno.test("should inject a title into a YAML object", () => {
+  const actual01 = _yamlTransformation(MENU_OPTIONS, { ...TRANSFORM_OPTIONS });
+  assertEquals(actual01, { title: "" });
 
-  assertEquals(
-    _yamlTransformation({
-      ...filler,
-      fileContent: "Hello World",
-      fileYAML: { title: "Foo Bar Baz" },
-    }),
-    { title: "Foo Bar Baz" },
-  );
+  const actual02 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "# Hello World",
+  });
+  assertEquals(actual02, { title: "Hello World" });
 
-  assertEquals(
-    _yamlTransformation({
-      ...filler,
-      fileContent: "# Hello World",
-      fileYAML: { title: "Foo Bar Baz" },
-    }),
-    { title: "Hello World" },
-  );
+  const actual03 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "Hello World",
+    fileYAML: { title: "Foo Bar Baz" },
+  });
+  assertEquals(actual03, { title: "Foo Bar Baz" });
+
+  const actual04 = _yamlTransformation(MENU_OPTIONS, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "# Hello World",
+    fileYAML: { title: "Foo Bar Baz" },
+  });
+  assertEquals(actual04, { title: "Hello World" });
+});
+
+Deno.test("should handle menu options when injecting a title", () => {
+  const actual = _yamlTransformation({
+    ...MENU_OPTIONS,
+    skip: true,
+  }, {
+    ...TRANSFORM_OPTIONS,
+    fileContent: "# Hello World",
+    fileYAML: { title: "Foo Bar Baz" },
+  });
+  assertEquals(actual, { title: "Foo Bar Baz" }, "skip: true");
 });
 
 Deno.test("should inject titles into all files", async () => {
@@ -57,11 +73,9 @@ Deno.test("should inject titles into all files", async () => {
 
   // modify files
   await InjectTitle.run({
+    ...MENU_OPTIONS,
     directory: basePath,
-    markdown: false,
-    recursive: false,
     silent: true,
-    verbose: false,
   });
 
   const test01NewContent = Deno.readTextFileSync(test01Path);

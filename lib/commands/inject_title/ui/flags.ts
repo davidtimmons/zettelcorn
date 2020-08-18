@@ -14,6 +14,10 @@ export function addInjectTitleCommand(
       'Inject the detected title into a "title" key inside the YAML frontmatter',
     )
     .option(
+      "-s, --skip",
+      'Skip files that contain a "title" frontmatter key',
+    )
+    .option(
       "-r, --recursive",
       "Run command on a directory and all its sub-directories",
     )
@@ -34,6 +38,7 @@ export function addInjectTitleCommand(
       ): Promise<void> => {
         await injectTitle({
           directory: path,
+          skip: Boolean(options.skip),
           recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
           verbose: Boolean(options.verbose),

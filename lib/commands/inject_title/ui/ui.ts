@@ -5,6 +5,7 @@ import { Colors, Utilities as $ } from "../deps.ts";
 interface TConfirmChangeOptions {
   fileName: string;
   title: string;
+  willSkip: boolean;
 }
 
 interface TNotifyUserOfExitOptions {
@@ -19,7 +20,7 @@ type TUserResponse = string;
 export async function confirmChange(
   options: TConfirmChangeOptions,
 ): Promise<TUserResponse> {
-  const message = [
+  const standardMsg = [
     "This is an example file:",
     Colors.cyan(options.fileName),
     "",
@@ -38,11 +39,26 @@ export async function confirmChange(
     Colors.yellow(
       '4. If a title is found but one already exists in "title", it will be overwritten.',
     ),
+  ];
+
+  const skipMsg = [
+    "",
+    Colors.red(
+      'If a title is found but "title" already exists, that file will be skipped.',
+    ),
+  ];
+
+  const finalMsg = [
     "",
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,
   ];
 
-  return await $.sendToUser($.formatWithEOL(message));
+  const msg = standardMsg.concat(
+    options.willSkip ? skipMsg : [],
+    finalMsg,
+  );
+
+  return await $.sendToUser($.formatWithEOL(msg));
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
