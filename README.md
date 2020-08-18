@@ -83,15 +83,72 @@ your files before using it. The only undo is the one you provide!
 ## [🠕](#-table-of-contents) Documentation
 
 1. [`zettelcorn`](#-zettelcorn)
-2. [`inject.keywords`](#-injectkeywords-options-path)
-2. [`inject.title`](#-injecttitle-options-path)
-3. [`rename.files`](#-renamefiles-options-path-pattern)
+1. [`inject.id`](#-injectid-options-path)
+1. [`inject.keywords`](#-injectkeywords-options-path)
+1. [`inject.title`](#-injecttitle-options-path)
+1. [`rename.files`](#-renamefiles-options-path-pattern)
 
 ### [🠔](#-documentation) `zettelcorn`
 
 _Alias:_ `zettelcorn -h`, `zettelcorn --help`
 
 Display the help menu.
+
+### [🠔](#-documentation) `inject.id [options] <path>`
+
+Inject the detected ID into an "id" key inside the YAML frontmatter.
+
+#### Notes
+
+- The script attempts to detect the zettel ID using a regular expression. The default approach is to search for the first number with 14 digits, for example `12345698765432`.
+- YAML frontmatter will be injected into the file if it does not exist.
+- An "id" key will be added to the frontmatter if it does not exist.
+- If an ID is found it will be injected into "id".
+- If an ID is found but one already exists in "id", it will be overwritten.
+
+#### API
+
+- `path` - The directory to search for zettels
+- [options]:
+  - `-x, --regex [pattern]` - Detect the ID using a regular expression (default: `\d{14}`)
+  - `-r, --recursive` - Run command on a directory and all its sub-directories
+  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
+  - `-b, --verbose` - List all files where IDs were injected
+  - `-h, --help` - Display the help message for this command
+
+#### Example
+
+Suppose you have this zettel saved in your Zettelkasten.
+
+```text
+my-zettel.md
+```
+
+```text
+# 12345698765432 Alien debuted in 1979 with a multi-million USD budget
+
+The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
+In 2020, that same amount would be worth roughly $39,000,000 USD.
+```
+
+Running `inject.id` with the following command would inject frontmatter and the found ID
+into it for all zettels saved in and under that directory.
+
+```bash
+$> zettelcorn inject.id -rb ./my-directory
+```
+
+The example zettel would now look like this.
+
+```text
+---
+id: 12345698765432
+---
+# 12345698765432 Alien debuted in 1979 with a multi-million USD budget
+
+The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
+In 2020, that same amount would be worth roughly $39,000,000 USD.
+```
 
 ### [🠔](#-documentation) `inject.keywords [options] <path>`
 

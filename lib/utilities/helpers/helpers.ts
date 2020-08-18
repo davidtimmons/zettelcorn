@@ -75,6 +75,9 @@ export function isEmpty(maybeEmpty: unknown): boolean {
   const isEmptyString = maybeEmpty === "";
   if (isEmptyString) return true;
 
+  const isEmptyNumber = typeof maybeEmpty === "number" && isNaN(maybeEmpty);
+  if (isEmptyNumber) return true;
+
   const isEmptyArray = Array.isArray(maybeEmpty) && maybeEmpty.length <= 0;
   if (isEmptyArray) return true;
 

@@ -43,9 +43,9 @@ export function findHeuristicTags(fileContent: string): string[] {
 }
 
 /**
- * Strip topic tags down to only the keyword text.
+ * Remove topic tags down to only the keyword text.
  */
-export function stripTagDelimiters(tags: string[], delimiter = "#"): string[] {
+export function removeTagDelimiters(tags: string[], delimiter = "#"): string[] {
   return tags.map((tag) => {
     const startStrip = tag.lastIndexOf(delimiter);
     return tag.substring(startStrip + 1);
@@ -60,5 +60,5 @@ export function findKeywords(
   fileContent: string,
 ): string[] {
   const getTags = useHeuristic ? findHeuristicTags : findAllTags;
-  return stripTagDelimiters(getTags(fileContent));
+  return removeTagDelimiters(getTags(fileContent));
 }

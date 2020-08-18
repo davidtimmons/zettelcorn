@@ -1,5 +1,5 @@
 import { assert, Path } from "../../deps.ts";
-import * as RenameFiles from "../../../lib/commands/rename_files/rename_files.ts";
+import { RenameFiles } from "../../../lib/commands/rename_files/mod.ts";
 const { _write } = RenameFiles.__private__;
 
 Deno.test("should rename a file", async () => {

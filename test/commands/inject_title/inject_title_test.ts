@@ -1,5 +1,5 @@
 import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
-import * as InjectTitle from "../../../lib/commands/inject_title/inject_title.ts";
+import { InjectTitle } from "../../../lib/commands/inject_title/mod.ts";
 const { _yamlTransformation } = InjectTitle.__private__;
 
 Deno.test("should add a title to a YAML object", () => {

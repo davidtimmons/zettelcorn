@@ -27,10 +27,10 @@ Deno.test("should find the H1 Markdown title in a document", () => {
 });
 
 Deno.test("should strip the title delimiter", () => {
-  assertEquals(T$.stripTitleDelimiter(""), "");
-  assertEquals(T$.stripTitleDelimiter("#"), "");
-  assertEquals(T$.stripTitleDelimiter("# Hello World"), "Hello World");
-  assertEquals(T$.stripTitleDelimiter("   # HI!!   "), "HI!!");
+  assertEquals(T$.removeTitleDelimiter(""), "");
+  assertEquals(T$.removeTitleDelimiter("#"), "");
+  assertEquals(T$.removeTitleDelimiter("# Hello World"), "Hello World");
+  assertEquals(T$.removeTitleDelimiter("   # HI!!   "), "HI!!");
 });
 
 Deno.test("should get the formatted document title", () => {

@@ -70,38 +70,14 @@ export async function run(
   const changeRejected = userResponse.match(/[yY]/) === null;
   if (changeRejected) Deno.exit();
 
-  await _renameFiles({ ...options, applyPattern }, fileQueue);
+  await $.writeQueuedFiles(_write, {
+    ...options,
+    applyPattern,
+    startWorkMsg: `Renamed files:`,
+    endWorkMsg: `${fileQueue.length} files renamed.`,
+  }, fileQueue);
 
   return { status: CT.TStatus.OK };
-}
-
-async function _renameFiles(
-  options: TRenameFilesWriteOptions,
-  fileQueue: TRenameFilesReadResult[],
-): Promise<void> {
-  if (options.verbose) {
-    $.log("Renamed files:", {
-      padTop: true,
-      padBottom: false,
-      style: $.TUIStyles.BOLD,
-    });
-  }
-
-  // Resolve all writes first so UI success message does not appear early.
-  const promises = fileQueue.map((file) => {
-    return _write(options, file);
-  });
-
-  await Promise
-    .all(promises)
-    .then(() => {
-      if (options.silent) return;
-      $.log(`${fileQueue.length} files renamed.`, {
-        padTop: true,
-        padBottom: true,
-        style: $.TUIStyles.BOLD,
-      });
-    });
 }
 
 async function _write(
@@ -120,7 +96,6 @@ async function _write(
 }
 
 export const __private__ = {
-  _renameFiles,
   _write,
 };
 

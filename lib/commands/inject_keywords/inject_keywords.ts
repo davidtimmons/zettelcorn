@@ -20,8 +20,6 @@ export async function run(
       ...options,
       getFileContent: true,
       requireMarkdown: options.markdown,
-      requireMeta: true,
-      metaTransformation: _metaTransformation.bind(null, options.heuristic),
       yamlTransformation: _yamlTransformation.bind(null, options.heuristic),
     });
   } catch (err) {
@@ -55,23 +53,13 @@ export async function run(
   const changeRejected = userResponse.match(/[yY]/) === null;
   if (changeRejected) Deno.exit();
 
-  await _injectKeywords(options, fileQueue);
+  await $.writeQueuedFiles(_write, {
+    ...options,
+    startWorkMsg: `Injected files:`,
+    endWorkMsg: `${fileQueue.length} files injected with YAML keywords.`,
+  }, fileQueue);
 
   return Promise.resolve({ status: CT.TStatus.OK });
-}
-
-/**
- * Use one of two different approaches to detect topic tags in a document. Either look for
- * rows that appear to be dedicated to listing topic tags, or simply find everything in a
- * document that appears to be a topic tag.
- */
-function _metaTransformation(
-  useHeuristic: boolean,
-  options: $.TTransformationOptions,
-): string[] {
-  return useHeuristic
-    ? $.findHeuristicTags(options.fileContent)
-    : $.findAllTags(options.fileContent);
 }
 
 /**
@@ -82,7 +70,8 @@ function _yamlTransformation(
   useHeuristic: boolean,
   options: $.TTransformationOptions,
 ): object {
-  const newKeywords = $.findKeywords(useHeuristic, options.fileContent);
+  const rawContent = $.removeFrontmatter(options.fileContent);
+  const newKeywords = $.findKeywords(useHeuristic, rawContent);
   const foundNoKeywords = newKeywords.length <= 0;
   const hasNoKeywordsKey = $.isEmpty(options.fileYAML.keywords);
 
@@ -118,35 +107,6 @@ function _yamlTransformation(
   }
 }
 
-async function _injectKeywords(
-  options: TInjectKeywordsWriteOptions,
-  fileQueue: $.TReadResult[],
-): Promise<void> {
-  if (options.verbose) {
-    $.log("Injected files:", {
-      padTop: true,
-      padBottom: false,
-      style: $.TUIStyles.BOLD,
-    });
-  }
-
-  // Resolve all writes first so UI success message does not appear early.
-  const promises = fileQueue.map((file) => {
-    return _write(options, file);
-  });
-
-  await Promise
-    .all(promises)
-    .then(() => {
-      if (options.silent) return;
-      $.log(`${fileQueue.length} files injected with YAML keywords.`, {
-        padTop: true,
-        padBottom: true,
-        style: $.TUIStyles.BOLD,
-      });
-    });
-}
-
 async function _write(
   options: TInjectKeywordsWriteOptions,
   file: $.TReadResult,
@@ -160,8 +120,7 @@ async function _write(
 }
 
 export const __private__ = {
-  _injectKeywords,
-  _metaTransformation,
+  _write,
   _yamlTransformation,
 };
 

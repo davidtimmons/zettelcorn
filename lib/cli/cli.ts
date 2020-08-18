@@ -1,5 +1,6 @@
 import {
   CAC,
+  InjectIdFlags,
   InjectKeywordsFlags,
   InjectTitleFlags,
   RenameFilesFlags,
@@ -9,6 +10,7 @@ import * as T from "./types.ts";
 export function init(options: T.TCLIInit): void {
   const flags: T.TCLIFlags = CAC(options.appName);
 
+  InjectIdFlags.addInjectIdCommand(options, flags);
   InjectKeywordsFlags.addInjectKeywordsCommand(options, flags);
   InjectTitleFlags.addInjectTitleCommand(options, flags);
   RenameFilesFlags.addRenameFilesCommand(options, flags);

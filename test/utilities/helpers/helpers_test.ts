@@ -93,6 +93,7 @@ Deno.test("should check if the argument is empty", () => {
     [null, true, "null"],
     [undefined, true, "undefined"],
     ["", true, "empty string"],
+    [NaN, true, "NaN"],
     [[], true, "empty array"],
     [{}, true, "empty object"],
     ["peach", false, "string is not empty"],

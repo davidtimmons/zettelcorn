@@ -5,31 +5,7 @@ import {
   Utilities as $,
 } from "../../deps.ts";
 import * as InjectKeywords from "../../../lib/commands/inject_keywords/inject_keywords.ts";
-const { _metaTransformation, _yamlTransformation } = InjectKeywords.__private__;
-
-Deno.test("should find topic tags in a document", () => {
-  // setup
-  const document = $.formatWithEOL([
-    "#topic #tag #row",
-    "Hello world!",
-    "Another #thing down here.",
-  ]);
-  const options: $.TTransformationOptions = {
-    extension: "",
-    fileContent: document,
-    fileYAML: {},
-    isDirectory: false,
-    name: "",
-    path: "",
-  };
-
-  // test
-  assertEquals(_metaTransformation(true, options), ["#topic", "#tag", "#row"]);
-  assertEquals(
-    _metaTransformation(false, options),
-    ["#topic", "#tag", "#row", "#thing"],
-  );
-});
+const { _yamlTransformation } = InjectKeywords.__private__;
 
 Deno.test("should add keywords to a YAML object", () => {
   const yt = _yamlTransformation.bind(null, false);
@@ -67,7 +43,7 @@ Deno.test("should add keywords to a YAML object", () => {
   );
 });
 
-Deno.test("should inject keywords into all files", async () => {
+Deno.test("should find all keywords and inject them into files", async () => {
   // setup
   const basePath = "./test/test_data/injecting/keywords";
   const test01Path = Deno.realPathSync(Path.join(basePath, "test01.md"));
@@ -100,5 +76,8 @@ Deno.test("should inject keywords into all files", async () => {
   const test01NewYAML = $.parseFrontmatter(test01NewContent);
   const test02NewYAML = $.parseFrontmatter(test02NewContent);
   assertEquals(test01NewYAML.keywords, ["hello", "world", "foo"]);
-  assertEquals(test02NewYAML.keywords, ["hello", "world"]);
+  assertEquals(
+    test02NewYAML.keywords,
+    ["hello", "world", "another", "thing", "down", "here"],
+  );
 });

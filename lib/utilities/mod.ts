@@ -1,5 +1,5 @@
-export * from "./file_system/file_system.ts";
-export * as FileSystemUtilities from "./file_system/file_system.ts";
+export * from "./file_system/mod.ts";
+export * as FileSystemUtilities from "./file_system/mod.ts";
 
 export * from "./helpers/helpers.ts";
 export * as HelpersUtilities from "./helpers/helpers.ts";

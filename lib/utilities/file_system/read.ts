@@ -1,6 +1,5 @@
 import { FS, Path } from "../deps.ts";
-import * as H$ from "../helpers/helpers.ts";
-import * as Y$ from "../parsers/yaml_frontmatter.ts";
+import { HelpersUtilities as H$, ParsersUtilities as P$ } from "../mod.ts";
 
 /// TYPES ///
 
@@ -67,8 +66,8 @@ export async function buildFileQueue(
     const inStartingDirectory = walkDirectory === Path.dirname(thisPath);
 
     if (options.recursive || inStartingDirectory) {
-      const fileContent = await read(thisPath);
-      const fileYAML = Y$.parseFrontmatter(fileContent);
+      const fileContent = await readTextFile(thisPath);
+      const fileYAML = P$.parseFrontmatter(fileContent);
 
       const transformationOptions: TTransformationOptions = {
         extension,
@@ -103,7 +102,7 @@ export async function buildFileQueue(
   return walkResults;
 }
 
-export async function read(path: string): Promise<string> {
+export async function readTextFile(path: string): Promise<string> {
   if (path.length === 0) return "";
   const contents = await Deno.readTextFile(path);
   return contents;

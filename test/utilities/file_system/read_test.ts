@@ -1,11 +1,11 @@
 import { assert, assertEquals, assertStringContains } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test("should read a text file at a path", async () => {
-  let actual = await FS$.read("test/test_data/filtering/test.md");
+Deno.test("should readTextFile a text file at a path", async () => {
+  let actual = await FS$.readTextFile("test/test_data/filtering/test.md");
   assertStringContains(actual, "This is a markdown file");
 
-  actual = await FS$.read("");
+  actual = await FS$.readTextFile("");
   assertStringContains(actual, "");
 });
 

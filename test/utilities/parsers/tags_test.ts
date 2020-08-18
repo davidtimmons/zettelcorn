@@ -38,7 +38,7 @@ Deno.test("should find all tags", () => {
 
 Deno.test("should strip tag delimiters", () => {
   const tagsRaw = T$.findAllTags("#hello ##world #foo-bar_baz05 # something");
-  const tags = T$.stripTagDelimiters(tagsRaw);
+  const tags = T$.removeTagDelimiters(tagsRaw);
   assertEquals(tags.length, 3);
   assertEquals(tags, ["hello", "world", "foo-bar_baz05"]);
 });

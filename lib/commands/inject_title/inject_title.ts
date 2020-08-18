@@ -53,7 +53,11 @@ export async function run(
   const changeRejected = userResponse.match(/[yY]/) === null;
   if (changeRejected) Deno.exit();
 
-  await _injectTitle(options, fileQueue);
+  await $.writeQueuedFiles(_write, {
+    ...options,
+    startWorkMsg: `Injected files:`,
+    endWorkMsg: `${fileQueue.length} files injected with a YAML title.`,
+  }, fileQueue);
 
   return Promise.resolve({ status: CT.TStatus.OK });
 }
@@ -62,7 +66,8 @@ export async function run(
  * Extend the YAML object extracted from the file with a Markdown title found in the file contents.
  */
 function _yamlTransformation(options: $.TTransformationOptions): object {
-  const newTitle = $.findTitle(options.fileContent);
+  const rawContent = $.removeFrontmatter(options.fileContent);
+  const newTitle = $.findTitle(rawContent);
   const foundNoTitle = newTitle.length <= 0;
   const hasNoTitleKey = $.isEmpty(options.fileYAML.title);
 
@@ -79,35 +84,6 @@ function _yamlTransformation(options: $.TTransformationOptions): object {
   };
 }
 
-async function _injectTitle(
-  options: TInjectTitleWriteOptions,
-  fileQueue: $.TReadResult[],
-): Promise<void> {
-  if (options.verbose) {
-    $.log("Injected files:", {
-      padTop: true,
-      padBottom: false,
-      style: $.TUIStyles.BOLD,
-    });
-  }
-
-  // Resolve all writes first so UI success message does not appear early.
-  const promises = fileQueue.map((file) => {
-    return _write(options, file);
-  });
-
-  await Promise
-    .all(promises)
-    .then(() => {
-      if (options.silent) return;
-      $.log(`${fileQueue.length} files injected with a YAML title.`, {
-        padTop: true,
-        padBottom: true,
-        style: $.TUIStyles.BOLD,
-      });
-    });
-}
-
 async function _write(
   options: TInjectTitleWriteOptions,
   file: $.TReadResult,
@@ -121,7 +97,7 @@ async function _write(
 }
 
 export const __private__ = {
-  _injectTitle,
+  _write,
   _yamlTransformation,
 };
 

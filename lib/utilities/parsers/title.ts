@@ -10,9 +10,9 @@ export function findH1Title(fileContent: string): string {
 }
 
 /**
- * Strip titles down to only the text.
+ * Remove the Markdown title delimiter from a string.
  */
-export function stripTitleDelimiter(title: string): string {
+export function removeTitleDelimiter(title: string): string {
   const startStrip = title.indexOf("#");
   return title.substring(startStrip + 1).trim();
 }
@@ -21,5 +21,5 @@ export function stripTitleDelimiter(title: string): string {
  * Get and format what appears to be the title in a Markdown document.
  */
 export function findTitle(fileContent: string): string {
-  return stripTitleDelimiter(findH1Title(fileContent));
+  return removeTitleDelimiter(findH1Title(fileContent));
 }
