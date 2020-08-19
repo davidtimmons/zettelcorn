@@ -29,10 +29,10 @@ export function addRenameFilesCommand(
       "-b, --verbose",
       "List all paths that changed along with each new value",
     )
-    .example("rename.files -r ./zettelkasten {id}-{title}.md")
-    .example("rename.files --recursive ./zettelkasten {id}-{title}.md")
-    .example("rename.files -rd ./zettelkasten {id}-{title}.md")
-    .example("rename.files --recursive --dashed ./zettelkasten {id}-{title}.md")
+    .example('rename.files -r ./zettelkasten "{id}-{title}.md"')
+    .example('rename.files --recursive ./zettelkasten "{id}-{title}.md"')
+    .example('rename.files -rd ./zettelkasten "{id}-{title}.md"')
+    .example('rename.files --recursive --dashed ./zettelkasten "{id}-{title}.md"')
     .action(
       async (
         path: string,

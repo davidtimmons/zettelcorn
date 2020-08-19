@@ -72,7 +72,7 @@ async function _write(
   // Overwrites files on path collision rather than failing.
   await Deno.rename(oldPath, newPath);
 
-  if (options.verbose) $.notifyUserOfChange(oldPath, newPath);
+  if (options.verbose) $.notifyUserOfChange(oldPath, newName);
 }
 
 export const __private__ = {

@@ -364,7 +364,7 @@ Running `rename.files` with the following command would change the file name for
 saved in and under that directory.
 
 ```bash
-$> zettelcorn rename.files -drb ./my-directory Movies-{id}-{title}-{keywords}.md
+$> zettelcorn rename.files -drb ./my-directory "Movies-{id}-{title}-{keywords}.md"
 ```
 
 The example zettel would get a new name.
