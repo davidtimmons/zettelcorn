@@ -192,10 +192,10 @@ my-zettel.md
 ```
 
 ```text
-#Alien #movie #budget ##1979
+##1979 #Alien #movie #budget
 
 The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
-In 2020, that same amount would be worth roughly $39,000,000 USD.
+In #2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
 Running `inject.keywords` with the following command would inject frontmatter and found topic tags
@@ -214,11 +214,12 @@ keywords:
   - Alien
   - movie
   - budget
+  - 2020
 ---
 ##1979 #Alien #movie #budget
 
 The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
-In 2020, that same amount would be worth roughly $39,000,000 USD.
+In #2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
 #### Example (Using the Heuristic Option)

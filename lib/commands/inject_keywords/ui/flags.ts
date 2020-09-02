@@ -1,3 +1,10 @@
+/**
+ * Provides menu descriptions for this command to the CLI interface.
+ * @protected
+ * @module commands/inject_keywords/ui/flags
+ * @see module:commands/inject_keywords/mod
+ */
+
 import { CLITypes } from "../deps.ts";
 import { Types } from "../mod.ts";
 

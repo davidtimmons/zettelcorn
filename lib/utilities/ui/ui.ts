@@ -1,3 +1,11 @@
+/**
+ * Utilities for working with the user interface.
+ * @protected
+ * @module utilities/ui/ui
+ * @see module:utilities/ui/mod
+ * @see module:utilities/mod
+ */
+
 import { Colors, FS, IO } from "../deps.ts";
 
 /// TYPES ///

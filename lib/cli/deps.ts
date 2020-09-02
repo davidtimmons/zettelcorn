@@ -1,3 +1,10 @@
+/**
+ * External dependencies for the CLI module. All code in this module that needs an
+ * external dependency will reference this file.
+ * @protected
+ * @module cli/deps
+ */
+
 // @deno-types="https://unpkg.com/cac@6.6.1/mod.d.ts"
 export { cac as CAC } from "https://unpkg.com/cac@6.6.1/mod.js";
 

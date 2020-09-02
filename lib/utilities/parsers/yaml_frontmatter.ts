@@ -1,3 +1,11 @@
+/**
+ * Utilities for detecting and interpreting YAML frontmatter found within text data.
+ * @protected
+ * @module utilities/parsers/yaml_frontmatter
+ * @see module:utilities/parsers/mod
+ * @see module:utilities/mod
+ */
+
 import { FS, JSYAML } from "../deps.ts";
 import * as UI$ from "../ui/ui.ts";
 

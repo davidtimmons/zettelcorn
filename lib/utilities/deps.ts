@@ -1,3 +1,10 @@
+/**
+ * External dependencies for the utilities module. All code in this module that needs an
+ * external dependency will reference this file.
+ * @protected
+ * @module utilities/deps
+ */
+
 export * as Colors from "https://deno.land/std@0.65.0/fmt/colors.ts";
 export * as FS from "https://deno.land/std@0.65.0/fs/mod.ts";
 export * as IO from "https://deno.land/std@0.65.0/io/mod.ts";

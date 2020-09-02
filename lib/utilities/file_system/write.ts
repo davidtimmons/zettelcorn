@@ -1,3 +1,11 @@
+/**
+ * Utilities for writing data to the file system.
+ * @protected
+ * @module utilities/file_system/write
+ * @see module:utilities/file_system/mod
+ * @see module:utilities/mod
+ */
+
 import { UIUtilities as UI$ } from "../mod.ts";
 import { TReadResult } from "./read.ts";
 

@@ -1,10 +1,17 @@
+/**
+ * Communicates the status of this command to the user.
+ * @protected
+ * @module commands/inject_title/ui/status
+ * @see module:commands/inject_title/mod
+ */
+
 import { Colors, Utilities as $ } from "../deps.ts";
 
 /// TYPES ///
 
 interface TConfirmChangeOptions {
   fileName: string;
-  id: string;
+  title: string;
   willSkip: boolean;
 }
 
@@ -24,27 +31,27 @@ export async function confirmChange(
     "This is an example file:",
     Colors.cyan(options.fileName),
     "",
-    "Here is the ID found within its text:",
-    Colors.cyan(options.id),
+    "Here is the title found within its text:",
+    Colors.cyan(options.title),
     "",
     Colors.yellow(
       "1. YAML frontmatter will be injected into the file if it does not exist.",
     ),
     Colors.yellow(
-      '2. An "id" key will be added to the frontmatter if it does not exist.',
+      '2. A "title" key will be added to the frontmatter if it does not exist.',
     ),
     Colors.yellow(
-      '3. If an ID is found it will be injected into "id".',
+      '3. If a title is found it will be injected into "title".',
     ),
     Colors.yellow(
-      '4. If an ID is found but one already exists in "id", it will be overwritten.',
+      '4. If a title is found but one already exists in "title", it will be overwritten.',
     ),
   ];
 
   const skipMsg = [
     "",
     Colors.red(
-      'If an ID is found but "id" already exists, that file will be skipped.',
+      'If a title is found but "title" already exists, that file will be skipped.',
     ),
   ];
 
@@ -69,7 +76,7 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
       Colors.bold("This is the directory you entered:"),
       Colors.cyan(options.directory),
       "",
-      "None of the files within this directory contained a matching ID. No files were changed.",
+      "None of the files within this directory contained a Markdown title. No files were changed.",
     ];
   } else if (options.error) {
     message = [

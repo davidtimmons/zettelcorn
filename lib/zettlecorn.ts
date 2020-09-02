@@ -1,3 +1,8 @@
+/**
+ * Zettelcorn CLI entry point that exposes all public commands to the user.
+ * @module zettelcorn
+ */
+
 import Env from "../env.ts";
 import { CLI } from "./cli/mod.ts";
 import Commands from "./commands/mod.ts";

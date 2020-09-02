@@ -1,6 +1,14 @@
+/**
+ * Inject the detected title into a "title" key inside the YAML frontmatter.
+ * @protected
+ * @implements {ICommandModule}
+ * @module commands/inject_title/inject_title
+ * @see module:commands/inject_title/mod
+ */
+
 import { TStatus } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
-import { Types, UI } from "./mod.ts";
+import { Status, Types } from "./mod.ts";
 
 export async function run(
   options: Types.TInjectTitleRunOptions,
@@ -15,7 +23,7 @@ export async function run(
       yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
-    UI.notifyUserOfExit({ error: err });
+    Status.notifyUserOfExit({ error: err });
     throw err;
   }
 
@@ -32,11 +40,11 @@ export async function run(
   // Confirm change before injecting titles into files.
   const noTitleFound = $.isEmpty(firstExample);
   if (noTitleFound) {
-    UI.notifyUserOfExit({ directory: options.directory });
+    Status.notifyUserOfExit({ directory: options.directory });
     Deno.exit();
   }
 
-  const userResponse = options.silent ? "Y" : await UI.confirmChange({
+  const userResponse = options.silent ? "Y" : await Status.confirmChange({
     fileName: firstExample?.fileName || "",
     title: firstExample?.yaml.title || "",
     willSkip: options.skip,

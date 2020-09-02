@@ -1,3 +1,10 @@
+/**
+ * Communicates the status of this command to the user.
+ * @protected
+ * @module commands/rename_files/ui/status
+ * @see module:commands/rename_files/mod
+ */
+
 import { Colors, Utilities as $ } from "../deps.ts";
 
 /// TYPES ///

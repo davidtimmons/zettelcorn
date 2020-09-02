@@ -1,3 +1,12 @@
+/**
+ * Creates the CLI menu displayed to the user. Each command provides its own menu description.
+ * @protected
+ * @module cli/cli
+ * @see module:cli/mod
+ * @see module:zettelcorn
+ * @see {@link https://github.com/cacjs/cac|Command And Conquer}
+ */
+
 import {
   CAC,
   InjectIdFlags,

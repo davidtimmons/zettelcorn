@@ -1,6 +1,14 @@
+/**
+ * Rename files containing YAML frontmatter.
+ * @protected
+ * @implements {ICommandModule}
+ * @module commands/rename_files/rename_files
+ * @see module:commands/rename_files/mod
+ */
+
 import { TStatus } from "../types.ts";
 import { Path, Utilities as $ } from "./deps.ts";
-import { Types, UI } from "./mod.ts";
+import { Status, Types } from "./mod.ts";
 
 export async function run(
   options: Types.TRenameFilesRunOptions,
@@ -8,7 +16,7 @@ export async function run(
   // The rename files feature is intended to work with YAML frontmatter.
   const hasToken = $.hasTokenExp(options.pattern);
   if (!hasToken) {
-    UI.notifyUserOfExit({ pattern: options.pattern });
+    Status.notifyUserOfExit({ pattern: options.pattern });
     Deno.exit();
   }
 
@@ -22,14 +30,14 @@ export async function run(
       yamlTransformation: ({ fileYAML }) => $.proxyPrintOnAccess(fileYAML),
     });
   } catch (err) {
-    UI.notifyUserOfExit({ error: err });
+    Status.notifyUserOfExit({ error: err });
     throw err;
   }
 
   // Confirm change before renaming all files.
   const noFrontmatterFound = $.isEmpty(fileQueue);
   if (noFrontmatterFound) {
-    UI.notifyUserOfExit({ directory: options.directory });
+    Status.notifyUserOfExit({ directory: options.directory });
     Deno.exit();
   }
 
@@ -40,7 +48,7 @@ export async function run(
 
   const firstExample = fileQueue[0];
   const previewFileName = applyPattern(firstExample.yaml || {});
-  const userResponse = options.silent ? "Y" : await UI.confirmChange({
+  const userResponse = options.silent ? "Y" : await Status.confirmChange({
     newFileName: previewFileName,
     oldFileName: firstExample.fileName,
     pattern: options.pattern,

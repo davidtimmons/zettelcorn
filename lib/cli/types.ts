@@ -1,3 +1,10 @@
+/**
+ * Types for the CLI module.
+ * @protected
+ * @module cli/types
+ * @see module:cli/mod
+ */
+
 import {
   InjectIdTypes,
   InjectKeywordsTypes,

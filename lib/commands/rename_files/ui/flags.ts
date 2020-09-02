@@ -1,3 +1,10 @@
+/**
+ * Provides menu descriptions for this command to the CLI interface.
+ * @protected
+ * @module commands/rename_files/ui/flags
+ * @see module:commands/rename_files/mod
+ */
+
 import { CLITypes } from "../deps.ts";
 import { Types } from "../mod.ts";
 
@@ -32,7 +39,9 @@ export function addRenameFilesCommand(
     .example('rename.files -r ./zettelkasten "{id}-{title}.md"')
     .example('rename.files --recursive ./zettelkasten "{id}-{title}.md"')
     .example('rename.files -rd ./zettelkasten "{id}-{title}.md"')
-    .example('rename.files --recursive --dashed ./zettelkasten "{id}-{title}.md"')
+    .example(
+      'rename.files --recursive --dashed ./zettelkasten "{id}-{title}.md"',
+    )
     .action(
       async (
         path: string,

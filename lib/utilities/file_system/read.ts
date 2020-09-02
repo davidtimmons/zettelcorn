@@ -1,3 +1,11 @@
+/**
+ * Utilities for reading and transforming data from the file system.
+ * @protected
+ * @module utilities/file_system/read
+ * @see module:utilities/file_system/mod
+ * @see module:utilities/mod
+ */
+
 import { FS, Path } from "../deps.ts";
 import { HelpersUtilities as H$, ParsersUtilities as P$ } from "../mod.ts";
 
