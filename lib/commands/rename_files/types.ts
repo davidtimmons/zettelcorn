@@ -9,7 +9,6 @@ import * as CT from "../types.ts";
 import { CLITypes } from "./deps.ts";
 
 export type TRenameFilesOptions = CLITypes.TCLIStandardOptions & {
-  d?: boolean;
   dashed: boolean;
 };
 

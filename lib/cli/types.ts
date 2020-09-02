@@ -24,10 +24,7 @@ export interface TCLIInit {
 }
 
 export interface TCLIStandardOptions {
-  r?: boolean;
   recursive: boolean;
-  m?: boolean;
   markdown: boolean;
-  b?: boolean;
   verbose: boolean;
 }

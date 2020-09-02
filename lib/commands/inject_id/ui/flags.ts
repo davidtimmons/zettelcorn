@@ -21,31 +21,29 @@ export function addInjectIdCommand(
       'Inject the detected ID into an "id" key inside the YAML frontmatter',
     )
     .option(
-      "-x, --regex [pattern]",
+      "--regex [pattern]",
       "Detect the ID using a regular expression",
       {
         default: String.raw`\d{14}`,
       },
     )
     .option(
-      "-s, --skip",
+      "--skip",
       'Skip files that contain an "id" frontmatter key',
     )
     .option(
-      "-r, --recursive",
+      "--recursive",
       "Run command on a directory and all its sub-directories",
     )
     .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
+      "--verbose",
       "List all files where IDs were injected",
     )
-    .example(String.raw`inject.id -x "\d{14}" ./zettelkasten`)
-    .example(String.raw`inject.id -regex "\d{14}" ./zettelkasten`)
-    .example(String.raw`inject.id -r -x "\d{14}" ./zettelkasten`)
+    .example(String.raw`inject.id --regex "\d{14}" ./zettelkasten`)
     .example(String.raw`inject.id --recursive --regex "\d{14}" ./zettelkasten`)
     .action(
       async (

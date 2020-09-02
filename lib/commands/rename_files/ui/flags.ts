@@ -21,24 +21,22 @@ export function addRenameFilesCommand(
       "Rename files containing YAML frontmatter",
     )
     .option(
-      "-d, --dashed",
+      "--dashed",
       "Substitute dashes for spaces in the file name",
     )
     .option(
-      "-r, --recursive",
+      "--recursive",
       "Run command on a directory and all its sub-directories",
     )
     .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
+      "--verbose",
       "List all paths that changed along with each new value",
     )
-    .example('rename.files -r ./zettelkasten "{id}-{title}.md"')
     .example('rename.files --recursive ./zettelkasten "{id}-{title}.md"')
-    .example('rename.files -rd ./zettelkasten "{id}-{title}.md"')
     .example(
       'rename.files --recursive --dashed ./zettelkasten "{id}-{title}.md"',
     )

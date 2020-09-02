@@ -9,9 +9,7 @@ import * as CT from "../types.ts";
 import { CLITypes } from "./deps.ts";
 
 export type TInjectIdOptions = CLITypes.TCLIStandardOptions & {
-  x?: RegExp;
   regex: RegExp;
-  s?: boolean;
   skip: boolean;
 };
 

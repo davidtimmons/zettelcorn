@@ -21,32 +21,30 @@ export function addInjectKeywordsCommand(
       'Inject topic tags into a "keywords" list inside the YAML frontmatter',
     )
     .option(
-      "-u, --heuristic",
+      "--heuristic",
       "Attempt to detect lines dedicated to listing topic tags",
     )
     .option(
-      "-g, --merge",
+      "--merge",
       'Merge found topic tags into frontmatter "keywords" instead of overwriting them',
     )
     .option(
-      "-s, --skip",
+      "--skip",
       'Skip files that contain a "keywords" frontmatter key',
     )
     .option(
-      "-r, --recursive",
+      "--recursive",
       "Run command on a directory and all its sub-directories",
     )
     .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
+      "--verbose",
       "List all files where keywords were injected",
     )
-    .example("inject.keywords -r ./zettelkasten")
     .example("inject.keywords --recursive ./zettelkasten")
-    .example("inject.keywords -urb ./zettelkasten")
     .example("inject.keywords --heuristic --recursive --verbose ./zettelkasten")
     .action(
       async (

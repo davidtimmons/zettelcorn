@@ -21,22 +21,21 @@ export function addInjectTitleCommand(
       'Inject the detected title into a "title" key inside the YAML frontmatter',
     )
     .option(
-      "-s, --skip",
+      "--skip",
       'Skip files that contain a "title" frontmatter key',
     )
     .option(
-      "-r, --recursive",
+      "--recursive",
       "Run command on a directory and all its sub-directories",
     )
     .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
+      "--verbose",
       "List all files where titles were injected",
     )
-    .example("inject.title -r ./zettelkasten")
     .example("inject.title --recursive ./zettelkasten")
     .action(
       async (

@@ -75,7 +75,7 @@ Finally, run `zettelcorn` from a PowerShell prompt.
 $> zettelcorn
 ```
 
-### Precaution
+### Caution
 
 Zettelcorn modifies files in your Zettelkasten. While Zettelcorn is well-tested, be sure to back up
 your files before using it. The only undo is the one you provide!
@@ -110,11 +110,11 @@ Inject the detected ID into an "id" key inside the YAML frontmatter.
 
 - `path` - The directory to search for zettels
 - [options]:
-  - `-x, --regex [pattern]` - Detect the ID using a regular expression (default: `\d{14}`)
-  - `-s, --skip` - Skip files that contain an "id" frontmatter key
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all files where IDs were injected
+  - `--regex [pattern]` - Detect the ID using a regular expression (default: `\d{14}`)
+  - `--skip` - Skip files that contain an "id" frontmatter key
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--verbose` - List all files where IDs were injected
   - `-h, --help` - Display the help message for this command
 
 #### Example
@@ -175,12 +175,12 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 
 - `path` - The directory to search for zettels
 - [options]:
-  - `-u, --heuristic` - Attempt to detect lines dedicated to listing topic tags
-  - `-g, --merge` - Merge found topic tags into frontmatter "keywords" instead of overwriting them
-  - `-s, --skip` - Skip files that contain a "keywords" frontmatter key
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all files where keywords were injected
+  - `--heuristic` - Attempt to detect lines dedicated to listing topic tags
+  - `--merge` - Merge found topic tags into frontmatter "keywords" instead of overwriting them
+  - `--skip` - Skip files that contain a "keywords" frontmatter key
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--verbose` - List all files where keywords were injected
   - `-h, --help` - Display the help message for this command
 
 #### Example
@@ -280,10 +280,10 @@ Inject the detected title into a "title" key inside the YAML frontmatter.
 
 - `path` - The directory to search for zettels
 - [options]:
-  - `-s, --skip` - Skip files that contain a "title" frontmatter key
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all files where titles were injected
+  - `--skip` - Skip files that contain a "title" frontmatter key
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--verbose` - List all files where titles were injected
   - `-h, --help` - Display the help message for this command
 
 #### Example
@@ -334,10 +334,10 @@ Rename files containing YAML frontmatter.
 - `path` - The directory to search for zettels
 - `pattern` - The pattern to use when renaming files
 - [options]:
-  - `-d, --dashed` - Substitute dashes for spaces in the file name
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all paths that changed along with each new value
+  - `--dashed` - Substitute dashes for spaces in the file name
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--verbose` - List all paths that changed along with each new value
   - `-h, --help` - Display the help message for this command
 
 #### Example

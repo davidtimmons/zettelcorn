@@ -9,11 +9,8 @@ import * as CT from "../types.ts";
 import { CLITypes } from "./deps.ts";
 
 export type TInjectKeywordsOptions = CLITypes.TCLIStandardOptions & {
-  u?: boolean;
   heuristic: boolean;
-  g?: boolean;
   merge: boolean;
-  s?: boolean;
   skip: boolean;
 };
 
