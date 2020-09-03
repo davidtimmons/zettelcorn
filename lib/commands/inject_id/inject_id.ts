@@ -6,7 +6,7 @@
  * @see module:commands/inject_id/mod
  */
 
-import { TStatus } from "../types.ts";
+import { TExitCodes, TStatusCodes } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
 import { Status, Types } from "./mod.ts";
 
@@ -23,7 +23,11 @@ export async function run(
       yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
-    Status.notifyUserOfExit({ ...options, error: err });
+    Status.notifyUserOfExit({
+      ...options,
+      error: err,
+      exitCode: TExitCodes.UNKNOWN_ERROR,
+    });
     throw err;
   }
 
@@ -37,7 +41,7 @@ export async function run(
     endWorkMsg: `${fileQueue.length} files injected with a YAML ID.`,
   }, fileQueue);
 
-  return Promise.resolve({ status: TStatus.OK });
+  return Promise.resolve({ status: TStatusCodes.OK });
 }
 
 /**
@@ -85,9 +89,12 @@ async function _notifyUser(
   });
 
   // Confirm change before injecting titles into files.
-  const noIdFound = $.isEmpty(firstExample);
-  if (noIdFound) {
-    Status.notifyUserOfExit(options);
+  const noIdMatched = $.isEmpty(firstExample);
+  if (noIdMatched) {
+    Status.notifyUserOfExit({
+      ...options,
+      exitCode: TExitCodes.UNMATCHED_PATTERN,
+    });
     Deno.exit();
   }
 

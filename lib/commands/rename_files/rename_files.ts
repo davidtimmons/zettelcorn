@@ -6,7 +6,7 @@
  * @see module:commands/rename_files/mod
  */
 
-import { TStatus } from "../types.ts";
+import { TExitCodes, TStatusCodes } from "../types.ts";
 import { Path, Utilities as $ } from "./deps.ts";
 import { Status, Types } from "./mod.ts";
 
@@ -16,7 +16,10 @@ export async function run(
   // The rename files feature is intended to work with YAML frontmatter.
   const hasToken = $.hasTokenExp(options.pattern);
   if (!hasToken) {
-    Status.notifyUserOfExit(options);
+    Status.notifyUserOfExit({
+      ...options,
+      exitCode: TExitCodes.INVALID_PATTERN,
+    });
     Deno.exit();
   }
 
@@ -30,7 +33,11 @@ export async function run(
       yamlTransformation: ({ fileYAML }) => $.proxyPrintOnAccess(fileYAML),
     });
   } catch (err) {
-    Status.notifyUserOfExit({ ...options, error: err });
+    Status.notifyUserOfExit({
+      ...options,
+      error: err,
+      exitCode: TExitCodes.UNKNOWN_ERROR,
+    });
     throw err;
   }
 
@@ -51,7 +58,7 @@ export async function run(
     endWorkMsg: `${fileQueue.length} files renamed.`,
   }, fileQueue);
 
-  return { status: TStatus.OK };
+  return { status: TStatusCodes.OK };
 }
 
 async function _notifyUser(
@@ -67,7 +74,10 @@ async function _notifyUser(
   // Confirm change before renaming all files.
   const noFrontmatterFound = $.isEmpty(firstExample);
   if (noFrontmatterFound) {
-    Status.notifyUserOfExit(options);
+    Status.notifyUserOfExit({
+      ...options,
+      exitCode: TExitCodes.NO_FRONTMATTER_FOUND,
+    });
     Deno.exit();
   }
 

@@ -5,6 +5,7 @@
  * @see module:commands/rename_files/mod
  */
 
+import { TExitCodes } from "../../types.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
 import { TRenameFilesRunOptions } from "../types.ts";
 
@@ -18,6 +19,7 @@ interface TConfirmChangeOptions {
 
 interface TNotifyUserOfExitOptions extends TRenameFilesRunOptions {
   error?: Error;
+  exitCode: TExitCodes;
 }
 
 type TUserResponse = string;
@@ -47,27 +49,40 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
   if (options.silent) return;
   let message: any[] = [];
 
-  if (options.directory) {
-    message = [
-      Colors.bold("This is the directory you entered:"),
-      Colors.cyan(options.directory),
-      "",
-      "None of the files within this directory contained YAML frontmatter. No files were changed.",
-    ];
-  } else if (options.pattern) {
-    message = [
-      Colors.bold("This is the pattern you entered:"),
-      Colors.cyan(options.pattern),
-      "",
-      "A valid pattern must include a token, e.g. {title}, from the YAML frontmatter. No files were changed.",
-    ];
-  } else if (options.error) {
-    message = [
-      "There was an unexpected error when attempting to rename the files.",
-      "",
-      "No files were changed.",
-      "",
-    ];
+  switch (options.exitCode) {
+    case TExitCodes.INVALID_PATTERN:
+      message = [
+        Colors.red(
+          "A valid pattern must include a token, e.g. {title}, from the YAML frontmatter.",
+        ),
+        "This is the pattern you entered: " + Colors.yellow(options.pattern),
+        "No files were changed.",
+      ];
+      break;
+
+    case TExitCodes.NO_FRONTMATTER_FOUND:
+      message = [
+        Colors.red("No files in this directory contain YAML frontmatter."),
+        "This is the directory you entered: " +
+        Colors.yellow(options.directory),
+        "No files were changed.",
+      ];
+      break;
+
+    case TExitCodes.UNKNOWN_ERROR:
+    default:
+      message = [
+        Colors.red(
+          "There was an unexpected error when attempting to rename the files.",
+        ),
+      ];
+      if (options.error) {
+        message.push(
+          "This is the error: " + Colors.yellow(options.error.message),
+        );
+      }
+      message.push("No files were changed.");
+      break;
   }
 
   $.formatWithEOL(message, true);

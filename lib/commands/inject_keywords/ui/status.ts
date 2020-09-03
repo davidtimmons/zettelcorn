@@ -5,6 +5,7 @@
  * @see module:commands/inject_keywords/mod
  */
 
+import { TExitCodes } from "../../types.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
 import { TInjectKeywordsRunOptions } from "../types.ts";
 
@@ -19,6 +20,7 @@ interface TConfirmChangeOptions {
 
 interface TNotifyUserOfExitOptions extends TInjectKeywordsRunOptions {
   error?: Error;
+  exitCode: TExitCodes;
 }
 
 type TUserResponse = string;
@@ -86,20 +88,30 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
   if (options.silent) return;
   let message: any[] = [];
 
-  if (options.directory) {
-    message = [
-      Colors.bold("This is the directory you entered:"),
-      Colors.cyan(options.directory),
-      "",
-      "None of the files within this directory contained topic tags. No files were changed.",
-    ];
-  } else if (options.error) {
-    message = [
-      "There was an unexpected error when attempting to inject the files.",
-      "",
-      "No files were changed.",
-      "",
-    ];
+  switch (options.exitCode) {
+    case TExitCodes.NO_TAGS_FOUND:
+      message = [
+        Colors.red("No files in this directory contained topic tags."),
+        "This is the directory you entered: " +
+        Colors.yellow(options.directory),
+        "No files were changed.",
+      ];
+      break;
+
+    case TExitCodes.UNKNOWN_ERROR:
+      default:
+        message = [
+          Colors.red(
+            "There was an unexpected error when attempting to inject keywords into file frontmatter.",
+          ),
+        ];
+        if (options.error) {
+          message.push(
+            "This is the error: " + Colors.yellow(options.error.message),
+          );
+        }
+        message.push("No files were changed.");
+        break;
   }
 
   $.formatWithEOL(message, true);

@@ -1,19 +1,29 @@
-import { assert, unimplemented, Utilities as $ } from "../../../deps.ts";
+import { assert, unimplemented, Commands } from "../../../deps.ts";
 import { Status } from "../../../../lib/commands/rename_files/mod.ts";
+const TExitCodes = Commands.Types.TExitCodes;
 
+const CONSOLE_LOG = console.log;
 const MENU_OPTIONS = Object.freeze({
   dashed: false,
-  directory: "",
+  directory: "/test/test_data",
   markdown: false,
   pattern: "",
   recursive: false,
-  silent: true,
+  silent: false,
   skip: false,
   verbose: false,
 });
 
+function runAfter() {
+  console.log = CONSOLE_LOG;
+}
+
+Deno.test(
+  { name: "suite :: COMMANDS/RENAME_FILES/UI/STATUS", ignore: true, fn() {} },
+);
+
 Deno.test({
-  name: "should confirm the file rename with the user",
+  name: "confirmChange(), should confirm file rename with the user",
   ignore: true,
   async fn() {
     // TODO: Research best way to simulate input to stdin.
@@ -26,23 +36,58 @@ Deno.test({
   },
 });
 
-Deno.test("should notify the user when exiting", () => {
-  // setup
-  const originalConsoleLog = console.log;
-
-  // test
+Deno.test("notifyUserOfExit(), should notify when pattern is invalid", () => {
   console.log = (...args: any[]): void => {
     const message: string = args[0];
-    assert(message.length > 0);
-    assert(message.indexOf("No files were changed.") > 0);
+    assert(message.indexOf("valid pattern must include") >= 0);
   };
 
   Status.notifyUserOfExit({
     ...MENU_OPTIONS,
-    directory: "/test",
-    silent: false,
+    exitCode: TExitCodes.INVALID_PATTERN,
   });
 
-  // cleanup
-  console.log = originalConsoleLog;
+  runAfter();
+});
+
+Deno.test("notifyUserOfExit(), should notify when frontmatter not found", () => {
+  console.log = (...args: any[]): void => {
+    const message: string = args[0];
+    assert(message.indexOf("contain YAML frontmatter") >= 0);
+  };
+
+  Status.notifyUserOfExit({
+    ...MENU_OPTIONS,
+    exitCode: TExitCodes.NO_FRONTMATTER_FOUND,
+  });
+
+  runAfter();
+});
+
+Deno.test("notifyUserOfExit(), should notify when exiting unexpectedly", () => {
+  console.log = (...args: any[]): void => {
+    const message: string = args[0];
+    assert(message.indexOf("unexpected error") >= 0);
+    assert(message.indexOf("This is the error") === -1);
+  };
+
+  Status.notifyUserOfExit({
+    ...MENU_OPTIONS,
+    exitCode: TExitCodes.UNKNOWN_ERROR,
+  });
+
+  console.log = (...args: any[]): void => {
+    const message: string = args[0];
+    assert(message.indexOf("unexpected error") >= 0);
+    assert(message.indexOf("This is the error") >= 0);
+    assert(message.indexOf("Hello Error") >= 0);
+  };
+
+  Status.notifyUserOfExit({
+    ...MENU_OPTIONS,
+    exitCode: TExitCodes.UNKNOWN_ERROR,
+    error: new Error("Hello Error"),
+  });
+
+  runAfter();
 });

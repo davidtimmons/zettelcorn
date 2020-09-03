@@ -5,9 +5,19 @@
  * @see module:commands/mod
  */
 
-export enum TStatus {
+export enum TStatusCodes {
   OK,
   ERROR,
+}
+
+export enum TExitCodes {
+  INVALID_PATTERN,
+  NO_DIRECTORY_FOUND,
+  NO_FRONTMATTER_FOUND,
+  NO_TAGS_FOUND,
+  NO_TITLE_FOUND,
+  UNKNOWN_ERROR,
+  UNMATCHED_PATTERN,
 }
 
 export interface TCommandModule {
@@ -21,5 +31,5 @@ export interface TCommand {
 export interface TRunOptions {}
 
 export type TRunResult = Promise<{
-  readonly status: TStatus;
+  readonly status: TStatusCodes;
 }>;

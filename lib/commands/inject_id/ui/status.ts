@@ -5,6 +5,7 @@
  * @see module:commands/inject_id/mod
  */
 
+import { TExitCodes } from "../../types.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
 import { TInjectIdRunOptions } from "../types.ts";
 
@@ -18,6 +19,7 @@ interface TConfirmChangeOptions {
 
 interface TNotifyUserOfExitOptions extends TInjectIdRunOptions {
   error?: Error;
+  exitCode: TExitCodes;
 }
 
 type TUserResponse = string;
@@ -72,20 +74,34 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
   if (options.silent) return;
   let message: any[] = [];
 
-  if (options.directory) {
-    message = [
-      Colors.bold("This is the directory you entered:"),
-      Colors.cyan(options.directory),
-      "",
-      "None of the files within this directory contained a matching ID. No files were changed.",
-    ];
-  } else if (options.error) {
-    message = [
-      "There was an unexpected error when attempting to inject the files.",
-      "",
-      "No files were changed.",
-      "",
-    ];
+  switch (options.exitCode) {
+    case TExitCodes.UNMATCHED_PATTERN:
+      message = [
+        Colors.red(
+          "No files in this directory contained an ID that matched the given pattern.",
+        ),
+        "This is the directory you entered: " +
+        Colors.yellow(options.directory),
+        "This is the pattern you entered: " +
+        Colors.yellow(options.regex.toString()),
+        "No files were changed.",
+      ];
+      break;
+
+    case TExitCodes.UNKNOWN_ERROR:
+      default:
+        message = [
+          Colors.red(
+            "There was an unexpected error when attempting to inject an ID into file frontmatter.",
+          ),
+        ];
+        if (options.error) {
+          message.push(
+            "This is the error: " + Colors.yellow(options.error.message),
+          );
+        }
+        message.push("No files were changed.");
+        break;
   }
 
   $.formatWithEOL(message, true);
