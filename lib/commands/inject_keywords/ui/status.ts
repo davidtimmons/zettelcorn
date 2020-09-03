@@ -6,6 +6,7 @@
  */
 
 import { Colors, Utilities as $ } from "../deps.ts";
+import { TInjectKeywordsRunOptions } from "../types.ts";
 
 /// TYPES ///
 
@@ -16,9 +17,8 @@ interface TConfirmChangeOptions {
   willSkip: boolean;
 }
 
-interface TNotifyUserOfExitOptions {
+interface TNotifyUserOfExitOptions extends TInjectKeywordsRunOptions {
   error?: Error;
-  directory?: string;
 }
 
 type TUserResponse = string;
@@ -83,6 +83,7 @@ export async function confirmChange(
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
+  if (options.silent) return;
   let message: any[] = [];
 
   if (options.directory) {

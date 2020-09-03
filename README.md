@@ -108,12 +108,13 @@ Inject the detected ID into an "id" key inside the YAML frontmatter.
 
 #### API
 
-- `path` - The directory to search for zettels
+- `directory` - The directory to search for zettels
 - [options]:
   - `--regex [pattern]` - Detect the ID using a regular expression (default: `\d{14}`)
   - `--skip` - Skip files that contain an "id" frontmatter key
-  - `--recursive` - Run command on a directory and all its sub-directories
   - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
   - `--verbose` - List all files where IDs were injected
   - `-h, --help` - Display the help message for this command
 
@@ -173,13 +174,14 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 
 #### API
 
-- `path` - The directory to search for zettels
+- `directory` - The directory to search for zettels
 - [options]:
   - `--heuristic` - Attempt to detect lines dedicated to listing topic tags
   - `--merge` - Merge found topic tags into frontmatter "keywords" instead of overwriting them
   - `--skip` - Skip files that contain a "keywords" frontmatter key
-  - `--recursive` - Run command on a directory and all its sub-directories
   - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
   - `--verbose` - List all files where keywords were injected
   - `-h, --help` - Display the help message for this command
 
@@ -278,11 +280,12 @@ Inject the detected title into a "title" key inside the YAML frontmatter.
 
 #### API
 
-- `path` - The directory to search for zettels
+- `directory` - The directory to search for zettels
 - [options]:
   - `--skip` - Skip files that contain a "title" frontmatter key
-  - `--recursive` - Run command on a directory and all its sub-directories
   - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
   - `--verbose` - List all files where titles were injected
   - `-h, --help` - Display the help message for this command
 
@@ -331,12 +334,13 @@ Rename files containing YAML frontmatter.
 
 #### API
 
-- `path` - The directory to search for zettels
+- `directory` - The directory to search for zettels
 - `pattern` - The pattern to use when renaming files
 - [options]:
   - `--dashed` - Substitute dashes for spaces in the file name
-  - `--recursive` - Run command on a directory and all its sub-directories
   - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
   - `--verbose` - List all paths that changed along with each new value
   - `-h, --help` - Display the help message for this command
 

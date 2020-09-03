@@ -1,6 +1,17 @@
 import { assert, unimplemented, Utilities as $ } from "../../../deps.ts";
 import { Status } from "../../../../lib/commands/rename_files/mod.ts";
 
+const MENU_OPTIONS = Object.freeze({
+  dashed: false,
+  directory: "",
+  markdown: false,
+  pattern: "",
+  recursive: false,
+  silent: true,
+  skip: false,
+  verbose: false,
+});
+
 Deno.test({
   name: "should confirm the file rename with the user",
   ignore: true,
@@ -15,7 +26,7 @@ Deno.test({
   },
 });
 
-Deno.test("should notify the user when exiting", (): void => {
+Deno.test("should notify the user when exiting", () => {
   // setup
   const originalConsoleLog = console.log;
 
@@ -26,7 +37,11 @@ Deno.test("should notify the user when exiting", (): void => {
     assert(message.indexOf("No files were changed.") > 0);
   };
 
-  Status.notifyUserOfExit({ directory: "/test" });
+  Status.notifyUserOfExit({
+    ...MENU_OPTIONS,
+    directory: "/test",
+    silent: false,
+  });
 
   // cleanup
   console.log = originalConsoleLog;

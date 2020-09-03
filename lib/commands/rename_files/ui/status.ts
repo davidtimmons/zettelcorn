@@ -6,6 +6,7 @@
  */
 
 import { Colors, Utilities as $ } from "../deps.ts";
+import { TRenameFilesRunOptions } from "../types.ts";
 
 /// TYPES ///
 
@@ -15,10 +16,8 @@ interface TConfirmChangeOptions {
   pattern: string;
 }
 
-interface TNotifyUserOfExitOptions {
+interface TNotifyUserOfExitOptions extends TRenameFilesRunOptions {
   error?: Error;
-  directory?: string;
-  pattern?: string;
 }
 
 type TUserResponse = string;
@@ -45,6 +44,7 @@ export async function confirmChange(
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
+  if (options.silent) return;
   let message: any[] = [];
 
   if (options.directory) {

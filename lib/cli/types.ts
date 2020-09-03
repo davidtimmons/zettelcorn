@@ -24,7 +24,9 @@ export interface TCLIInit {
 }
 
 export interface TCLIStandardOptions {
-  recursive: boolean;
+  directory: string;
   markdown: boolean;
+  recursive: boolean;
+  silent: boolean;
   verbose: boolean;
 }

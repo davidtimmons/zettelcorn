@@ -17,7 +17,7 @@ export function addInjectKeywordsCommand(
 
   flags
     .command(
-      "inject.keywords <path>",
+      "inject.keywords <directory>",
       'Inject topic tags into a "keywords" list inside the YAML frontmatter',
     )
     .option(
@@ -33,31 +33,36 @@ export function addInjectKeywordsCommand(
       'Skip files that contain a "keywords" frontmatter key',
     )
     .option(
-      "--recursive",
-      "Run command on a directory and all its sub-directories",
-    )
-    .option(
       "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
+      "--recursive",
+      "Run command on a directory and all its sub-directories",
+    )
+    .option(
+      "--silent",
+      "Run command with no console output and automatic yes to prompts",
+    )
+    .option(
       "--verbose",
-      "List all files where keywords were injected",
+      "List all files where IDs were injected",
     )
     .example("inject.keywords --recursive ./zettelkasten")
     .example("inject.keywords --heuristic --recursive --verbose ./zettelkasten")
     .action(
       async (
-        path: string,
+        directory: string,
         options: Types.TInjectKeywordsOptions,
       ): Promise<void> => {
         await injectKeywords({
-          directory: path,
+          directory,
           heuristic: Boolean(options.heuristic),
-          skip: Boolean(options.skip),
-          recursive: Boolean(options.recursive),
-          markdown: Boolean(options.markdown),
           merge: Boolean(options.merge),
+          skip: Boolean(options.skip),
+          markdown: Boolean(options.markdown),
+          recursive: Boolean(options.recursive),
+          silent: Boolean(options.silent),
           verbose: Boolean(options.verbose),
         });
       },

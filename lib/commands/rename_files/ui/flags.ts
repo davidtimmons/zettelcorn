@@ -17,7 +17,7 @@ export function addRenameFilesCommand(
 
   flags
     .command(
-      "rename.files <path> <pattern>",
+      "rename.files <directory> <pattern>",
       "Rename files containing YAML frontmatter",
     )
     .option(
@@ -25,16 +25,20 @@ export function addRenameFilesCommand(
       "Substitute dashes for spaces in the file name",
     )
     .option(
-      "--recursive",
-      "Run command on a directory and all its sub-directories",
-    )
-    .option(
       "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
+      "--recursive",
+      "Run command on a directory and all its sub-directories",
+    )
+    .option(
+      "--silent",
+      "Run command with no console output and automatic yes to prompts",
+    )
+    .option(
       "--verbose",
-      "List all paths that changed along with each new value",
+      "List all files where IDs were injected",
     )
     .example('rename.files --recursive ./zettelkasten "{id}-{title}.md"')
     .example(
@@ -42,16 +46,17 @@ export function addRenameFilesCommand(
     )
     .action(
       async (
-        path: string,
+        directory: string,
         pattern: string,
         options: Types.TRenameFilesOptions,
       ): Promise<void> => {
         await renameFiles({
+          directory,
           pattern,
-          directory: path,
           dashed: Boolean(options.dashed),
-          recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
+          recursive: Boolean(options.recursive),
+          silent: Boolean(options.silent),
           verbose: Boolean(options.verbose),
         });
       },

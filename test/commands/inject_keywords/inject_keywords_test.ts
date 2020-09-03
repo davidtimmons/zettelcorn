@@ -12,8 +12,9 @@ const MENU_OPTIONS = Object.freeze({
   heuristic: false,
   markdown: false,
   merge: false,
-  skip: false,
   recursive: false,
+  silent: true,
+  skip: false,
   verbose: false,
 });
 

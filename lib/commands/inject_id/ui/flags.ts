@@ -17,7 +17,7 @@ export function addInjectIdCommand(
 
   flags
     .command(
-      "inject.id <path>",
+      "inject.id <directory>",
       'Inject the detected ID into an "id" key inside the YAML frontmatter',
     )
     .option(
@@ -32,12 +32,16 @@ export function addInjectIdCommand(
       'Skip files that contain an "id" frontmatter key',
     )
     .option(
+      "--markdown",
+      "Only modify Markdown files by looking for the *.md extension",
+    )
+    .option(
       "--recursive",
       "Run command on a directory and all its sub-directories",
     )
     .option(
-      "--markdown",
-      "Only modify Markdown files by looking for the *.md extension",
+      "--silent",
+      "Run command with no console output and automatic yes to prompts",
     )
     .option(
       "--verbose",
@@ -47,15 +51,16 @@ export function addInjectIdCommand(
     .example(String.raw`inject.id --recursive --regex "\d{14}" ./zettelkasten`)
     .action(
       async (
-        path: string,
+        directory: string,
         options: Types.TInjectIdOptions,
       ): Promise<void> => {
         await injectId({
-          directory: path,
+          directory,
           regex: new RegExp(options.regex),
           skip: Boolean(options.skip),
-          recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
+          recursive: Boolean(options.recursive),
+          silent: Boolean(options.silent),
           verbose: Boolean(options.verbose),
         });
       },

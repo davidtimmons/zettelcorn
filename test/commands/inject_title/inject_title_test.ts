@@ -4,10 +4,11 @@ const { _yamlTransformation } = InjectTitle.__private__;
 
 const MENU_OPTIONS = Object.freeze({
   directory: "",
-  skip: false,
   markdown: false,
   merge: false,
   recursive: false,
+  silent: true,
+  skip: false,
   verbose: false,
 });
 

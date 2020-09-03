@@ -18,10 +18,7 @@ export interface TCommand {
   (options: any): TRunResult;
 }
 
-export interface TRunOptions {
-  readonly directory: string;
-  readonly silent?: boolean;
-}
+export interface TRunOptions {}
 
 export type TRunResult = Promise<{
   readonly status: TStatus;

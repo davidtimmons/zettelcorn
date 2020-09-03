@@ -23,37 +23,13 @@ export async function run(
       yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
-    Status.notifyUserOfExit({ error: err });
+    Status.notifyUserOfExit({ ...options, error: err });
     throw err;
   }
 
-  // Find the first file example with keywords in the YAML object.
-  let firstExample = $.findFirstExample(fileQueue, (file) => {
-    const maybeKeywords = file.yaml.keywords;
-    if (maybeKeywords?.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  // Confirm change before injecting keywords into files.
-  const noKeywordsFound = $.isEmpty(firstExample);
-  if (noKeywordsFound) {
-    Status.notifyUserOfExit({ directory: options.directory });
-    Deno.exit();
+  if (!options.silent) {
+    await _notifyUser(options, fileQueue);
   }
-
-  const userResponse = options.silent ? "Y" : await Status.confirmChange({
-    fileName: firstExample?.fileName || "",
-    keywords: firstExample?.yaml.keywords.join(", ") || "",
-    willMerge: options.merge,
-    willSkip: options.skip,
-  });
-
-  // Process user response.
-  const changeRejected = userResponse.match(/[yY]/) === null;
-  if (changeRejected) Deno.exit();
 
   await $.writeQueuedFiles(_write, {
     ...options,
@@ -114,6 +90,39 @@ function _yamlTransformation(
   }
 }
 
+async function _notifyUser(
+  options: Types.TInjectKeywordsRunOptions,
+  fileQueue: $.TReadResult[],
+): Promise<void> {
+  // Find the first file example with keywords in the YAML object.
+  const firstExample = $.findFirstExample(fileQueue, (file) => {
+    const maybeKeywords = file.yaml.keywords;
+    if (maybeKeywords?.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  // Confirm change before injecting keywords into files.
+  const noKeywordsFound = $.isEmpty(firstExample);
+  if (noKeywordsFound) {
+    Status.notifyUserOfExit(options);
+    Deno.exit();
+  }
+
+  const userResponse = await Status.confirmChange({
+    fileName: firstExample?.fileName || "",
+    keywords: firstExample?.yaml.keywords.join(", ") || "",
+    willMerge: options.merge,
+    willSkip: options.skip,
+  });
+
+  // Process user response.
+  const changeRejected = userResponse.match(/[yY]/) === null;
+  if (changeRejected) Deno.exit();
+}
+
 async function _write(
   options: Types.TInjectKeywordsWriteOptions,
   file: $.TReadResult,
@@ -123,10 +132,13 @@ async function _write(
 
   await Deno.writeTextFile(path, content, { create: false });
 
-  if (options.verbose) $.notifyUserOfChange(path, file.yaml.keywords);
+  if (!options.silent && options.verbose) {
+    $.notifyUserOfChange(path, file.yaml.keywords);
+  }
 }
 
 export const __private__ = {
+  _notifyUser,
   _write,
   _yamlTransformation,
 };

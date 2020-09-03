@@ -16,7 +16,7 @@ export async function run(
   // The rename files feature is intended to work with YAML frontmatter.
   const hasToken = $.hasTokenExp(options.pattern);
   if (!hasToken) {
-    Status.notifyUserOfExit({ pattern: options.pattern });
+    Status.notifyUserOfExit(options);
     Deno.exit();
   }
 
@@ -30,33 +30,19 @@ export async function run(
       yamlTransformation: ({ fileYAML }) => $.proxyPrintOnAccess(fileYAML),
     });
   } catch (err) {
-    Status.notifyUserOfExit({ error: err });
+    Status.notifyUserOfExit({ ...options, error: err });
     throw err;
   }
 
-  // Confirm change before renaming all files.
-  const noFrontmatterFound = $.isEmpty(fileQueue);
-  if (noFrontmatterFound) {
-    Status.notifyUserOfExit({ directory: options.directory });
-    Deno.exit();
-  }
-
+  // Compose the function that renames all selected files on the drive.
   const applyPattern = $.composeFunctions()
     .apply($.generateGetterFromTokenExp(options.pattern))
     .applyIf(options.dashed, $.dasherize)
     .compose;
 
-  const firstExample = fileQueue[0];
-  const previewFileName = applyPattern(firstExample.yaml || {});
-  const userResponse = options.silent ? "Y" : await Status.confirmChange({
-    newFileName: previewFileName,
-    oldFileName: firstExample.fileName,
-    pattern: options.pattern,
-  });
-
-  // Process user response.
-  const changeRejected = userResponse.match(/[yY]/) === null;
-  if (changeRejected) Deno.exit();
+  if (!options.silent) {
+    await _notifyUser(options, fileQueue, applyPattern);
+  }
 
   await $.writeQueuedFiles(_write, {
     ...options,
@@ -66,6 +52,34 @@ export async function run(
   }, fileQueue);
 
   return { status: TStatus.OK };
+}
+
+async function _notifyUser(
+  options: Types.TRenameFilesRunOptions,
+  fileQueue: $.TReadResult[],
+  applyPattern: Function,
+): Promise<void> {
+  // Find the first file example with a YAML object.
+  const firstExample = $.findFirstExample(fileQueue, (file) => {
+    return !$.isEmpty(file.yaml);
+  });
+
+  // Confirm change before renaming all files.
+  const noFrontmatterFound = $.isEmpty(firstExample);
+  if (noFrontmatterFound) {
+    Status.notifyUserOfExit(options);
+    Deno.exit();
+  }
+
+  const userResponse = await Status.confirmChange({
+    newFileName: applyPattern(firstExample?.yaml || {}),
+    oldFileName: firstExample?.fileName || "",
+    pattern: options.pattern,
+  });
+
+  // Process user response.
+  const changeRejected = userResponse.match(/[yY]/) === null;
+  if (changeRejected) Deno.exit();
 }
 
 async function _write(
@@ -80,10 +94,13 @@ async function _write(
   // Overwrites files on path collision rather than failing.
   await Deno.rename(oldPath, newPath);
 
-  if (options.verbose) $.notifyUserOfChange(oldPath, newName);
+  if (!options.silent && options.verbose) {
+    $.notifyUserOfChange(oldPath, newName);
+  }
 }
 
 export const __private__ = {
+  _notifyUser,
   _write,
 };
 

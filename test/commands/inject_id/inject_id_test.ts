@@ -4,11 +4,12 @@ const { _yamlTransformation } = InjectId.__private__;
 
 const MENU_OPTIONS = Object.freeze({
   directory: "",
-  regex: /\d{14}/,
-  skip: false,
   markdown: false,
   merge: false,
   recursive: false,
+  regex: /\d{14}/,
+  silent: true,
+  skip: false,
   verbose: false,
 });
 
