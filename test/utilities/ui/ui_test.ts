@@ -25,7 +25,7 @@ Deno.test({
   ignore: true,
   async fn() {
     // TODO: Research best way to simulate input to stdin.
-    const input = await UI$.sendToUser("output");
+    const input = await UI$.promptUser("output");
     unimplemented();
   },
 });
@@ -41,7 +41,7 @@ Deno.test("should formatted log text", (): void => {
     assert(message.indexOf("hello world") >= 0);
   };
 
-  UI$.log("hello world", {
+  UI$.notifyUser("hello world", {
     padBottom: true,
     padTop: true,
     style: UI$.TUIStyles.BOLD,

@@ -67,7 +67,7 @@ export async function confirmChange(
     finalMsg,
   );
 
-  return await $.sendToUser($.formatWithEOL(msg));
+  return await $.promptUser($.formatWithEOL(msg));
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {

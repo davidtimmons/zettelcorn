@@ -9,6 +9,11 @@
 export { cac as CAC } from "https://unpkg.com/cac@6.6.1/mod.js";
 
 export {
+  Flags as InitFlags,
+  Types as InitTypes,
+} from "../commands/init/mod.ts";
+
+export {
   Flags as InjectIdFlags,
   Types as InjectIdTypes,
 } from "../commands/inject_id/mod.ts";

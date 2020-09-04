@@ -42,7 +42,7 @@ export async function confirmChange(
     `Is this what you want? Enter y or Y to confirm. Any other key will exit.`,
   ];
 
-  return await $.sendToUser($.formatWithEOL(message));
+  return await $.promptUser($.formatWithEOL(message));
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {

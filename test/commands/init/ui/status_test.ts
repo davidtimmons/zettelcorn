@@ -1,16 +1,14 @@
-import { assert, unimplemented, Commands } from "../../../deps.ts";
-import { Status } from "../../../../lib/commands/rename_files/mod.ts";
+import { assert, Commands } from "../../../deps.ts";
+import { Status } from "../../../../lib/commands/init/mod.ts";
 const TExitCodes = Commands.Types.TExitCodes;
 
 const CONSOLE_LOG = console.log;
 const MENU_OPTIONS = Object.freeze({
-  dashed: false,
-  directory: "/test/test_data",
+  directory: "",
+  force: false,
   markdown: false,
-  pattern: "",
   recursive: false,
   silent: false,
-  skip: false,
   verbose: false,
 });
 
@@ -18,47 +16,31 @@ function runAfter() {
   console.log = CONSOLE_LOG;
 }
 
-Deno.test(
-  { name: "suite :: COMMANDS/RENAME_FILES/UI/STATUS", ignore: true, fn() {} },
-);
+Deno.test({ name: "suite :: COMMANDS/INIT/UI/STATUS", ignore: true, fn() {} });
 
-Deno.test({
-  name: "confirmChange() should confirm file rename with the user",
-  ignore: true,
-  async fn() {
-    // TODO: Research best way to simulate input to stdin.
-    const userResponse = await Status.confirmChange({
-      oldFileName: "My Title.txt",
-      newFileName: "123-title.md",
-      pattern: "{id}-{title}.md",
-    });
-    unimplemented();
-  },
-});
-
-Deno.test("notifyUserOfExit() should notify when pattern is invalid", () => {
+Deno.test("notifyUserOfExit() should notify when directory not found", () => {
   console.log = (...args: any[]): void => {
     const message: string = args[0];
-    assert(message.indexOf("valid pattern must include") >= 0);
+    assert(message.indexOf("directory you entered does not exist") >= 0);
   };
 
   Status.notifyUserOfExit({
     ...MENU_OPTIONS,
-    exitCode: TExitCodes.INVALID_PATTERN,
+    exitCode: TExitCodes.NO_DIRECTORY_FOUND,
   });
 
   runAfter();
 });
 
-Deno.test("notifyUserOfExit() should notify when frontmatter not found", () => {
+Deno.test("notifyUserOfExit() should notify when directory already exists", () => {
   console.log = (...args: any[]): void => {
     const message: string = args[0];
-    assert(message.indexOf("contain YAML frontmatter") >= 0);
+    assert(message.indexOf("configuration directory already exists") >= 0);
   };
 
   Status.notifyUserOfExit({
     ...MENU_OPTIONS,
-    exitCode: TExitCodes.NO_FRONTMATTER_FOUND,
+    exitCode: TExitCodes.INVALID_DIRECTORY,
   });
 
   runAfter();

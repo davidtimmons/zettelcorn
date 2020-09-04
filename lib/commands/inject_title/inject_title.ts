@@ -32,7 +32,7 @@ export async function run(
   }
 
   if (!options.silent) {
-    await _notifyUser(options, fileQueue);
+    await _confirmChangeWithUser(options, fileQueue);
   }
 
   await $.writeQueuedFiles(_write, {
@@ -73,7 +73,7 @@ function _yamlTransformation(
   };
 }
 
-async function _notifyUser(
+async function _confirmChangeWithUser(
   options: Types.TInjectTitleRunOptions,
   fileQueue: $.TReadResult[],
 ): Promise<void> {
@@ -123,7 +123,7 @@ async function _write(
 }
 
 export const __private__ = {
-  _notifyUser,
+  _confirmChangeWithUser,
   _write,
   _yamlTransformation,
 };

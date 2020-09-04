@@ -1,15 +1,16 @@
-import { assert, assertEquals, assertStringContains } from "../../deps.ts";
+import {
+  assert,
+  assertEquals,
+  assertStringContains,
+  Path,
+} from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test("should readTextFile a text file at a path", async () => {
-  let actual = await FS$.readTextFile("test/test_data/filtering/test.md");
-  assertStringContains(actual, "This is a markdown file");
+Deno.test(
+  { name: "suite :: UTILITIES/FILE_SYSTEM/READ", ignore: true, fn() {} },
+);
 
-  actual = await FS$.readTextFile("");
-  assertStringContains(actual, "");
-});
-
-Deno.test("should build a non-recursive list of files", async () => {
+Deno.test("buildFileQueue() should collect files", async () => {
   const results = await FS$.buildFileQueue({
     directory: "test/test_data/recursion",
     recursive: false,
@@ -28,7 +29,7 @@ Deno.test("should build a non-recursive list of files", async () => {
   });
 });
 
-Deno.test("should build a recursive list of files with YAML objects only", async () => {
+Deno.test("buildFileQueue() should recursively collect files with YAML", async () => {
   const results = await FS$.buildFileQueue({
     directory: "test/test_data/recursion",
     recursive: true,
@@ -46,7 +47,7 @@ Deno.test("should build a recursive list of files with YAML objects only", async
   });
 });
 
-Deno.test("should build a recursive list of Markdown files", async () => {
+Deno.test("buildFileQueue() should recursively collect Markdown files", async () => {
   const results01 = await FS$.buildFileQueue({
     directory: "test/test_data/recursion",
     recursive: true,
@@ -64,7 +65,7 @@ Deno.test("should build a recursive list of Markdown files", async () => {
   assertEquals(results02.length, 3);
 });
 
-Deno.test("should collect files with custom meta data", async () => {
+Deno.test("buildFileQueue() should collect files with custom meta data", async () => {
   const results01 = await FS$.buildFileQueue({
     directory: "test/test_data/filtering",
     recursive: false,
@@ -85,4 +86,22 @@ Deno.test("should collect files with custom meta data", async () => {
 
   assertEquals(results02.length, 1);
   assertEquals(results02[0].meta, true);
+});
+
+Deno.test("readTextFile() should read a text file at a path", async () => {
+  let actual = await FS$.readTextFile("test/test_data/filtering/test.md");
+  assertStringContains(actual, "This is a markdown file");
+
+  actual = await FS$.readTextFile("");
+  assertStringContains(actual, "");
+});
+
+Deno.test("doesFileOrDirectoryExist() should check if a resource exists at a path", async () => {
+  const directory = Deno.realPathSync("test/test_data/filtering/");
+  const trueFile = Path.join(directory, "test.md");
+  const falseFile = Path.join(directory, "asdf.asdf");
+
+  assertEquals(await FS$.doesFileOrDirectoryExist(directory), true);
+  assertEquals(await FS$.doesFileOrDirectoryExist(trueFile), true);
+  assertEquals(await FS$.doesFileOrDirectoryExist(falseFile), false);
 });

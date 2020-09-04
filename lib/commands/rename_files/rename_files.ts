@@ -48,7 +48,7 @@ export async function run(
     .compose;
 
   if (!options.silent) {
-    await _notifyUser(options, fileQueue, applyPattern);
+    await _confirmChangeWithUser(options, fileQueue, applyPattern);
   }
 
   await $.writeQueuedFiles(_write, {
@@ -61,7 +61,7 @@ export async function run(
   return { status: TStatusCodes.OK };
 }
 
-async function _notifyUser(
+async function _confirmChangeWithUser(
   options: Types.TRenameFilesRunOptions,
   fileQueue: $.TReadResult[],
   applyPattern: Function,
@@ -110,7 +110,7 @@ async function _write(
 }
 
 export const __private__ = {
-  _notifyUser,
+  _confirmChangeWithUser,
   _write,
 };
 

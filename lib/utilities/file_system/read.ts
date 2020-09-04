@@ -115,3 +115,13 @@ export async function readTextFile(path: string): Promise<string> {
   const contents = await Deno.readTextFile(path);
   return contents;
 }
+
+export async function doesFileOrDirectoryExist(path: string): Promise<boolean> {
+  let exists = true;
+  try {
+    await Deno.lstat(path);
+  } catch (_error) {
+    exists = false;
+  }
+  return exists;
+}

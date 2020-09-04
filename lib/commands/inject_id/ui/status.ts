@@ -67,7 +67,7 @@ export async function confirmChange(
     finalMsg,
   );
 
-  return await $.sendToUser($.formatWithEOL(msg));
+  return await $.promptUser($.formatWithEOL(msg));
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
@@ -89,19 +89,19 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
       break;
 
     case TExitCodes.UNKNOWN_ERROR:
-      default:
-        message = [
-          Colors.red(
-            "There was an unexpected error when attempting to inject an ID into file frontmatter.",
-          ),
-        ];
-        if (options.error) {
-          message.push(
-            "This is the error: " + Colors.yellow(options.error.message),
-          );
-        }
-        message.push("No files were changed.");
-        break;
+    default:
+      message = [
+        Colors.red(
+          "There was an unexpected error when attempting to inject an ID into file frontmatter.",
+        ),
+      ];
+      if (options.error) {
+        message.push(
+          "This is the error: " + Colors.yellow(options.error.message),
+        );
+      }
+      message.push("No files were changed.");
+      break;
   }
 
   $.formatWithEOL(message, true);

@@ -6,6 +6,7 @@
  */
 
 import {
+  InitTypes,
   InjectIdTypes,
   InjectKeywordsTypes,
   InjectTitleTypes,
@@ -15,8 +16,9 @@ import {
 export type TCLIFlags = any; // cacjs library object
 
 export interface TCLIInit {
-  readonly appVersion: string;
   readonly appName: string;
+  readonly appVersion: string;
+  readonly init?: InitTypes.TInitRun;
   readonly injectId?: InjectIdTypes.TInjectIdRun;
   readonly injectKeywords?: InjectKeywordsTypes.TInjectKeywordsRun;
   readonly injectTitle?: InjectTitleTypes.TInjectTitleRun;

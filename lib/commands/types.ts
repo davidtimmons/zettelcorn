@@ -11,6 +11,7 @@ export enum TStatusCodes {
 }
 
 export enum TExitCodes {
+  INVALID_DIRECTORY,
   INVALID_PATTERN,
   NO_DIRECTORY_FOUND,
   NO_FRONTMATTER_FOUND,
@@ -18,6 +19,7 @@ export enum TExitCodes {
   NO_TITLE_FOUND,
   UNKNOWN_ERROR,
   UNMATCHED_PATTERN,
+  WRITE_ERROR,
 }
 
 export interface TCommandModule {
