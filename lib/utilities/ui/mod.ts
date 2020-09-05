@@ -4,4 +4,4 @@
  * @see module:utilities/mod
  */
 
-export * from "./ui.ts";
+export * from "./console.ts";

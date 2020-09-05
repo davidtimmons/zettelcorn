@@ -29,6 +29,11 @@ export {
 } from "../commands/inject_title/mod.ts";
 
 export {
+  Flags as NewZettelFlags,
+  Types as NewZettelTypes,
+} from "../commands/new_zettel/mod.ts";
+
+export {
   Flags as RenameFilesFlags,
   Types as RenameFilesTypes,
 } from "../commands/rename_files/mod.ts";

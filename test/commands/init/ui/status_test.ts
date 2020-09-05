@@ -1,4 +1,4 @@
-import { assert, Commands } from "../../../deps.ts";
+import { assert, ConfigFiles, Commands } from "../../../deps.ts";
 import { Status } from "../../../../lib/commands/init/mod.ts";
 const TExitCodes = Commands.Types.TExitCodes;
 
@@ -27,6 +27,7 @@ Deno.test("notifyUserOfExit() should notify when directory not found", () => {
   Status.notifyUserOfExit({
     ...MENU_OPTIONS,
     exitCode: TExitCodes.NO_DIRECTORY_FOUND,
+    configDirectory: ConfigFiles.MetaData.localDirectory,
   });
 
   runAfter();
@@ -41,6 +42,7 @@ Deno.test("notifyUserOfExit() should notify when directory already exists", () =
   Status.notifyUserOfExit({
     ...MENU_OPTIONS,
     exitCode: TExitCodes.INVALID_DIRECTORY,
+    configDirectory: ConfigFiles.MetaData.localDirectory,
   });
 
   runAfter();
@@ -56,6 +58,7 @@ Deno.test("notifyUserOfExit() should notify when exiting unexpectedly", () => {
   Status.notifyUserOfExit({
     ...MENU_OPTIONS,
     exitCode: TExitCodes.UNKNOWN_ERROR,
+    configDirectory: ConfigFiles.MetaData.localDirectory,
   });
 
   console.log = (...args: any[]): void => {
@@ -69,6 +72,7 @@ Deno.test("notifyUserOfExit() should notify when exiting unexpectedly", () => {
     ...MENU_OPTIONS,
     exitCode: TExitCodes.UNKNOWN_ERROR,
     error: new Error("Hello Error"),
+    configDirectory: ConfigFiles.MetaData.localDirectory,
   });
 
   runAfter();

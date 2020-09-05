@@ -13,6 +13,7 @@ import {
   InjectIdFlags,
   InjectKeywordsFlags,
   InjectTitleFlags,
+  NewZettelFlags,
   RenameFilesFlags,
 } from "./deps.ts";
 import * as T from "./types.ts";
@@ -24,6 +25,7 @@ export function init(options: T.TCLIInit): void {
   InjectIdFlags.addInjectIdCommand(options, flags);
   InjectKeywordsFlags.addInjectKeywordsCommand(options, flags);
   InjectTitleFlags.addInjectTitleCommand(options, flags);
+  NewZettelFlags.addNewZettelCommand(options, flags);
   RenameFilesFlags.addRenameFilesCommand(options, flags);
 
   flags.help();

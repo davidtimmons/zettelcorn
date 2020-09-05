@@ -67,7 +67,7 @@ Deno.test("buildFileQueue() should recursively collect Markdown files", async ()
 
 Deno.test("buildFileQueue() should collect files with custom meta data", async () => {
   const results01 = await FS$.buildFileQueue({
-    directory: "test/test_data/filtering",
+    directory: "test/test_data/filter",
     recursive: false,
     metaTransformation: ({ name }) => name,
   });
@@ -76,7 +76,7 @@ Deno.test("buildFileQueue() should collect files with custom meta data", async (
   results01.forEach((result01) => assert(result01.meta.length > 0));
 
   const results02 = await FS$.buildFileQueue({
-    directory: "test/test_data/filtering",
+    directory: "test/test_data/filter",
     recursive: false,
     requireMeta: true,
     metaTransformation: ({ extension }) => {
@@ -89,7 +89,7 @@ Deno.test("buildFileQueue() should collect files with custom meta data", async (
 });
 
 Deno.test("readTextFile() should read a text file at a path", async () => {
-  let actual = await FS$.readTextFile("test/test_data/filtering/test.md");
+  let actual = await FS$.readTextFile("test/test_data/filter/test.md");
   assertStringContains(actual, "This is a markdown file");
 
   actual = await FS$.readTextFile("");
@@ -97,11 +97,21 @@ Deno.test("readTextFile() should read a text file at a path", async () => {
 });
 
 Deno.test("doesFileOrDirectoryExist() should check if a resource exists at a path", async () => {
-  const directory = Deno.realPathSync("test/test_data/filtering/");
+  const directory = Deno.realPathSync("test/test_data/filter/");
   const trueFile = Path.join(directory, "test.md");
   const falseFile = Path.join(directory, "asdf.asdf");
 
   assertEquals(await FS$.doesFileOrDirectoryExist(directory), true);
   assertEquals(await FS$.doesFileOrDirectoryExist(trueFile), true);
   assertEquals(await FS$.doesFileOrDirectoryExist(falseFile), false);
+});
+
+Deno.test("getLocalConfigFile() should retrieve a Zettelcorn configuration file", async () => {
+  const readDir = "test/test_data/read/";
+  const [fileName, fileData] = await FS$.getLocalConfigFile(".zettel", readDir);
+  assertEquals(fileName, "hello_world.zettel");
+  assertEquals(fileData, "Hello World\n");
+
+  const falseResult = FS$.getLocalConfigFile(".asdf", readDir);
+  assertEquals(falseResult, []);
 });

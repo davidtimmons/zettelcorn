@@ -1,10 +1,10 @@
 /**
  * Bundles all files within this command module.
- * @module commands/init/mod
+ * @module commands/new_zettel/mod
  */
 
-export { default } from "./init.ts";
-export * as Init from "./init.ts";
+export { default } from "./new_zettel.ts";
+export * as NewZettel from "./new_zettel.ts";
 export * as Types from "./types.ts";
 export * as Flags from "./ui/flags.ts";
 export * as Status from "./ui/status.ts";

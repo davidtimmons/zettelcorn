@@ -10,6 +10,7 @@ import Init from "./commands/init/mod.ts";
 import InjectId from "./commands/inject_id/mod.ts";
 import InjectKeywords from "./commands/inject_keywords/mod.ts";
 import InjectTitle from "./commands/inject_title/mod.ts";
+import NewZettel from "./commands/new_zettel/mod.ts";
 import RenameFiles from "./commands/rename_files/mod.ts";
 
 // Required Deno flags: --unstable --allow-read --allow-write
@@ -21,5 +22,6 @@ CLI.init({
   injectId: Commands(InjectId),
   injectKeywords: Commands(InjectKeywords),
   injectTitle: Commands(InjectTitle),
+  newZettel: Commands(NewZettel),
   renameFiles: Commands(RenameFiles),
 });

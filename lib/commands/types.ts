@@ -12,6 +12,7 @@ export enum TStatusCodes {
 
 export enum TExitCodes {
   INVALID_DIRECTORY,
+  INVALID_NUMBER,
   INVALID_PATTERN,
   NO_DIRECTORY_FOUND,
   NO_FRONTMATTER_FOUND,

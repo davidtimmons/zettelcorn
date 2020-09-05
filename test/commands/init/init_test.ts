@@ -1,5 +1,5 @@
-import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
-import { Init, Zettel } from "../../../lib/commands/init/mod.ts";
+import { assertEquals, ConfigFiles, Path, Utilities as $ } from "../../deps.ts";
+import { Init } from "../../../lib/commands/init/mod.ts";
 
 const MENU_OPTIONS = Object.freeze({
   directory: "",
@@ -27,7 +27,7 @@ Deno.test("run() should copy configuration files to a .zettelcorn directory", as
   // test
   const goalPaths = [
     configDirectory,
-    Path.join(configDirectory, Zettel.fileName),
+    Path.join(configDirectory, ConfigFiles.Zettel.fileName),
   ];
 
   await Init.run({
@@ -57,7 +57,7 @@ Deno.test("run() should overwrite existing configuration files in a .zettelcorn 
   // test
   const goalPaths = [
     configDirectory,
-    Path.join(configDirectory, Zettel.fileName),
+    Path.join(configDirectory, ConfigFiles.Zettel.fileName),
   ];
 
   for (let i = 0, len = 3; i < len; i++) {

@@ -12,8 +12,8 @@ export function addInitCommand(
   options: CLITypes.TCLIInit,
   flags: CLITypes.TCLIFlags,
 ): void {
-  const injectId = options.init;
-  if (!injectId) return;
+  const init = options.init;
+  if (!init) return;
 
   flags
     .command(
@@ -39,7 +39,7 @@ export function addInitCommand(
         directory: string,
         options: Types.TInitOptions,
       ): Promise<void> => {
-        await injectId({
+        await init({
           directory: directory || Deno.cwd(),
           force: Boolean(options.force),
           markdown: false,

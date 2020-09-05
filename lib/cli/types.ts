@@ -10,6 +10,7 @@ import {
   InjectIdTypes,
   InjectKeywordsTypes,
   InjectTitleTypes,
+  NewZettelTypes,
   RenameFilesTypes,
 } from "./deps.ts";
 
@@ -22,6 +23,7 @@ export interface TCLIInit {
   readonly injectId?: InjectIdTypes.TInjectIdRun;
   readonly injectKeywords?: InjectKeywordsTypes.TInjectKeywordsRun;
   readonly injectTitle?: InjectTitleTypes.TInjectTitleRun;
+  readonly newZettel?: NewZettelTypes.TNewZettelRun;
   readonly renameFiles?: RenameFilesTypes.TRenameFilesRun;
 }
 

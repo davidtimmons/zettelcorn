@@ -54,7 +54,7 @@ Deno.test("should find all keywords", () => {
 
 Deno.test("should remove empty tags and those with only punctuation", () => {
   // setup
-  const basePath = "./test/test_data/filtering";
+  const basePath = "./test/test_data/filter";
   const filePath = Deno.realPathSync(Path.join(basePath, "test_tags.md"));
   const testTags = T$.findAllTags(Deno.readTextFileSync(filePath));
 
@@ -78,7 +78,7 @@ Deno.test("should remove empty tags and those with only punctuation", () => {
 
 Deno.test("should roughly detect a row of topic tags", () => {
   // setup
-  const basePath = "./test/test_data/filtering";
+  const basePath = "./test/test_data/filter";
   const filePath = Deno.realPathSync(Path.join(basePath, "test_tags.md"));
   const testTagRows = T$.detectTagRows(Deno.readTextFileSync(filePath));
 

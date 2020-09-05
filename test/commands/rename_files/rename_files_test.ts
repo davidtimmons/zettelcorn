@@ -15,7 +15,7 @@ const MENU_OPTIONS = Object.freeze({
 
 Deno.test("should rename a file", async () => {
   // setup
-  const basePath = "./test/test_data/filtering/";
+  const basePath = "./test/test_data/filter/";
   const oldPath = Path.join.apply(null, [basePath, "test.md"]);
   const newPath = Path.join.apply(null, [basePath, "hello.md"]);
 

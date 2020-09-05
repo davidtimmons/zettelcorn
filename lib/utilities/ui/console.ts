@@ -1,7 +1,7 @@
 /**
  * Utilities for working with the user interface.
  * @protected
- * @module utilities/ui/ui
+ * @module utilities/ui/console
  * @see module:utilities/ui/mod
  * @see module:utilities/mod
  */
@@ -62,6 +62,16 @@ export async function promptUser(text: string): Promise<string> {
     return line;
   }
   return "";
+}
+
+export function maybeNotifyUser(
+  shouldNotify: boolean,
+  value: any,
+  options?: TLogOptions,
+) {
+  if (shouldNotify) {
+    notifyUser(value, options);
+  }
 }
 
 export function notifyUser(value: any, options?: TLogOptions) {

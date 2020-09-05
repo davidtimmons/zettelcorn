@@ -14,6 +14,7 @@ import { TInitRunOptions } from "../types.ts";
 interface TNotifyUserOfExitOptions extends TInitRunOptions {
   error?: Error;
   exitCode: TExitCodes;
+  configDirectory: string;
 }
 
 /// LOGIC ///
@@ -38,7 +39,7 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
           "A Zettelcorn configuration directory already exists at this location.",
         ),
         "This is the directory that exists: " +
-        Colors.yellow(Path.join(options.directory, ".zettelcorn")),
+        Colors.yellow(Path.join(options.directory, options.configDirectory)),
         "The --force option will replace an existing configuration directory with default values.",
         "No files were created.",
       ];
@@ -50,7 +51,7 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
           "There was an unexpected error when writing files to the Zettelcorn directory.",
         ),
         "This is the directory where the problem occurred: " +
-        Colors.yellow(Path.join(options.directory, ".zettelcorn")),
+        Colors.yellow(Path.join(options.directory, options.configDirectory)),
       ];
       if (options.error) {
         message.push(

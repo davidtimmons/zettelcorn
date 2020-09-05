@@ -55,9 +55,6 @@ export function proxyPrintOnAccess(jsObject: TDictionary): TDictionary {
         return Object.entries(obj)
           .map((tuple: [string, any]) => {
             if (isObjectLiteral(tuple[1])) {
-              // TODO: Decide how best to print deeply nested objects.
-              // const deepStrings = getStrings(tuple[1]);
-              // return `${tuple[0]}=${deepStrings}`;
               return getStrings(tuple[1]);
             }
             return `${tuple[0]}=${tuple[1]}`;

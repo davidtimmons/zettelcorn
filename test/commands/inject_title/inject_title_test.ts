@@ -60,7 +60,7 @@ Deno.test("should handle menu options when injecting a title", () => {
 
 Deno.test("should inject titles into all files", async () => {
   // setup
-  const basePath = "./test/test_data/injecting/title";
+  const basePath = "./test/test_data/inject/title";
   const test01Path = Deno.realPathSync(Path.join(basePath, "test01.md"));
   const test02Path = Deno.realPathSync(Path.join(basePath, "test02.md"));
   const test01Content = Deno.readTextFileSync(test01Path);

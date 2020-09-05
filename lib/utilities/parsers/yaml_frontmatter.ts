@@ -7,7 +7,7 @@
  */
 
 import { FS, JSYAML } from "../deps.ts";
-import * as UI$ from "../ui/ui.ts";
+import * as UI$ from "../ui/mod.ts";
 
 /// TYPES ///
 

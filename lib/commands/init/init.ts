@@ -7,8 +7,10 @@
  */
 
 import { TExitCodes, TStatusCodes } from "../types.ts";
-import { Path, Utilities as $ } from "./deps.ts";
-import { Status, Types, Zettel } from "./mod.ts";
+import { ConfigFiles, Path, Utilities as $ } from "./deps.ts";
+import { Status, Types } from "./mod.ts";
+
+const { MetaData, Zettel } = ConfigFiles;
 
 export async function run(
   options: Types.TInitRunOptions,
@@ -20,12 +22,13 @@ export async function run(
     Status.notifyUserOfExit({
       ...options,
       exitCode: TExitCodes.NO_DIRECTORY_FOUND,
+      configDirectory: MetaData.localDirectory,
     });
     Deno.exit();
   }
 
   const basePath = Deno.realPathSync(options.directory);
-  const writePath = Path.join(basePath, ".zettelcorn");
+  const writePath = Path.join(basePath, MetaData.localDirectory);
   const configFiles: [string, string][] = [
     // Add .zettelcorn configuration files to be copied here:
     [Path.join(writePath, Zettel.fileName), Zettel.fileData],
@@ -38,6 +41,7 @@ export async function run(
     Status.notifyUserOfExit({
       ...options,
       exitCode: TExitCodes.INVALID_DIRECTORY,
+      configDirectory: MetaData.localDirectory,
     });
     Deno.exit();
   }
@@ -50,6 +54,7 @@ export async function run(
       ...options,
       error,
       exitCode: TExitCodes.WRITE_ERROR,
+      configDirectory: MetaData.localDirectory,
     });
     await _undoWriteConfigFiles(writePath, options.silent);
     Deno.exit();
@@ -91,18 +96,17 @@ async function _writeConfigFiles(
 }
 
 async function _undoWriteConfigFiles(writePath: string, silent: boolean) {
-  $.notifyUser("Attempting to remove configuration files...");
+  const notify = $.maybeNotifyUser.bind(null, !silent);
+  notify("Attempting to remove configuration files...");
   const wasSuccessful = await $.removeDirectory(writePath);
-  if (!silent) {
-    if (wasSuccessful) {
-      $.notifyUser("Successfully removed all configuration files!", {
-        style: $.TUIStyles.GREEN,
-      });
-    } else {
-      $.notifyUser("Could not read the directory.", {
-        style: $.TUIStyles.RED,
-      });
-    }
+  if (wasSuccessful) {
+    notify("Successfully removed all configuration files!", {
+      style: $.TUIStyles.GREEN,
+    });
+  } else {
+    notify("Could not read the directory.", {
+      style: $.TUIStyles.RED,
+    });
   }
 }
 
