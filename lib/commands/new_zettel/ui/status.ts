@@ -14,8 +14,8 @@ import { TNewZettelRunOptions } from "../types.ts";
 type TUserResponse = string;
 
 interface TConfirmChangeOptions {
-  foundLocalTemplate: boolean;
-  templateName: string;
+  fileNameTemplate: string;
+  isLocal: boolean;
   total: number;
   zettelcornDir: string;
   zettelDir: string;
@@ -41,15 +41,14 @@ export async function confirmChange(
     `The file ${
       options.total === 1 ? "name" : "names"
     } will match this pattern:`,
-    Colors.cyan(options.templateName),
+    Colors.cyan(options.fileNameTemplate),
     "",
   ];
 
-  const templateMsg = options.foundLocalTemplate
-    ? "All new file content will match your " +
-      Colors.cyan("local template file") + "."
-    : "All new file content will match the " +
-      Colors.cyan("default template") + ".";
+  const templateMsg = "All new file content will match " +
+    (options.isLocal
+      ? "your " + Colors.cyan("local template file") + "."
+      : "the " + Colors.cyan("default template") + ".");
 
   const endMsg = [
     templateMsg,
@@ -58,6 +57,22 @@ export async function confirmChange(
 
   const msg = startMsg.concat(endMsg);
   return await $.promptUser($.formatWithEOL(msg));
+}
+
+export function notifyUserOfCompletion(directory: string, results: string[]) {
+  const message = [
+    "",
+    Colors.green(
+      `Wrote ${results.length} new ${results.length > 1 ? "files" : "file"}.`,
+    ),
+    "",
+    Colors.bold("Directory:"),
+    directory,
+    "",
+    Colors.bold("Zettel files written:"),
+    ...results,
+  ];
+  $.formatWithEOL(message, true);
 }
 
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
@@ -77,7 +92,7 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
     case TExitCodes.INVALID_NUMBER:
       message = [
         Colors.red(
-          "The total number of zettel files to create must be an integer greater than 0.",
+          "The total number of zettel files to be created must be an integer greater than 0.",
         ),
         "This is the total you entered: " +
         Colors.yellow(options.total.toString()),
@@ -85,20 +100,20 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
       ];
       break;
 
-    //   case TExitCodes.WRITE_ERROR:
-    //     message = [
-    //       Colors.red(
-    //         "There was an unexpected error when writing files to the Zettelcorn directory.",
-    //       ),
-    //       "This is the directory where the problem occurred: " +
-    //       Colors.yellow(Path.join(options.directory, ".zettelcorn")),
-    //     ];
-    //     if (options.error) {
-    //       message.push(
-    //         "This is the error: " + Colors.yellow(options.error.message),
-    //       );
-    //     }
-    //     break;
+    case TExitCodes.WRITE_ERROR:
+      message = [
+        Colors.red(
+          "There was an unexpected error when writing files to the zettel directory.",
+        ),
+        "This is the directory where the problem occurred: " +
+        Colors.yellow(options.directory),
+      ];
+      if (options.error) {
+        message.push(
+          "This is the error: " + Colors.yellow(options.error.message),
+        );
+      }
+      break;
 
     case TExitCodes.UNKNOWN_ERROR:
     default:

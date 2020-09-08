@@ -19,6 +19,22 @@ interface TNotifyUserOfExitOptions extends TInitRunOptions {
 
 /// LOGIC ///
 
+export function notifyUserOfCompletion(directory: string, results: string[]) {
+  const message = [
+    "",
+    Colors.green(
+      `Wrote ${results.length} new ${results.length > 1 ? "files" : "file"}.`,
+    ),
+    "",
+    Colors.bold("Directory written:"),
+    directory,
+    "",
+    Colors.bold("Configuration files written:"),
+    ...results,
+  ];
+  $.formatWithEOL(message, true);
+}
+
 export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
   if (options.silent) return;
   let message: any[] = [];

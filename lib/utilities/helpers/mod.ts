@@ -6,3 +6,4 @@
 
 export * from "./functional.ts";
 export * from "./generic.ts";
+export * from "./time.ts";

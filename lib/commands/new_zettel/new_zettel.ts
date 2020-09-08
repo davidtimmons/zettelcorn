@@ -9,13 +9,69 @@
 import { TExitCodes, TStatusCodes } from "../types.ts";
 import { ConfigFiles, Path, Utilities as $ } from "./deps.ts";
 import { Status, Types } from "./mod.ts";
+import { TNewZettelRunOptions } from "./types.ts";
 
 const { MetaData, Zettel } = ConfigFiles;
 
 export async function run(
   options: Types.TNewZettelRunOptions,
 ): Types.TNewZettelRunResult {
-  // Fail fast rather than guessing what the user meant.
+  // Verify CLI input before writing any data.
+  await _preflightCheck(options);
+
+  // Confirm that new zettels should be written.
+  const zettelDir = Deno.realPathSync(options.directory);
+  const [fileNameTemplate, fileDataTemplate, isLocal] =
+    await _getZettelTemplate(options);
+
+  if (!options.silent) {
+    const userResponse = await Status.confirmChange({
+      fileNameTemplate: fileNameTemplate,
+      isLocal,
+      zettelDir,
+      total: options.total,
+      zettelcornDir: MetaData.localDirectory,
+    });
+
+    const changeRejected = userResponse.match(/[yY]/) === null;
+    if (changeRejected) {
+      Deno.exit();
+    }
+  }
+
+  // Attempt to write the new files.
+  const createFileName = $.generateGetterFromTokenExp(fileNameTemplate);
+  const createFileData = $.generateGetterFromTokenExp(fileDataTemplate);
+  let writeResults: string[] = [];
+  try {
+    writeResults = _writeZettelFiles(
+      options,
+      zettelDir,
+      createFileName,
+      createFileData,
+    );
+  } catch (error) {
+    Status.notifyUserOfExit({
+      ...options,
+      error,
+      exitCode: TExitCodes.WRITE_ERROR,
+    });
+    Deno.exit();
+  }
+
+  // Report all files written to orient the user as to what was added to their drive.
+  if (!options.silent && options.verbose) {
+    Status.notifyUserOfCompletion(zettelDir, writeResults);
+  }
+
+  return Promise.resolve({ status: TStatusCodes.OK });
+}
+
+/**
+ * Check all pre-conditions before attempting to write any files. Fail fast rather than
+ * guessing what the user may have meant.
+ */
+async function _preflightCheck(options: TNewZettelRunOptions) {
   const totalIsValid = typeof options.total === "number" && options.total > 0;
   if (!totalIsValid) {
     Status.notifyUserOfExit({
@@ -33,61 +89,80 @@ export async function run(
     });
     Deno.exit();
   }
-
-  // Gather all the template parts and confirm the write process.
-  const rawTemplateExtName = Zettel.fileExt;
-  let rawTemplateName = Zettel.fileName;
-  let rawTemplateData = Zettel.fileData;
-  let foundLocalTemplate = false;
-
-  if (!options.default) {
-    const [name, data] = await $.getLocalConfigFile(rawTemplateExtName);
-    rawTemplateName = name ?? rawTemplateName;
-    rawTemplateData = data ?? rawTemplateData;
-    foundLocalTemplate = !$.isEmpty(name);
-  }
-
-  const zettelDir = Deno.realPathSync(options.directory);
-  const rawTemplateExtIndex = rawTemplateName.indexOf(rawTemplateExtName);
-  const templateName = rawTemplateName.substring(0, rawTemplateExtIndex);
-
-  if (!options.silent) {
-    const userResponse = await Status.confirmChange({
-      foundLocalTemplate,
-      templateName,
-      zettelDir,
-      total: options.total,
-      zettelcornDir: MetaData.localDirectory,
-    });
-
-    const changeRejected = userResponse.match(/[yY]/) === null;
-    if (changeRejected) {
-      Deno.exit();
-    }
-  }
-
-  // TODO:
-  // Build the new file name.
-  // Build the new file.
-  // Up to --total times,
-  //   Generate %Y%m%d%H%M%S number ID.
-  //   Replace {id} token with ID in file name.
-  //   Replace {id} token with ID in file data.
-  //   Write zettel to <directory>.
-  // Report on all zettel files that were created.
-  // Write an integration test.
-  // Update README.
-
-  return Promise.resolve({ status: TStatusCodes.OK });
 }
 
-// async function _confirmChangeWithUser(
-//   options: Status.TConfirmChangeOptions,
-// ): Promise<void> {
-// }
+/**
+ * Get the local zettel template if it exists or fall back to the pre-defined default saved
+ * with this application.
+ */
+async function _getZettelTemplate(
+  options: TNewZettelRunOptions,
+): Promise<[string, string, boolean]> {
+  let fileName = Zettel.fileName;
+  let fileDataTemplate = Zettel.fileData;
+  let isLocal = false;
+
+  if (!options.default) {
+    const [name, data] = await $.getLocalConfigFile(Zettel.fileExt);
+    fileName = name ?? fileName;
+    fileDataTemplate = data ?? fileDataTemplate;
+    isLocal = !$.isEmpty(name);
+  }
+  const extIndex = fileName.indexOf(Zettel.fileExt);
+  const fileNameTemplate = fileName.substring(0, extIndex);
+
+  return [fileNameTemplate, fileDataTemplate, isLocal];
+}
+
+/**
+ * Write the new zettel files.
+ */
+function _writeZettelFiles(
+  options: TNewZettelRunOptions,
+  writePath: string,
+  createFileName: Function,
+  createFileData: Function,
+): string[] {
+  const writeResults: string[] = [];
+
+  for (let i = 0, len = options.total; i < len; i += 1) {
+    // Bump the seconds every iteration to ensure a unique timestamp. This will overwrite some
+    // files when creating several huge file batches in succession. However, this is a tradeoff
+    // when using a timestamp as a GUID. Modern computer clock speeds are just too fast for
+    // unique timestamps in rapid succession without using absurdly long precision formats.
+    const date = new Date();
+    date.setSeconds(i + date.getSeconds());
+
+    const tokenValues = Object.values(ConfigFiles.MetaData.tokens)
+      .reduce((accum, tokenData) => {
+        let tokenValue;
+        switch (tokenData.id) {
+          case "id":
+            tokenValue = tokenData.create(date);
+            break;
+          default:
+            tokenValue = tokenData.create();
+        }
+
+        return {
+          ...accum,
+          [tokenData.id]: tokenValue,
+        };
+      }, {});
+
+    const newFileName = createFileName(tokenValues);
+    const newFilePath = Path.join(writePath, newFileName);
+    const newFileData = createFileData(tokenValues);
+    Deno.writeTextFileSync(newFilePath, newFileData);
+    writeResults.push(newFileName);
+  }
+  return writeResults;
+}
 
 export const __private__ = {
-  // _confirmChangeWithUser,
+  _getZettelTemplate,
+  _preflightCheck,
+  _writeZettelFiles,
 };
 
 export default { run };

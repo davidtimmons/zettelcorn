@@ -6,9 +6,11 @@ import {
 } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test(
-  { name: "suite :: UTILITIES/FILE_SYSTEM/READ", ignore: true, fn() {} },
-);
+Deno.test({
+  name: "suite :: UTILITIES/FILE_SYSTEM/READ",
+  ignore: true,
+  fn() {},
+});
 
 Deno.test("buildFileQueue() should collect files", async () => {
   const results = await FS$.buildFileQueue({

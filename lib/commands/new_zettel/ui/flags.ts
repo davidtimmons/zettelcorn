@@ -18,7 +18,7 @@ export function addNewZettelCommand(
   flags
     .command(
       "new.zettel <directory>",
-      "Create a new zettel file",
+      "Create one or many new zettel files",
     )
     .option(
       "--total [n]",
@@ -29,11 +29,6 @@ export function addNewZettelCommand(
       "--default",
       "Ignore the local zettel template if it exists",
     )
-    // .option(
-    //   "--id [pattern]",
-    //   "Pattern used to generate the zettel ID",
-    //   { default: "%Y%m%d%H%M%S" }, // bash: date +"%Y%m%d%H%M%S""
-    // )
     .option(
       "--silent",
       "Run command with no console output and automatic yes to prompts",

@@ -4,7 +4,13 @@ import {
   HelpersUtilities as H$,
 } from "../../../lib/utilities/mod.ts";
 
-Deno.test("should compose functions", () => {
+Deno.test({
+  name: "suite :: UTILITIES/HELPERS/FUNCTIONAL",
+  ignore: true,
+  fn() {},
+});
+
+Deno.test("composeFunctions() should compose functions", () => {
   const addOne = (x: number) => x + 1;
 
   let actual01 = H$.composeFunctions()
@@ -26,7 +32,7 @@ Deno.test("should compose functions", () => {
   assertEquals(actual02.compose(0), 3);
 });
 
-Deno.test("should not calculate the result if there was no argument", () => {
+Deno.test("composeFunctions() should not calculate the result if there was no argument", () => {
   const getValue = (obj: any) => obj.key1.key2;
 
   let actual = H$.composeFunctions()
@@ -37,11 +43,11 @@ Deno.test("should not calculate the result if there was no argument", () => {
   assert(typeof actual, "function");
 });
 
-Deno.test("should return the argument identity", () => {
+Deno.test("identity() should return the argument identity", () => {
   assert(H$.identity("hello"), "hello");
 });
 
-Deno.test("should return either function depending on the condition", () => {
+Deno.test("doIf() should return either function depending on the condition", () => {
   const mayPass = (x: number) => {
     assertEquals(x, 42);
   };
@@ -57,7 +63,7 @@ Deno.test("should return either function depending on the condition", () => {
   H$.doIf(true, mayPass, willFail)(42);
 });
 
-Deno.test("should return a single function depending on the condition", () => {
+Deno.test("doOnlyIf() should return a single function depending on the condition", () => {
   const mayPass = (x: number) => {
     assertEquals(x, 42);
   };
@@ -73,7 +79,7 @@ Deno.test("should return a single function depending on the condition", () => {
   H$.doOnlyIf(true, mayPass)(42);
 });
 
-Deno.test("should check if the argument is an object", () => {
+Deno.test("isObjectLiteral() should check if the argument is an object", () => {
   [
     [{}, true, "object literal"],
     [[], false, "array"],
@@ -88,7 +94,7 @@ Deno.test("should check if the argument is an object", () => {
   });
 });
 
-Deno.test("should check if the argument is empty", () => {
+Deno.test("isEmpty() should check if the argument is empty", () => {
   [
     [null, true, "null"],
     [undefined, true, "undefined"],
@@ -103,60 +109,4 @@ Deno.test("should check if the argument is empty", () => {
     const actual = H$.isEmpty(test[0]);
     assertEquals(actual, test[1], test[2] as string);
   });
-});
-
-Deno.test("should replace spaces with dashes", (): void => {
-  let actual = H$.dasherize("hello world and hi there");
-  assertEquals(actual, "hello-world-and-hi-there");
-
-  actual = H$.dasherize("");
-  assertEquals(actual, "");
-});
-
-Deno.test("should inject pretty print into a dictionary object", () => {
-  const actual = H$.proxyPrintOnAccess({
-    number: 42,
-    boolean: true,
-    array: ["hello", "world"],
-    null: null,
-    map: {
-      a: 1,
-      b: "peach",
-      c: true,
-      d: {
-        e: 2,
-        f: 3,
-        g: {
-          h: 4,
-          i: 5,
-        },
-      },
-    },
-  });
-
-  assertEquals(actual.number, "42");
-  assertEquals(actual.boolean, "true");
-  assertEquals(actual.array, "hello,world");
-  assertEquals(actual.null, "null");
-  assertEquals(actual.map, "a=1,b=peach,c=true,e=2,f=3,h=4,i=5");
-});
-
-Deno.test("should find the first example", () => {
-  const filler: FS$.TReadResult = {
-    fileContent: "",
-    fileName: "",
-    meta: false,
-    path: "",
-    yaml: {},
-  };
-
-  const list: FS$.TReadResult[] = [
-    {} as FS$.TReadResult,
-    { ...filler, fileName: "match", meta: true },
-    { ...filler, fileName: "no match" },
-  ];
-
-  const test = (arg: FS$.TReadResult) => arg.fileName === "match";
-  const firstExample = H$.findFirstExample(list, test);
-  assertEquals(firstExample?.meta, true);
 });

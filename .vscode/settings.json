@@ -3,4 +3,5 @@
     "cSpell.words": [
         "deno"
     ],
+    "editor.tabSize": 2,
 }

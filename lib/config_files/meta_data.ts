@@ -5,7 +5,32 @@
  * @see module:config_files/mod
  */
 
-export const data = {
+import { Utilities as $ } from "./deps.ts";
+
+/// TYPES ///
+
+interface TTokens {
+  [token: string]: {
+    id: string;
+    create: Function;
+  };
+}
+
+interface TData {
+  fileCount: number;
+  localDirectory: string;
+  tokens: TTokens;
+}
+
+/// LOGIC ///
+
+export const data: TData = {
+  fileCount: 1,
   localDirectory: ".zettelcorn",
-  localFiles: 1,
+  tokens: {
+    "{id}": {
+      id: "id",
+      create: $.getTimestamp,
+    },
+  },
 };

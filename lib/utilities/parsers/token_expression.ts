@@ -17,6 +17,13 @@ export enum TTokenExpBracket {
   Other,
 }
 
+interface TTokenList {
+  [token: string]: {
+    id: string;
+    [attribute: string]: any;
+  };
+}
+
 /// LOGIC ///
 
 const LEFT_BRACKET = /{/ig;
@@ -26,6 +33,15 @@ export function hasTokenExp(pattern: string): boolean {
   const leftBracket = pattern.search(LEFT_BRACKET);
   const rightBracket = pattern.search(RIGHT_BRACKET);
   return leftBracket >= 0 && rightBracket >= 0 && leftBracket < rightBracket;
+}
+
+export function extractTokens(tokenList: TTokenList, data: string): TTokenList {
+  const tokens = Object.entries(tokenList);
+  const extract = tokens.filter((token) => {
+    const [name] = token;
+    return data.indexOf(name) >= 0;
+  });
+  return Object.fromEntries(extract);
 }
 
 /**

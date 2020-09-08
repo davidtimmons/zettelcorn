@@ -87,6 +87,7 @@ your files before using it. The only undo is the one you provide!
 1. [`inject.id`](#-injectid-options-directory)
 1. [`inject.keywords`](#-injectkeywords-options-directory)
 1. [`inject.title`](#-injecttitle-options-directory)
+1. [`new.zettel`](#-newzettel-options-directory)
 1. [`rename.files`](#-renamefiles-options-directory-pattern)
 
 ### [🠔](#-documentation) `zettelcorn`
@@ -97,9 +98,10 @@ Display the help menu.
 
 ### [🠔](#-documentation) `init [options] [directory]`
 
-Initializes a Zettelcorn project directory with configuration files. This is an optional command
-as many features available through the Zettelcorn CLI application will work as expected _without_
-local configuration files.
+Initializes a Zettelcorn project directory with configuration files.
+
+This is an optional command as most features available through the Zettelcorn CLI application
+will work as expected _without_ any local configuration files.
 
 #### API
 
@@ -126,6 +128,8 @@ All Zettelcorn configuration files will be written to and read from this directo
 to keep this directory under version control.
 
 ##### Configuration file: `{id}.md.zettel`
+
+_See:_ [`new.zettel`](#-newzettel-options-directory)
 
 - This is a template file for generating a new zettel.
 - The content of this file can modified as desired.
@@ -176,7 +180,7 @@ Running `inject.id` with the following command would inject frontmatter and the 
 into it for all zettels saved in and under that directory.
 
 ```bash
-$> zettelcorn inject.id -rb ./my-directory
+$> zettelcorn inject.id --recursive --verbose ./my-directory
 ```
 
 The example zettel would now look like this.
@@ -243,7 +247,7 @@ Running `inject.keywords` with the following command would inject frontmatter an
 into it for all zettels saved in and under that directory.
 
 ```bash
-$> zettelcorn inject.keywords -rb ./my-directory
+$> zettelcorn inject.keywords --recursive --verbose ./my-directory
 ```
 
 The example zettel would now look like this.
@@ -347,7 +351,7 @@ Running `inject.title` with the following command would inject frontmatter and t
 into it for all zettels saved in and under that directory.
 
 ```bash
-$> zettelcorn inject.title -rb ./my-directory
+$> zettelcorn inject.title --recursive --verbose ./my-directory
 ```
 
 The example zettel would now look like this.
@@ -360,6 +364,49 @@ title: Alien debuted in 1979 with a multi-million USD budget
 
 The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
+```
+
+### [🠔](#-documentation) `new.zettel [options] [directory]`
+
+Create one or many new zettel files.
+
+#### API
+
+- `[directory]` - The directory where the new zettel files will be created
+- `[options]`:
+  - `--total [n]` - Create \[n\] new zettel files (default: `1`)
+  - `--default` - Ignore the local zettel template if it exists
+  - `--silent` - Run command with no console output and automatic yes to prompts
+  - `--verbose` - List all zettel files that were created
+  - `-h, --help` - Display the help message for this command
+
+#### Notes
+
+_See:_ [`{id}.md.zettel`](#configuration-file-idmdzettel)
+
+- New zettels are created with a timestamp ID, e.g., `20200907174614`.
+- By default, when a zettel template is found, new zettel files are created based on that template.
+- If a local zettel template does not exist, this command uses the Zettelcorn default template.
+- You may choose to create a local zettel template with `zettelcorn init`.
+
+#### Example
+
+Suppose you are at the path `/home/ripley/zettelkasten` in your terminal. If a `.zettelcorn`
+directory exists there and contains a zettel template file, new zettels will be created from
+that template. If not, new zettels will be created from the Zettelcorn default template.
+
+Running `new.zettel` with the following command would create 5 new zettel files
+in your Zettelkasten.
+
+```bash
+$> zettelcorn new.zettel --verbose --total 5 ./my-directory
+```
+
+If you have a local zettel template, you may wish to use the Zettelcorn default template anyway.
+To do so, run the same command above using the `--default` flag.
+
+```bash
+$> zettelcorn new.zettel --verbose --default --total 5 ./my-directory
 ```
 
 ### [🠔](#-documentation) `rename.files [options] <directory> <pattern>`
@@ -408,7 +455,7 @@ Running `rename.files` with the following command would change the file name for
 saved in and under that directory.
 
 ```bash
-$> zettelcorn rename.files -drb ./my-directory "Movies-{id}-{title}-{keywords}.md"
+$> zettelcorn rename.files --dashed --recursive --verbose ./my-directory "Movies-{id}-{title}-{keywords}.md"
 ```
 
 The example zettel would get a new name.
