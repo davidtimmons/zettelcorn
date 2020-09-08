@@ -1,6 +1,6 @@
 # Zettelcorn
 
-CLI utilities for managing your Zettelkasten.
+CLI utilities for managing your Zettelkasten knowledge base.
 
 - [x] Compatible with Linux
 - [x] Compatible with Windows
@@ -34,7 +34,7 @@ After running Zettelcorn, Deno will cache all its dependencies. You will need to
 
 - `--unstable` - Zettelcorn uses the Deno standard library which is not yet completely stable.
 - `--allow-read` - Zettelcorn reads zettel files from your file system.
-- `--allow-write` - Zettelcorn renames files but always with your permission.
+- `--allow-write` - Zettelcorn modifies and writes files but always with your permission.
 - `--reload` - Updates the Deno cache to use the latest version of Zettelcorn.
 
 ### Linux
@@ -75,7 +75,7 @@ Finally, run `zettelcorn` from a PowerShell prompt.
 $> zettelcorn
 ```
 
-### Precaution
+### Caution
 
 Zettelcorn modifies files in your Zettelkasten. While Zettelcorn is well-tested, be sure to back up
 your files before using it. The only undo is the one you provide!
@@ -83,10 +83,12 @@ your files before using it. The only undo is the one you provide!
 ## [🠕](#-table-of-contents) Documentation
 
 1. [`zettelcorn`](#-zettelcorn)
-1. [`inject.id`](#-injectid-options-path)
-1. [`inject.keywords`](#-injectkeywords-options-path)
-1. [`inject.title`](#-injecttitle-options-path)
-1. [`rename.files`](#-renamefiles-options-path-pattern)
+1. [`init`](#-init-options-directory)
+1. [`inject.id`](#-injectid-options-directory)
+1. [`inject.keywords`](#-injectkeywords-options-directory)
+1. [`inject.title`](#-injecttitle-options-directory)
+1. [`new.zettel`](#-newzettel-options-directory)
+1. [`rename.files`](#-renamefiles-options-directory-pattern)
 
 ### [🠔](#-documentation) `zettelcorn`
 
@@ -94,9 +96,62 @@ _Alias:_ `zettelcorn -h`, `zettelcorn --help`
 
 Display the help menu.
 
-### [🠔](#-documentation) `inject.id [options] <path>`
+### [🠔](#-documentation) `init [options] [directory]`
+
+Initializes a Zettelcorn project directory with configuration files.
+
+This is an optional command as most features available through the Zettelcorn CLI application
+will work as expected _without_ any local configuration files.
+
+#### API
+
+- `[directory]` - The directory where a `.zettelcorn` directory will be created (default: `.`)
+- `[options]`:
+  - `--force` - Overwrite any existing Zettelcorn configuration files with default values
+  - `--silent` - Run command with no console output and automatic yes to prompts
+  - `--verbose` - List all configuration files that were created
+  - `-h, --help` - Display the help message for this command
+
+#### Notes
+
+Suppose you are at the path `/home/ripley/zettelkasten` in your terminal. Running `zettelcorn init`
+will create the following directory and files at that location:
+
+```text
+.zettelcorn
+|— {id}.md.zettel
+```
+
+##### Configuration directory: `.zettelcorn`
+
+All Zettelcorn configuration files will be written to and read from this directory. You may wish
+to keep this directory under version control.
+
+##### Configuration file: `{id}.md.zettel`
+
+_See:_ [`new.zettel`](#-newzettel-options-directory)
+
+- This is a template file for generating a new zettel.
+- The content of this file can modified as desired.
+- The file name can be modified as desired up to the `.zettel` extension.
+- Tokens such as `{id}` are automatically replaced when creating a new zettel from this template.
+- `{id}` is the only recognized token.
+
+### [🠔](#-documentation) `inject.id [options] <directory>`
 
 Inject the detected ID into an "id" key inside the YAML frontmatter.
+
+#### API
+
+- `directory` - The directory to search for zettels
+- `[options]`:
+  - `--regex [pattern]` - Detect the ID using a regular expression (default: `\d{14}`)
+  - `--skip` - Skip files that contain an "id" frontmatter key
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
+  - `--verbose` - List all files where IDs were injected
+  - `-h, --help` - Display the help message for this command
 
 #### Notes
 
@@ -105,17 +160,6 @@ Inject the detected ID into an "id" key inside the YAML frontmatter.
 - An "id" key will be added to the frontmatter if it does not exist.
 - If an ID is found it will be injected into "id".
 - If an ID is found but one already exists in "id", it will be overwritten.
-
-#### API
-
-- `path` - The directory to search for zettels
-- [options]:
-  - `-x, --regex [pattern]` - Detect the ID using a regular expression (default: `\d{14}`)
-  - `-s, --skip` - Skip files that contain an "id" frontmatter key
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all files where IDs were injected
-  - `-h, --help` - Display the help message for this command
 
 #### Example
 
@@ -136,7 +180,7 @@ Running `inject.id` with the following command would inject frontmatter and the 
 into it for all zettels saved in and under that directory.
 
 ```bash
-$> zettelcorn inject.id -rb ./my-directory
+$> zettelcorn inject.id --recursive --verbose ./my-directory
 ```
 
 The example zettel would now look like this.
@@ -151,9 +195,22 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-### [🠔](#-documentation) `inject.keywords [options] <path>`
+### [🠔](#-documentation) `inject.keywords [options] <directory>`
 
 Inject topic tags into a "keywords" list inside the YAML frontmatter.
+
+#### API
+
+- `directory` - The directory to search for zettels
+- `[options]`:
+  - `--heuristic` - Attempt to detect lines dedicated to listing topic tags
+  - `--merge` - Merge found topic tags into frontmatter "keywords" instead of overwriting them
+  - `--skip` - Skip files that contain a "keywords" frontmatter key
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
+  - `--verbose` - List all files where keywords were injected
+  - `-h, --help` - Display the help message for this command
 
 #### Notes
 
@@ -166,22 +223,10 @@ Inject topic tags into a "keywords" list inside the YAML frontmatter.
 
 - If topic tags are found but "keywords" already exists, it will be overwritten.
 
-##### Merge Option
+##### `--merge`
 
 - If "keywords" exists and already contains a list, topic tags will be merged into the existing list.
 - If "keywords" exists but is not a list, the script will fail.
-
-#### API
-
-- `path` - The directory to search for zettels
-- [options]:
-  - `-u, --heuristic` - Attempt to detect lines dedicated to listing topic tags
-  - `-g, --merge` - Merge found topic tags into frontmatter "keywords" instead of overwriting them
-  - `-s, --skip` - Skip files that contain a "keywords" frontmatter key
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all files where keywords were injected
-  - `-h, --help` - Display the help message for this command
 
 #### Example
 
@@ -192,17 +237,17 @@ my-zettel.md
 ```
 
 ```text
-#Alien #movie #budget ##1979
+##1979 #Alien #movie #budget
 
 The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
-In 2020, that same amount would be worth roughly $39,000,000 USD.
+In #2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
 Running `inject.keywords` with the following command would inject frontmatter and found topic tags
 into it for all zettels saved in and under that directory.
 
 ```bash
-$> zettelcorn inject.keywords -rb ./my-directory
+$> zettelcorn inject.keywords --recursive --verbose ./my-directory
 ```
 
 The example zettel would now look like this.
@@ -214,14 +259,15 @@ keywords:
   - Alien
   - movie
   - budget
+  - 2020
 ---
 ##1979 #Alien #movie #budget
 
 The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
-In 2020, that same amount would be worth roughly $39,000,000 USD.
+In #2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-#### Example (Using the Heuristic Option)
+#### Example (`--heuristic`)
 
 The `--heuristic` option looks for rows in a zettel that end with at least two topic tags.
 If the heuristic fails to find anything, Zettelcorn will fall back to searching for _anything_
@@ -263,9 +309,20 @@ keywords:
 The hashtag (i.e. #hashtag) came into popular usage with social media platforms. #win
 ```
 
-### [🠔](#-documentation) `inject.title [options] <path>`
+### [🠔](#-documentation) `inject.title [options] <directory>`
 
 Inject the detected title into a "title" key inside the YAML frontmatter.
+
+#### API
+
+- `directory` - The directory to search for zettels
+- `[options]`:
+  - `--skip` - Skip files that contain a "title" frontmatter key
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
+  - `--verbose` - List all files where titles were injected
+  - `-h, --help` - Display the help message for this command
 
 #### Notes
 
@@ -274,16 +331,6 @@ Inject the detected title into a "title" key inside the YAML frontmatter.
 - A "title" key will be added to the frontmatter if it does not exist.
 - If a title is found it will be injected into "title".
 - If a title is found but one already exists in "title", it will be overwritten.
-
-#### API
-
-- `path` - The directory to search for zettels
-- [options]:
-  - `-s, --skip` - Skip files that contain a "title" frontmatter key
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all files where titles were injected
-  - `-h, --help` - Display the help message for this command
 
 #### Example
 
@@ -304,7 +351,7 @@ Running `inject.title` with the following command would inject frontmatter and t
 into it for all zettels saved in and under that directory.
 
 ```bash
-$> zettelcorn inject.title -rb ./my-directory
+$> zettelcorn inject.title --recursive --verbose ./my-directory
 ```
 
 The example zettel would now look like this.
@@ -319,25 +366,69 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-### [🠔](#-documentation) `rename.files [options] <path> <pattern>`
+### [🠔](#-documentation) `new.zettel [options] [directory]`
+
+Create one or many new zettel files.
+
+#### API
+
+- `[directory]` - The directory where the new zettel files will be created
+- `[options]`:
+  - `--total [n]` - Create \[n\] new zettel files (default: `1`)
+  - `--default` - Ignore the local zettel template if it exists
+  - `--silent` - Run command with no console output and automatic yes to prompts
+  - `--verbose` - List all zettel files that were created
+  - `-h, --help` - Display the help message for this command
+
+#### Notes
+
+_See:_ [`{id}.md.zettel`](#configuration-file-idmdzettel)
+
+- New zettels are created with a timestamp ID, e.g., `20200907174614`.
+- By default, when a zettel template is found, new zettel files are created based on that template.
+- If a local zettel template does not exist, this command uses the Zettelcorn default template.
+- You may choose to create a local zettel template with `zettelcorn init`.
+
+#### Example
+
+Suppose you are at the path `/home/ripley/zettelkasten` in your terminal. If a `.zettelcorn`
+directory exists there and contains a zettel template file, new zettels will be created from
+that template. If not, new zettels will be created from the Zettelcorn default template.
+
+Running `new.zettel` with the following command would create 5 new zettel files
+in your Zettelkasten.
+
+```bash
+$> zettelcorn new.zettel --verbose --total 5 ./my-directory
+```
+
+If you have a local zettel template, you may wish to use the Zettelcorn default template anyway.
+To do so, run the same command above using the `--default` flag.
+
+```bash
+$> zettelcorn new.zettel --verbose --default --total 5 ./my-directory
+```
+
+### [🠔](#-documentation) `rename.files [options] <directory> <pattern>`
 
 Rename files containing YAML frontmatter.
+
+#### API
+
+- `directory` - The directory to search for zettels
+- `pattern` - The pattern to use when renaming files
+- `[options]`:
+  - `--dashed` - Substitute dashes for spaces in the file name
+  - `--markdown` - Only modify Markdown files by looking for the *.md extension
+  - `--recursive` - Run command on a directory and all its sub-directories
+  - `--silent` - Run command with no console output and automatic yes to prompts
+  - `--verbose` - List all paths that changed along with each new value
+  - `-h, --help` - Display the help message for this command
 
 #### Notes
 
 - All files that do not contain frontmatter are skipped.
 - It will fail if YAML keys used in the pattern are not found in every file containing frontmatter.
-
-#### API
-
-- `path` - The directory to search for zettels
-- `pattern` - The pattern to use when renaming files
-- [options]:
-  - `-d, --dashed` - Substitute dashes for spaces in the file name
-  - `-r, --recursive` - Run command on a directory and all its sub-directories
-  - `-m, --markdown` - Only modify Markdown files by looking for the *.md extension
-  - `-b, --verbose` - List all paths that changed along with each new value
-  - `-h, --help` - Display the help message for this command
 
 #### Example
 
@@ -364,7 +455,7 @@ Running `rename.files` with the following command would change the file name for
 saved in and under that directory.
 
 ```bash
-$> zettelcorn rename.files -drb ./my-directory "Movies-{id}-{title}-{keywords}.md"
+$> zettelcorn rename.files --dashed --recursive --verbose ./my-directory "Movies-{id}-{title}-{keywords}.md"
 ```
 
 The example zettel would get a new name.

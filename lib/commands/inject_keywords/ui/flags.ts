@@ -1,3 +1,10 @@
+/**
+ * Provides menu descriptions for this command to the CLI interface.
+ * @protected
+ * @module commands/inject_keywords/ui/flags
+ * @see module:commands/inject_keywords/mod
+ */
+
 import { CLITypes } from "../deps.ts";
 import { Types } from "../mod.ts";
 
@@ -10,49 +17,52 @@ export function addInjectKeywordsCommand(
 
   flags
     .command(
-      "inject.keywords <path>",
+      "inject.keywords <directory>",
       'Inject topic tags into a "keywords" list inside the YAML frontmatter',
     )
     .option(
-      "-u, --heuristic",
+      "--heuristic",
       "Attempt to detect lines dedicated to listing topic tags",
     )
     .option(
-      "-g, --merge",
+      "--merge",
       'Merge found topic tags into frontmatter "keywords" instead of overwriting them',
     )
     .option(
-      "-s, --skip",
+      "--skip",
       'Skip files that contain a "keywords" frontmatter key',
     )
     .option(
-      "-r, --recursive",
-      "Run command on a directory and all its sub-directories",
-    )
-    .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
-      "List all files where keywords were injected",
+      "--recursive",
+      "Run command on a directory and all its sub-directories",
     )
-    .example("inject.keywords -r ./zettelkasten")
+    .option(
+      "--silent",
+      "Run command with no console output and automatic yes to prompts",
+    )
+    .option(
+      "--verbose",
+      "List all files where IDs were injected",
+    )
     .example("inject.keywords --recursive ./zettelkasten")
-    .example("inject.keywords -urb ./zettelkasten")
     .example("inject.keywords --heuristic --recursive --verbose ./zettelkasten")
     .action(
       async (
-        path: string,
+        directory: string,
         options: Types.TInjectKeywordsOptions,
       ): Promise<void> => {
         await injectKeywords({
-          directory: path,
+          directory,
           heuristic: Boolean(options.heuristic),
-          skip: Boolean(options.skip),
-          recursive: Boolean(options.recursive),
-          markdown: Boolean(options.markdown),
           merge: Boolean(options.merge),
+          skip: Boolean(options.skip),
+          markdown: Boolean(options.markdown),
+          recursive: Boolean(options.recursive),
+          silent: Boolean(options.silent),
           verbose: Boolean(options.verbose),
         });
       },

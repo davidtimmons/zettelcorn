@@ -1,3 +1,10 @@
+/**
+ * Types for this command module.
+ * @protected
+ * @module commands/inject_title/types
+ * @see module:commands/inject_title/mod
+ */
+
 import * as CT from "../types.ts";
 import { CLITypes } from "./deps.ts";
 

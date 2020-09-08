@@ -1,9 +1,27 @@
+/**
+ * Utilities for detecting and interpreting token expressions passed as an argument to the program.
+ * Token names are always assumed to match a variable name inside parsed YAML frontmatter.
+ * Token names are always assumed to be wrapped in curly braces.
+ * For example, "{id}-{title}.md" is a common token expression string.
+ * @protected
+ * @module utilities/parsers/token_expression
+ * @see module:utilities/parsers/mod
+ * @see module:utilities/mod
+ */
+
 /// TYPES ///
 
 export enum TTokenExpBracket {
   LeftBracket,
   RightBracket,
   Other,
+}
+
+interface TTokenList {
+  [token: string]: {
+    id: string;
+    [attribute: string]: any;
+  };
 }
 
 /// LOGIC ///
@@ -17,6 +35,15 @@ export function hasTokenExp(pattern: string): boolean {
   return leftBracket >= 0 && rightBracket >= 0 && leftBracket < rightBracket;
 }
 
+export function extractTokens(tokenList: TTokenList, data: string): TTokenList {
+  const tokens = Object.entries(tokenList);
+  const extract = tokens.filter((token) => {
+    const [name] = token;
+    return data.indexOf(name) >= 0;
+  });
+  return Object.fromEntries(extract);
+}
+
 /**
  * Given a token expression, generate a getter function that will populate a template string
  * with data extracted from an object argument.
@@ -25,10 +52,18 @@ export function hasTokenExp(pattern: string): boolean {
  * generateGetterFromTokenExp("this-{id}.md")
  */
 export function generateGetterFromTokenExp(pattern: string): Function {
-  return Function(
+  /**
+   * Creates a dynamic YAML object getter function based on user arguments to the CLI.
+   * @function
+   * @param {object} data - YAML frontmatter parsed into a JavaScript object.
+   * @return {string} - Template string that references keys in the data object.
+   */
+  const populateTokenExp = Function(
     "data",
     "return " + generateTemplateStrFromTokenExp("data", pattern),
   );
+
+  return populateTokenExp;
 }
 
 /**

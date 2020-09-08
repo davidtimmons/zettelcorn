@@ -1,3 +1,11 @@
+/**
+ * Utilities for working with the user interface.
+ * @protected
+ * @module utilities/ui/console
+ * @see module:utilities/ui/mod
+ * @see module:utilities/mod
+ */
+
 import { Colors, FS, IO } from "../deps.ts";
 
 /// TYPES ///
@@ -6,6 +14,7 @@ export enum TUIStyles {
   BOLD,
   CYAN,
   GREEN,
+  RED,
   YELLOW,
 }
 
@@ -33,17 +42,21 @@ export function formatWithEOL(
   return formatted;
 }
 
-export function notifyUserOfChange(firstValue: any, lastValue?: any) {
+export function notifyUserOfChange(
+  firstValue: any,
+  lastValue: any,
+  options?: TLogOptions,
+) {
   const message = [
     "",
     firstValue,
+    lastValue,
   ];
-  if (lastValue) message.push(lastValue);
-  formatWithEOL(message, true);
+  notifyUser(message, options);
 }
 
-export async function sendToUser(text: string): Promise<string> {
-  console.log(text);
+export async function promptUser(text: string): Promise<string> {
+  notifyUser(text);
   // Listen to stdin for a new line
   for await (const line of IO.readLines(Deno.stdin)) {
     return line;
@@ -51,11 +64,24 @@ export async function sendToUser(text: string): Promise<string> {
   return "";
 }
 
-export function log(value: any, options: TLogOptions) {
-  const message = [_paint(options.style)(value)];
+export function maybeNotifyUser(
+  shouldNotify: boolean,
+  value: any,
+  options?: TLogOptions,
+) {
+  if (shouldNotify) {
+    notifyUser(value, options);
+  }
+}
 
-  if (options.padTop) message.unshift("");
-  if (options.padBottom) message.push("");
+export function notifyUser(value: any, options?: TLogOptions) {
+  let message = value;
+
+  if (options) {
+    message = [_paint(options.style)(value)];
+    if (options.padTop) message.unshift("");
+    if (options.padBottom) message.push("");
+  }
 
   formatWithEOL(message, true);
 }
@@ -68,6 +94,8 @@ function _paint(style?: TUIStyles): Function {
       return (x: any) => Colors.cyan(x);
     case TUIStyles.GREEN:
       return (x: any) => Colors.green(x);
+    case TUIStyles.RED:
+      return (x: any) => Colors.red(x);
     case TUIStyles.YELLOW:
       return (x: any) => Colors.yellow(x);
     default:

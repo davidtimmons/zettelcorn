@@ -1,3 +1,10 @@
+/**
+ * Provides menu descriptions for this command to the CLI interface.
+ * @protected
+ * @module commands/inject_id/ui/flags
+ * @see module:commands/inject_id/mod
+ */
+
 import { CLITypes } from "../deps.ts";
 import { Types } from "../mod.ts";
 
@@ -10,47 +17,50 @@ export function addInjectIdCommand(
 
   flags
     .command(
-      "inject.id <path>",
+      "inject.id <directory>",
       'Inject the detected ID into an "id" key inside the YAML frontmatter',
     )
     .option(
-      "-x, --regex [pattern]",
+      "--regex [pattern]",
       "Detect the ID using a regular expression",
       {
         default: String.raw`\d{14}`,
       },
     )
     .option(
-      "-s, --skip",
+      "--skip",
       'Skip files that contain an "id" frontmatter key',
     )
     .option(
-      "-r, --recursive",
-      "Run command on a directory and all its sub-directories",
-    )
-    .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
+      "--recursive",
+      "Run command on a directory and all its sub-directories",
+    )
+    .option(
+      "--silent",
+      "Run command with no console output and automatic yes to prompts",
+    )
+    .option(
+      "--verbose",
       "List all files where IDs were injected",
     )
-    .example(String.raw`inject.id -x "\d{14}" ./zettelkasten`)
-    .example(String.raw`inject.id -regex "\d{14}" ./zettelkasten`)
-    .example(String.raw`inject.id -r -x "\d{14}" ./zettelkasten`)
+    .example(String.raw`inject.id --regex "\d{14}" ./zettelkasten`)
     .example(String.raw`inject.id --recursive --regex "\d{14}" ./zettelkasten`)
     .action(
       async (
-        path: string,
+        directory: string,
         options: Types.TInjectIdOptions,
       ): Promise<void> => {
         await injectId({
-          directory: path,
+          directory,
           regex: new RegExp(options.regex),
           skip: Boolean(options.skip),
-          recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
+          recursive: Boolean(options.recursive),
+          silent: Boolean(options.silent),
           verbose: Boolean(options.verbose),
         });
       },

@@ -4,11 +4,12 @@ const { _yamlTransformation } = InjectId.__private__;
 
 const MENU_OPTIONS = Object.freeze({
   directory: "",
-  regex: /\d{14}/,
-  skip: false,
   markdown: false,
   merge: false,
   recursive: false,
+  regex: /\d{14}/,
+  silent: true,
+  skip: false,
   verbose: false,
 });
 
@@ -66,7 +67,7 @@ Deno.test("should handle menu options when injecting an ID", () => {
 
 Deno.test("should inject IDs into all files", async () => {
   // setup
-  const basePath = "./test/test_data/injecting/id";
+  const basePath = "./test/test_data/inject/id";
   const test01Path = Deno.realPathSync(Path.join(basePath, "test01.md"));
   const test02Path = Deno.realPathSync(Path.join(basePath, "test02.md"));
   const test03Path = Deno.realPathSync(Path.join(basePath, "test03.md"));

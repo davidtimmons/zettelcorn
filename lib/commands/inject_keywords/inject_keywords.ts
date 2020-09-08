@@ -1,6 +1,14 @@
-import { TStatus } from "../types.ts";
+/**
+ * Inject topic tags into a "keywords" list inside the YAML frontmatter.
+ * @protected
+ * @implements {ICommandModule}
+ * @module commands/inject_keywords/rename_files
+ * @see module:commands/inject_keywords/mod
+ */
+
+import { TExitCodes, TStatusCodes } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
-import { Types, UI } from "./mod.ts";
+import { Status, Types } from "./mod.ts";
 
 export async function run(
   options: Types.TInjectKeywordsRunOptions,
@@ -15,37 +23,17 @@ export async function run(
       yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
-    UI.notifyUserOfExit({ error: err });
+    Status.notifyUserOfExit({
+      ...options,
+      error: err,
+      exitCode: TExitCodes.UNKNOWN_ERROR,
+    });
     throw err;
   }
 
-  // Find the first file example with keywords in the YAML object.
-  let firstExample = $.findFirstExample(fileQueue, (file) => {
-    const maybeKeywords = file.yaml.keywords;
-    if (maybeKeywords?.length > 0) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  // Confirm change before injecting keywords into files.
-  const noKeywordsFound = $.isEmpty(firstExample);
-  if (noKeywordsFound) {
-    UI.notifyUserOfExit({ directory: options.directory });
-    Deno.exit();
+  if (!options.silent) {
+    await _confirmChangeWithUser(options, fileQueue);
   }
-
-  const userResponse = options.silent ? "Y" : await UI.confirmChange({
-    fileName: firstExample?.fileName || "",
-    keywords: firstExample?.yaml.keywords.join(", ") || "",
-    willMerge: options.merge,
-    willSkip: options.skip,
-  });
-
-  // Process user response.
-  const changeRejected = userResponse.match(/[yY]/) === null;
-  if (changeRejected) Deno.exit();
 
   await $.writeQueuedFiles(_write, {
     ...options,
@@ -53,7 +41,7 @@ export async function run(
     endWorkMsg: `${fileQueue.length} files injected with YAML keywords.`,
   }, fileQueue);
 
-  return Promise.resolve({ status: TStatus.OK });
+  return Promise.resolve({ status: TStatusCodes.OK });
 }
 
 /**
@@ -106,6 +94,42 @@ function _yamlTransformation(
   }
 }
 
+async function _confirmChangeWithUser(
+  options: Types.TInjectKeywordsRunOptions,
+  fileQueue: $.TReadResult[],
+): Promise<void> {
+  // Find the first file example with keywords in the YAML object.
+  const firstExample = $.findFirstExample(fileQueue, (file) => {
+    const maybeKeywords = file.yaml.keywords;
+    if (maybeKeywords?.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  // Confirm change before injecting keywords into files.
+  const noTopicTagsFound = $.isEmpty(firstExample);
+  if (noTopicTagsFound) {
+    Status.notifyUserOfExit({
+      ...options,
+      exitCode: TExitCodes.NO_TAGS_FOUND,
+    });
+    Deno.exit();
+  }
+
+  const userResponse = await Status.confirmChange({
+    fileName: firstExample?.fileName || "",
+    keywords: firstExample?.yaml.keywords.join(", ") || "",
+    willMerge: options.merge,
+    willSkip: options.skip,
+  });
+
+  // Process user response.
+  const changeRejected = userResponse.match(/[yY]/) === null;
+  if (changeRejected) Deno.exit();
+}
+
 async function _write(
   options: Types.TInjectKeywordsWriteOptions,
   file: $.TReadResult,
@@ -115,10 +139,13 @@ async function _write(
 
   await Deno.writeTextFile(path, content, { create: false });
 
-  if (options.verbose) $.notifyUserOfChange(path, file.yaml.keywords);
+  if (!options.silent && options.verbose) {
+    $.notifyUserOfChange(path, file.yaml.keywords);
+  }
 }
 
 export const __private__ = {
+  _confirmChangeWithUser,
   _write,
   _yamlTransformation,
 };

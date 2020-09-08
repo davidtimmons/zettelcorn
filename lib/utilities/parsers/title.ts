@@ -1,4 +1,12 @@
 /**
+ * Utilities for working with Markdown-style titles, e.g. "# Title", found within text data.
+ * @protected
+ * @module utilities/parsers/title
+ * @see module:utilities/parsers/mod
+ * @see module:utilities/mod
+ */
+
+/**
  * Find the first line a document that appears to be a Markdown title.
  */
 export function findH1Title(fileContent: string): string {

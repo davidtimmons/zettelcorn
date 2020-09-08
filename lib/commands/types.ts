@@ -1,6 +1,26 @@
-export enum TStatus {
+/**
+ * Module-level types for all implemented CLI features.
+ * @protected
+ * @module commands/types
+ * @see module:commands/mod
+ */
+
+export enum TStatusCodes {
   OK,
   ERROR,
+}
+
+export enum TExitCodes {
+  INVALID_DIRECTORY,
+  INVALID_NUMBER,
+  INVALID_PATTERN,
+  NO_DIRECTORY_FOUND,
+  NO_FRONTMATTER_FOUND,
+  NO_TAGS_FOUND,
+  NO_TITLE_FOUND,
+  UNKNOWN_ERROR,
+  UNMATCHED_PATTERN,
+  WRITE_ERROR,
 }
 
 export interface TCommandModule {
@@ -11,11 +31,8 @@ export interface TCommand {
   (options: any): TRunResult;
 }
 
-export interface TRunOptions {
-  readonly directory: string;
-  readonly silent?: boolean;
-}
+export interface TRunOptions {}
 
 export type TRunResult = Promise<{
-  readonly status: TStatus;
+  readonly status: TStatusCodes;
 }>;

@@ -1,8 +1,19 @@
+/**
+ * Creates the CLI menu displayed to the user. Each command provides its own menu description.
+ * @protected
+ * @module cli/cli
+ * @see module:cli/mod
+ * @see module:zettelcorn
+ * @see {@link https://github.com/cacjs/cac|Command And Conquer}
+ */
+
 import {
   CAC,
+  InitFlags,
   InjectIdFlags,
   InjectKeywordsFlags,
   InjectTitleFlags,
+  NewZettelFlags,
   RenameFilesFlags,
 } from "./deps.ts";
 import * as T from "./types.ts";
@@ -10,9 +21,11 @@ import * as T from "./types.ts";
 export function init(options: T.TCLIInit): void {
   const flags: T.TCLIFlags = CAC(options.appName);
 
+  InitFlags.addInitCommand(options, flags);
   InjectIdFlags.addInjectIdCommand(options, flags);
   InjectKeywordsFlags.addInjectKeywordsCommand(options, flags);
   InjectTitleFlags.addInjectTitleCommand(options, flags);
+  NewZettelFlags.addNewZettelCommand(options, flags);
   RenameFilesFlags.addRenameFilesCommand(options, flags);
 
   flags.help();

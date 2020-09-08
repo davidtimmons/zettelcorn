@@ -1,8 +1,14 @@
+/**
+ * Types for this command module.
+ * @protected
+ * @module commands/rename_files/types
+ * @see module:commands/rename_files/mod
+ */
+
 import * as CT from "../types.ts";
 import { CLITypes } from "./deps.ts";
 
 export type TRenameFilesOptions = CLITypes.TCLIStandardOptions & {
-  d?: boolean;
   dashed: boolean;
 };
 

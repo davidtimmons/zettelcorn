@@ -1,3 +1,10 @@
+/**
+ * Provides menu descriptions for this command to the CLI interface.
+ * @protected
+ * @module commands/inject_title/ui/flags
+ * @see module:commands/inject_title/mod
+ */
+
 import { CLITypes } from "../deps.ts";
 import { Types } from "../mod.ts";
 
@@ -10,37 +17,41 @@ export function addInjectTitleCommand(
 
   flags
     .command(
-      "inject.title <path>",
+      "inject.title <directory>",
       'Inject the detected title into a "title" key inside the YAML frontmatter',
     )
     .option(
-      "-s, --skip",
+      "--skip",
       'Skip files that contain a "title" frontmatter key',
     )
     .option(
-      "-r, --recursive",
-      "Run command on a directory and all its sub-directories",
-    )
-    .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
-      "List all files where titles were injected",
+      "--recursive",
+      "Run command on a directory and all its sub-directories",
     )
-    .example("inject.title -r ./zettelkasten")
+    .option(
+      "--silent",
+      "Run command with no console output and automatic yes to prompts",
+    )
+    .option(
+      "--verbose",
+      "List all files where IDs were injected",
+    )
     .example("inject.title --recursive ./zettelkasten")
     .action(
       async (
-        path: string,
+        directory: string,
         options: Types.TInjectTitleOptions,
       ): Promise<void> => {
         await injectTitle({
-          directory: path,
+          directory,
           skip: Boolean(options.skip),
-          recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
+          recursive: Boolean(options.recursive),
+          silent: Boolean(options.silent),
           verbose: Boolean(options.verbose),
         });
       },

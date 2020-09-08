@@ -1,3 +1,10 @@
+/**
+ * Provides menu descriptions for this command to the CLI interface.
+ * @protected
+ * @module commands/rename_files/ui/flags
+ * @see module:commands/rename_files/mod
+ */
+
 import { CLITypes } from "../deps.ts";
 import { Types } from "../mod.ts";
 
@@ -10,41 +17,46 @@ export function addRenameFilesCommand(
 
   flags
     .command(
-      "rename.files <path> <pattern>",
+      "rename.files <directory> <pattern>",
       "Rename files containing YAML frontmatter",
     )
     .option(
-      "-d, --dashed",
+      "--dashed",
       "Substitute dashes for spaces in the file name",
     )
     .option(
-      "-r, --recursive",
-      "Run command on a directory and all its sub-directories",
-    )
-    .option(
-      "-m, --markdown",
+      "--markdown",
       "Only modify Markdown files by looking for the *.md extension",
     )
     .option(
-      "-b, --verbose",
-      "List all paths that changed along with each new value",
+      "--recursive",
+      "Run command on a directory and all its sub-directories",
     )
-    .example('rename.files -r ./zettelkasten "{id}-{title}.md"')
+    .option(
+      "--silent",
+      "Run command with no console output and automatic yes to prompts",
+    )
+    .option(
+      "--verbose",
+      "List all files where IDs were injected",
+    )
     .example('rename.files --recursive ./zettelkasten "{id}-{title}.md"')
-    .example('rename.files -rd ./zettelkasten "{id}-{title}.md"')
-    .example('rename.files --recursive --dashed ./zettelkasten "{id}-{title}.md"')
+    .example(
+      'rename.files --recursive --dashed ./zettelkasten "{id}-{title}.md"',
+    )
     .action(
       async (
-        path: string,
+        directory: string,
         pattern: string,
         options: Types.TRenameFilesOptions,
       ): Promise<void> => {
         await renameFiles({
+          directory,
           pattern,
-          directory: path,
           dashed: Boolean(options.dashed),
-          recursive: Boolean(options.recursive),
           markdown: Boolean(options.markdown),
+          recursive: Boolean(options.recursive),
+          silent: Boolean(options.silent),
           verbose: Boolean(options.verbose),
         });
       },

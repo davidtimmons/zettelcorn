@@ -1,6 +1,14 @@
-import { TStatus } from "../types.ts";
+/**
+ * Inject the detected ID into an "id" key inside the YAML frontmatter.
+ * @protected
+ * @implements {ICommandModule}
+ * @module commands/inject_id/rename_files
+ * @see module:commands/inject_id/mod
+ */
+
+import { TExitCodes, TStatusCodes } from "../types.ts";
 import { Utilities as $ } from "./deps.ts";
-import { Types, UI } from "./mod.ts";
+import { Status, Types } from "./mod.ts";
 
 export async function run(
   options: Types.TInjectIdRunOptions,
@@ -15,36 +23,17 @@ export async function run(
       yamlTransformation: _yamlTransformation.bind(null, options),
     });
   } catch (err) {
-    UI.notifyUserOfExit({ error: err });
+    Status.notifyUserOfExit({
+      ...options,
+      error: err,
+      exitCode: TExitCodes.UNKNOWN_ERROR,
+    });
     throw err;
   }
 
-  // Find the first file example with a title in the YAML object.
-  let firstExample = $.findFirstExample(fileQueue, (file) => {
-    const maybeId = file.yaml.id;
-    if (!$.isEmpty(maybeId)) {
-      return true;
-    } else {
-      return false;
-    }
-  });
-
-  // Confirm change before injecting titles into files.
-  const noIdFound = $.isEmpty(firstExample);
-  if (noIdFound) {
-    UI.notifyUserOfExit({ directory: options.directory });
-    Deno.exit();
+  if (!options.silent) {
+    await _confirmChangeWithUser(options, fileQueue);
   }
-
-  const userResponse = options.silent ? "Y" : await UI.confirmChange({
-    fileName: firstExample?.fileName || "",
-    id: firstExample?.yaml.id.toString(),
-    willSkip: options.skip,
-  });
-
-  // Process user response.
-  const changeRejected = userResponse.match(/[yY]/) === null;
-  if (changeRejected) Deno.exit();
 
   await $.writeQueuedFiles(_write, {
     ...options,
@@ -52,7 +41,7 @@ export async function run(
     endWorkMsg: `${fileQueue.length} files injected with a YAML ID.`,
   }, fileQueue);
 
-  return Promise.resolve({ status: TStatus.OK });
+  return Promise.resolve({ status: TStatusCodes.OK });
 }
 
 /**
@@ -85,6 +74,41 @@ function _yamlTransformation(
   };
 }
 
+async function _confirmChangeWithUser(
+  options: Types.TInjectIdRunOptions,
+  fileQueue: $.TReadResult[],
+): Promise<void> {
+  // Find the first file example with a title in the YAML object.
+  const firstExample = $.findFirstExample(fileQueue, (file) => {
+    const maybeId = file.yaml.id;
+    if (!$.isEmpty(maybeId)) {
+      return true;
+    } else {
+      return false;
+    }
+  });
+
+  // Confirm change before injecting titles into files.
+  const noIdMatched = $.isEmpty(firstExample);
+  if (noIdMatched) {
+    Status.notifyUserOfExit({
+      ...options,
+      exitCode: TExitCodes.UNMATCHED_PATTERN,
+    });
+    Deno.exit();
+  }
+
+  const userResponse = await Status.confirmChange({
+    fileName: firstExample?.fileName || "",
+    id: firstExample?.yaml.id.toString(),
+    willSkip: options.skip,
+  });
+
+  // Process user response.
+  const changeRejected = userResponse.match(/[yY]/) === null;
+  if (changeRejected) Deno.exit();
+}
+
 async function _write(
   options: Types.TInjectIdWriteOptions,
   file: $.TReadResult,
@@ -94,10 +118,13 @@ async function _write(
 
   await Deno.writeTextFile(path, content, { create: false });
 
-  if (options.verbose) $.notifyUserOfChange(path, file.yaml.id);
+  if (!options.silent && options.verbose) {
+    $.notifyUserOfChange(path, file.yaml.id);
+  }
 }
 
 export const __private__ = {
+  _confirmChangeWithUser,
   _yamlTransformation,
   _write,
 };

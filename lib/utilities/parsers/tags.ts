@@ -1,4 +1,12 @@
 /**
+ * Utilities for working with topic tags, e.g. "#topic #tags", found within text data.
+ * @protected
+ * @module utilities/parsers/tags
+ * @see module:utilities/parsers/mod
+ * @see module:utilities/mod
+ */
+
+/**
  * Find everything in a document that appears to be a topic tag, e.g. "#topic".
  */
 export function findAllTags(fileContent: string): string[] {

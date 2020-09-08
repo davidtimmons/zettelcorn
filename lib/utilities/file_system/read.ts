@@ -1,4 +1,12 @@
-import { FS, Path } from "../deps.ts";
+/**
+ * Utilities for reading and transforming data from the file system.
+ * @protected
+ * @module utilities/file_system/read
+ * @see module:utilities/file_system/mod
+ * @see module:utilities/mod
+ */
+
+import { FS, MetaData, Path } from "../deps.ts";
 import { HelpersUtilities as H$, ParsersUtilities as P$ } from "../mod.ts";
 
 /// TYPES ///
@@ -39,6 +47,10 @@ interface TTransform {
 interface TTransformYAML {
   (options: TTransformOptions): { [key: string]: any };
 }
+
+type TFileName = string;
+type TFileData = string;
+type TConfigFile = [TFileName, TFileData] | [];
 
 /// LOGIC ///
 
@@ -106,4 +118,33 @@ export async function readTextFile(path: string): Promise<string> {
   if (path.length === 0) return "";
   const contents = await Deno.readTextFile(path);
   return contents;
+}
+
+export async function doesFileOrDirectoryExist(path: string): Promise<boolean> {
+  let exists = true;
+  try {
+    await Deno.lstat(path);
+  } catch (_error) {
+    exists = false;
+  }
+  return exists;
+}
+
+export async function getLocalConfigFile(
+  fileNameSubstring: string,
+  localDirectory = MetaData.localDirectory,
+): Promise<TConfigFile> {
+  const baseReadPath = Path.join(Deno.cwd(), localDirectory);
+  const configExists = await doesFileOrDirectoryExist(baseReadPath);
+  if (configExists) {
+    for (const dirEntry of Deno.readDirSync(baseReadPath)) {
+      const name = dirEntry.name;
+      const isConfigFile = name.indexOf(fileNameSubstring) >= 0;
+      if (isConfigFile) {
+        const data = Deno.readTextFileSync(Path.join(baseReadPath, name));
+        return [name, data];
+      }
+    }
+  }
+  return [];
 }

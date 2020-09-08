@@ -1,5 +1,13 @@
+/**
+ * Utilities for writing data to the file system.
+ * @protected
+ * @module utilities/file_system/write
+ * @see module:utilities/file_system/mod
+ * @see module:utilities/mod
+ */
+
 import { UIUtilities as UI$ } from "../mod.ts";
-import { TReadResult } from "./read.ts";
+import { TReadResult, doesFileOrDirectoryExist } from "./read.ts";
 
 /// TYPES ///
 
@@ -26,7 +34,7 @@ export async function writeQueuedFiles<T>(
     `Processed ${fileQueue.length} files.`;
 
   if (options.verbose) {
-    UI$.log(startWorkMsg, {
+    UI$.notifyUser(startWorkMsg, {
       padTop: true,
       padBottom: false,
       style: UI$.TUIStyles.BOLD,
@@ -42,10 +50,20 @@ export async function writeQueuedFiles<T>(
     .all(promises)
     .then(() => {
       if (options.silent) return;
-      UI$.log(endWorkMsg, {
+      UI$.notifyUser(endWorkMsg, {
         padTop: true,
         padBottom: true,
         style: UI$.TUIStyles.BOLD,
       });
     });
+}
+
+export async function removeDirectory(dirPath: string) {
+  const doesExist = await doesFileOrDirectoryExist(dirPath);
+  if (doesExist) {
+    await Deno.remove(dirPath, { recursive: true });
+    return true;
+  } else {
+    return false;
+  }
 }
