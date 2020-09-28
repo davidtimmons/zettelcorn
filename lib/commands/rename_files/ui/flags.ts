@@ -5,8 +5,8 @@
  * @see module:commands/rename_files/mod
  */
 
-import { CLITypes } from "../deps.ts";
-import { Types } from "../mod.ts";
+import type { CLITypes } from "../deps.ts";
+import type * as Types from "../types.ts";
 
 export function addRenameFilesCommand(
   options: CLITypes.TCLIInit,

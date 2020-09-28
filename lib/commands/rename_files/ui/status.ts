@@ -5,9 +5,9 @@
  * @see module:commands/rename_files/mod
  */
 
-import { TExitCodes } from "../../types.ts";
+import { TExitCodes } from "../../mod.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
-import { TRenameFilesRunOptions } from "../types.ts";
+import type { TRenameFilesRunOptions } from "../types.ts";
 
 /// TYPES ///
 

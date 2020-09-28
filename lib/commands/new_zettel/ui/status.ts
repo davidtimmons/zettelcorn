@@ -5,9 +5,9 @@
  * @see module:commands/new_zettel/mod
  */
 
-import { TExitCodes } from "../../types.ts";
+import { TExitCodes } from "../../mod.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
-import { TNewZettelRunOptions } from "../types.ts";
+import type { TNewZettelRunOptions } from "../types.ts";
 
 /// TYPES ///
 

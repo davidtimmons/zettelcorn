@@ -5,9 +5,9 @@
  * @see module:commands/inject_title/mod
  */
 
-import { TExitCodes } from "../../types.ts";
+import { TExitCodes } from "../../mod.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
-import { TInjectTitleRunOptions } from "../types.ts";
+import type { TInjectTitleRunOptions } from "../types.ts";
 
 /// TYPES ///
 

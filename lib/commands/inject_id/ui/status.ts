@@ -5,9 +5,9 @@
  * @see module:commands/inject_id/mod
  */
 
-import { TExitCodes } from "../../types.ts";
+import { TExitCodes } from "../../mod.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
-import { TInjectIdRunOptions } from "../types.ts";
+import type { TInjectIdRunOptions } from "../types.ts";
 
 /// TYPES ///
 

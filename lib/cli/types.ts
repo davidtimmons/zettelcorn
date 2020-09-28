@@ -5,7 +5,7 @@
  * @see module:cli/mod
  */
 
-import {
+import type {
   InitTypes,
   InjectIdTypes,
   InjectKeywordsTypes,

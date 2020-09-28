@@ -5,9 +5,9 @@
  * @see module:commands/inject_keywords/mod
  */
 
-import { TExitCodes } from "../../types.ts";
+import { TExitCodes } from "../../mod.ts";
 import { Colors, Utilities as $ } from "../deps.ts";
-import { TInjectKeywordsRunOptions } from "../types.ts";
+import type { TInjectKeywordsRunOptions } from "../types.ts";
 
 /// TYPES ///
 

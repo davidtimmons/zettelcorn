@@ -1,6 +1,6 @@
 import { assert, ConfigFiles, Commands } from "../../../deps.ts";
 import { Status } from "../../../../lib/commands/init/mod.ts";
-const TExitCodes = Commands.Types.TExitCodes;
+const TExitCodes = Commands.TExitCodes;
 
 const CONSOLE_LOG = console.log;
 const MENU_OPTIONS = Object.freeze({

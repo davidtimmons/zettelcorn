@@ -30,6 +30,10 @@ https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.
 After running Zettelcorn, Deno will cache all its dependencies. You will need to include a
 `--reload` flag whenever you want Deno to update your cache to use the latest Zettelcorn version.
 
+### Deno Compatibility
+
+Zettelcorn was last tested with Deno `1.4.2`.
+
 ### Deno Flags
 
 - `--unstable` - Zettelcorn uses the Deno standard library which is not yet completely stable.

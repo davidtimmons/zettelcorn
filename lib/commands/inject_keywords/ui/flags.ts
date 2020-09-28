@@ -5,8 +5,8 @@
  * @see module:commands/inject_keywords/mod
  */
 
-import { CLITypes } from "../deps.ts";
-import { Types } from "../mod.ts";
+import type { CLITypes } from "../deps.ts";
+import type * as Types from "../types.ts";
 
 export function addInjectKeywordsCommand(
   options: CLITypes.TCLIInit,

@@ -5,9 +5,9 @@
  * @see module:commands/init/mod
  */
 
-import { TExitCodes } from "../../types.ts";
+import { TExitCodes } from "../../mod.ts";
 import { Colors, Path, Utilities as $ } from "../deps.ts";
-import { TInitRunOptions } from "../types.ts";
+import type { TInitRunOptions } from "../types.ts";
 
 /// TYPES ///
 

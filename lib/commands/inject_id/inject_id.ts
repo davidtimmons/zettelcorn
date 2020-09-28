@@ -6,9 +6,10 @@
  * @see module:commands/inject_id/mod
  */
 
-import { TExitCodes, TStatusCodes } from "../types.ts";
+import { TExitCodes, TStatusCodes } from "../mod.ts";
 import { Utilities as $ } from "./deps.ts";
-import { Status, Types } from "./mod.ts";
+import type * as Types from "./types.ts";
+import * as Status from "./ui/status.ts";
 
 export async function run(
   options: Types.TInjectIdRunOptions,

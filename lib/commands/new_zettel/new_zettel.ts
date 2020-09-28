@@ -6,10 +6,10 @@
  * @see module:commands/new_zettel/mod
  */
 
-import { TExitCodes, TStatusCodes } from "../types.ts";
+import { TExitCodes, TStatusCodes } from "../mod.ts";
 import { ConfigFiles, Path, Utilities as $ } from "./deps.ts";
-import { Status, Types } from "./mod.ts";
-import { TNewZettelRunOptions } from "./types.ts";
+import type * as Types from "./types.ts";
+import * as Status from "./ui/status.ts";
 
 const { MetaData, Zettel } = ConfigFiles;
 
@@ -71,7 +71,7 @@ export async function run(
  * Check all pre-conditions before attempting to write any files. Fail fast rather than
  * guessing what the user may have meant.
  */
-async function _preflightCheck(options: TNewZettelRunOptions) {
+async function _preflightCheck(options: Types.TNewZettelRunOptions) {
   const totalIsValid = typeof options.total === "number" && options.total > 0;
   if (!totalIsValid) {
     Status.notifyUserOfExit({
@@ -96,7 +96,7 @@ async function _preflightCheck(options: TNewZettelRunOptions) {
  * with this application.
  */
 async function _getZettelTemplate(
-  options: TNewZettelRunOptions,
+  options: Types.TNewZettelRunOptions,
 ): Promise<[string, string, boolean]> {
   let fileName = Zettel.fileName;
   let fileDataTemplate = Zettel.fileData;
@@ -118,7 +118,7 @@ async function _getZettelTemplate(
  * Write the new zettel files.
  */
 function _writeZettelFiles(
-  options: TNewZettelRunOptions,
+  options: Types.TNewZettelRunOptions,
   writePath: string,
   createFileName: Function,
   createFileData: Function,

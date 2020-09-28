@@ -7,6 +7,7 @@
  * @see {@link https://github.com/cacjs/cac|Command And Conquer}
  */
 
+import type * as T from "./types.ts";
 import {
   CAC,
   InitFlags,
@@ -16,7 +17,6 @@ import {
   NewZettelFlags,
   RenameFilesFlags,
 } from "./deps.ts";
-import * as T from "./types.ts";
 
 export function init(options: T.TCLIInit): void {
   const flags: T.TCLIFlags = CAC(options.appName);

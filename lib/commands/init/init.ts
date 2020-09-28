@@ -6,10 +6,10 @@
  * @see module:commands/init/mod
  */
 
-import { TExitCodes, TStatusCodes } from "../types.ts";
+import { TExitCodes, TStatusCodes } from "../mod.ts";
 import { ConfigFiles, Path, Utilities as $ } from "./deps.ts";
-import { Status, Types } from "./mod.ts";
-import { TInitRunOptions } from "./types.ts";
+import type * as Types from "./types.ts";
+import * as Status from "./ui/status.ts";
 
 const { MetaData, Zettel } = ConfigFiles;
 
@@ -57,7 +57,7 @@ export async function run(
  * Check all pre-conditions before attempting to write any files. Fail fast rather than
  * guessing what the user may have meant.
  */
-async function _preflightCheck(options: TInitRunOptions) {
+async function _preflightCheck(options: Types.TInitRunOptions) {
   // Paths cannot be generated against a directory that does not exist. Do not create
   // directories and files based on a typo.
   const baseDirExists = await $.doesFileOrDirectoryExist(options.directory);

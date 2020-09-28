@@ -5,8 +5,8 @@
  * @see module:commands/inject_id/mod
  */
 
-import * as CT from "../types.ts";
-import { CLITypes } from "./deps.ts";
+import type * as CT from "../types.ts";
+import type { CLITypes } from "./deps.ts";
 
 export type TInjectIdOptions = CLITypes.TCLIStandardOptions & {
   regex: RegExp;
