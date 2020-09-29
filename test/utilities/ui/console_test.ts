@@ -2,7 +2,9 @@ import { assert, unimplemented } from "../../deps.ts";
 import { UIUtilities as UI$ } from "../../../lib/utilities/mod.ts";
 const { _paint } = UI$.__private__;
 
-Deno.test("should notify the user of change", (): void => {
+Deno.test({name: "suite :: UTILITIES/UI/CONSOLE", ignore: true, fn() {}});
+
+Deno.test("notifyUserOfChange() should notify the user of change", (): void => {
   // setup
   const originalConsoleLog = console.log;
 
@@ -21,7 +23,7 @@ Deno.test("should notify the user of change", (): void => {
 });
 
 Deno.test({
-  name: "should read text from the user",
+  name: "promptUser() should read text from the user",
   ignore: true,
   async fn() {
     // TODO: Research best way to simulate input to stdin.
@@ -30,7 +32,7 @@ Deno.test({
   },
 });
 
-Deno.test("should formatted log text", (): void => {
+Deno.test("notifyUser() should formatted log text", (): void => {
   // setup
   const originalConsoleLog = console.log;
 
@@ -51,7 +53,7 @@ Deno.test("should formatted log text", (): void => {
   console.log = originalConsoleLog;
 });
 
-Deno.test("should return a text style function", (): void => {
+Deno.test("_paint() should return a text style function", (): void => {
   assert(_paint(UI$.TUIStyles.BOLD)("hello world"), "hello world");
   assert(_paint(UI$.TUIStyles.CYAN)("hello world"), "hello world");
   assert(_paint(UI$.TUIStyles.GREEN)("hello world"), "hello world");

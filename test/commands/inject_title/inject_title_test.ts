@@ -21,7 +21,15 @@ const TRANSFORM_OPTIONS = Object.freeze({
   path: "",
 });
 
-Deno.test("should inject a title into a YAML object", () => {
+Deno.test(
+  {
+    name: "suite :: COMMANDS/INJECT_TITLE/INJECT_TITLE",
+    ignore: true,
+    fn() {},
+  },
+);
+
+Deno.test("_yamlTransformation() should inject a title into a YAML object", () => {
   const actual01 = _yamlTransformation(MENU_OPTIONS, { ...TRANSFORM_OPTIONS });
   assertEquals(actual01, { title: "" });
 
@@ -46,7 +54,7 @@ Deno.test("should inject a title into a YAML object", () => {
   assertEquals(actual04, { title: "Hello World" });
 });
 
-Deno.test("should handle menu options when injecting a title", () => {
+Deno.test("_yamlTransformation() should handle menu options when injecting a title", () => {
   const actual = _yamlTransformation({
     ...MENU_OPTIONS,
     skip: true,
@@ -58,7 +66,7 @@ Deno.test("should handle menu options when injecting a title", () => {
   assertEquals(actual, { title: "Foo Bar Baz" }, "skip: true");
 });
 
-Deno.test("should inject titles into all files", async () => {
+Deno.test("run() should inject titles into all files", async () => {
   // setup
   const basePath = "./test/test_data/inject/title";
   const test01Path = Deno.realPathSync(Path.join(basePath, "test01.md"));

@@ -24,11 +24,9 @@ async function runAfter(dir: string) {
   await $.removeDirectory(dir);
 }
 
-Deno.test({
-  name: "suite :: COMMANDS/NEW_ZETTEL/NEW_ZETTEL",
-  ignore: true,
-  fn() {},
-});
+Deno.test(
+  { name: "suite :: COMMANDS/NEW_ZETTEL/NEW_ZETTEL", ignore: true, fn() {} },
+);
 
 Deno.test("run() should write new zettel files to a directory", async () => {
   // setup

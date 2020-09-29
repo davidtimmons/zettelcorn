@@ -1,7 +1,9 @@
 import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
 import { ParsersUtilities as T$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test("should find topic tags in a document using a heuristic", () => {
+Deno.test({name: "suite :: UTILITIES/PARSERS/TAGS", ignore: true, fn() {}});
+
+Deno.test("findHeuristicTags() should find topic tags in a document using a heuristic", () => {
   const document = $.formatWithEOL([
     "#topic #tag #row",
     "Hello world!",
@@ -11,7 +13,7 @@ Deno.test("should find topic tags in a document using a heuristic", () => {
   assertEquals(T$.findHeuristicTags(document), ["#topic", "#tag", "#row"]);
 });
 
-Deno.test("should find all topic tags if the heuristic fails", () => {
+Deno.test("findHeuristicTags() should find all topic tags if the heuristic fails", () => {
   const document = $.formatWithEOL([
     "#topic",
     "Hello world!",
@@ -21,7 +23,7 @@ Deno.test("should find all topic tags if the heuristic fails", () => {
   assertEquals(T$.findHeuristicTags(document), ["#topic", "#thing"]);
 });
 
-Deno.test("should find all tags", () => {
+Deno.test("findAllTags() should find all tags", () => {
   [
     ["", 0, []],
     [
@@ -36,14 +38,14 @@ Deno.test("should find all tags", () => {
   });
 });
 
-Deno.test("should strip tag delimiters", () => {
+Deno.test("removeTagDelimiters() should strip tag delimiters", () => {
   const tagsRaw = T$.findAllTags("#hello ##world #foo-bar_baz05 # something");
   const tags = T$.removeTagDelimiters(tagsRaw);
   assertEquals(tags.length, 3);
   assertEquals(tags, ["hello", "world", "foo-bar_baz05"]);
 });
 
-Deno.test("should find all keywords", () => {
+Deno.test("findKeywords() should find all keywords", () => {
   const kw = T$.findKeywords(
     false,
     "#hello ##world \r\n#foo-bar_baz05 # something",
@@ -52,7 +54,7 @@ Deno.test("should find all keywords", () => {
   assertEquals(kw, ["hello", "world", "foo-bar_baz05"]);
 });
 
-Deno.test("should remove empty tags and those with only punctuation", () => {
+Deno.test("findAllTags() should exclude empty tags and those with only punctuation", () => {
   // setup
   const basePath = "./test/test_data/filter";
   const filePath = Deno.realPathSync(Path.join(basePath, "test_tags.md"));
@@ -76,7 +78,7 @@ Deno.test("should remove empty tags and those with only punctuation", () => {
   );
 });
 
-Deno.test("should roughly detect a row of topic tags", () => {
+Deno.test("detectTagRows() should roughly detect a row of topic tags", () => {
   // setup
   const basePath = "./test/test_data/filter";
   const filePath = Deno.realPathSync(Path.join(basePath, "test_tags.md"));

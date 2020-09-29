@@ -2,7 +2,9 @@ import { assert, assertThrows } from "../deps.ts";
 import * as CLI from "../../lib/cli/cli.ts";
 const { _tryParse } = CLI.__private__;
 
-Deno.test("should display help with no command given", (): void => {
+Deno.test({ name: "suite :: CLI/CLI", ignore: true, fn() {} });
+
+Deno.test("init() should display help with no command given", (): void => {
   // setup
   const originalConsoleLog = console.log;
 
@@ -23,13 +25,13 @@ Deno.test("should display help with no command given", (): void => {
   console.log = originalConsoleLog;
 });
 
-Deno.test("should throw on an unexpected error", (): void => {
+Deno.test("_tryParse() should throw on an unexpected error", (): void => {
   assertThrows((): void => {
     _tryParse({});
   });
 });
 
-Deno.test("should display a helpful error message", (): void => {
+Deno.test("_tryParse() should display a helpful error message", (): void => {
   // setup
   const originalConsoleError = console.error;
   let cacError = new Error();

@@ -1,7 +1,9 @@
 import { assertEquals, assertStringContains } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test("should print a message when starting and finishing writes", async () => {
+Deno.test({name: "suite :: UTILITIES/FILE_SYSTEM/WRITE", ignore: true, fn() {}});
+
+Deno.test("writeQueuedFiles() should print a message when starting and finishing writes", async () => {
   // setup
   const originalConsoleLog = console.log;
   const write = async (_x: unknown, _y: unknown) => {};
@@ -27,7 +29,7 @@ Deno.test("should print a message when starting and finishing writes", async () 
   console.log = originalConsoleLog;
 });
 
-Deno.test("should wait for all queued files to be written", async () => {
+Deno.test("writeQueuedFiles() should wait for all queued files to be written", async () => {
   // setup
   const originalConsoleLog = console.log;
   let callCount = 0;

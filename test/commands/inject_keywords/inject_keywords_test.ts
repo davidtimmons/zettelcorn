@@ -27,7 +27,15 @@ const TRANSFORM_OPTIONS = Object.freeze({
   path: "",
 });
 
-Deno.test("should inject topic tags into a YAML object", () => {
+Deno.test(
+  {
+    name: "suite :: COMMANDS/INJECT_KEYWORDS/INJECT_KEYWORDS",
+    ignore: true,
+    fn() {},
+  },
+);
+
+Deno.test("_yamlTransformation() should inject topic tags into a YAML object", () => {
   const actual01 = _yamlTransformation(MENU_OPTIONS, { ...TRANSFORM_OPTIONS });
   assertEquals(actual01, { keywords: [] });
 
@@ -57,7 +65,7 @@ Deno.test("should inject topic tags into a YAML object", () => {
   assertThrows(shouldThrow);
 });
 
-Deno.test("should handle menu options when injecting topic tags", () => {
+Deno.test("_yamlTransformation() should handle menu options when injecting topic tags", () => {
   const actual01 = _yamlTransformation({
     ...MENU_OPTIONS,
     skip: true,
@@ -79,7 +87,7 @@ Deno.test("should handle menu options when injecting topic tags", () => {
   assertEquals(actual02, { keywords: ["hello", "world", "foo"] }, "merge");
 });
 
-Deno.test("should find all keywords and inject them into files", async () => {
+Deno.test("run() should find all keywords and inject them into files", async () => {
   // setup
   const basePath = "./test/test_data/inject/keywords";
   const test01Path = Deno.realPathSync(Path.join(basePath, "test01.md"));

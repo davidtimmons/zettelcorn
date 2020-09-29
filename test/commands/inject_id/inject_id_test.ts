@@ -22,7 +22,11 @@ const TRANSFORM_OPTIONS = Object.freeze({
   path: "",
 });
 
-Deno.test("should inject an ID into a YAML object", () => {
+Deno.test(
+  { name: "suite :: COMMANDS/INJECT_ID/INJECT_ID", ignore: true, fn() {} },
+);
+
+Deno.test("_yamlTransformation() should inject an ID into a YAML object", () => {
   const actual01 = _yamlTransformation(MENU_OPTIONS, { ...TRANSFORM_OPTIONS });
   assertEquals(actual01, { id: null });
 
@@ -53,7 +57,7 @@ Deno.test("should inject an ID into a YAML object", () => {
   assertEquals(actual05, { id: 98765432123456 });
 });
 
-Deno.test("should handle menu options when injecting an ID", () => {
+Deno.test("_yamlTransformation() should handle menu options when injecting an ID", () => {
   const actual = _yamlTransformation({
     ...MENU_OPTIONS,
     skip: true,
@@ -65,7 +69,7 @@ Deno.test("should handle menu options when injecting an ID", () => {
   assertEquals(actual, { id: 123 }, "skip: true");
 });
 
-Deno.test("should inject IDs into all files", async () => {
+Deno.test("run() should inject IDs into all files", async () => {
   // setup
   const basePath = "./test/test_data/inject/id";
   const test01Path = Deno.realPathSync(Path.join(basePath, "test01.md"));

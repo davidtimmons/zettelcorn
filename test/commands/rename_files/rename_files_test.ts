@@ -13,7 +13,15 @@ const MENU_OPTIONS = Object.freeze({
   verbose: false,
 });
 
-Deno.test("should rename a file", async () => {
+Deno.test(
+  {
+    name: "suite :: COMMANDS/RENAME_FILES/RENAME_FILES",
+    ignore: true,
+    fn() {},
+  },
+);
+
+Deno.test("_write() should rename a file", async () => {
   // setup
   const basePath = "./test/test_data/filter/";
   const oldPath = Path.join.apply(null, [basePath, "test.md"]);
@@ -44,7 +52,7 @@ Deno.test("should rename a file", async () => {
   Deno.renameSync(newPathReal, oldPathReal);
 });
 
-Deno.test("should rename all files", async () => {
+Deno.test("run() should rename all files", async () => {
   // setup
   const basePath = "./test/test_data/recursion/deeper";
 

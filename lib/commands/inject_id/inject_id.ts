@@ -2,7 +2,7 @@
  * Inject the detected ID into an "id" key inside the YAML frontmatter.
  * @protected
  * @implements {ICommandModule}
- * @module commands/inject_id/rename_files
+ * @module commands/inject_id/inject_id
  * @see module:commands/inject_id/mod
  */
 

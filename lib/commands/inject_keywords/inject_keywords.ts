@@ -2,7 +2,7 @@
  * Inject topic tags into a "keywords" list inside the YAML frontmatter.
  * @protected
  * @implements {ICommandModule}
- * @module commands/inject_keywords/rename_files
+ * @module commands/inject_keywords/inject_keywords
  * @see module:commands/inject_keywords/mod
  */
 
