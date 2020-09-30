@@ -11,7 +11,7 @@ import { ConfigFiles, Path, Utilities as $ } from "./deps.ts";
 import type * as Types from "./types.ts";
 import * as Status from "./ui/status.ts";
 
-const { MetaData, Zettel } = ConfigFiles;
+const { MetaData, ZcConfig, Zettel } = ConfigFiles;
 
 export async function run(
   options: Types.TInitRunOptions,
@@ -25,6 +25,7 @@ export async function run(
   // Add .zettelcorn configuration files to be copied here:
   const configFiles: [string, string][] = [
     [Path.join(writePath, Zettel.fileName), Zettel.fileData],
+    [Path.join(writePath, ZcConfig.fileName), ZcConfig.fileData],
   ];
 
   // If something goes wrong when writing files, fail and attempt to remove anything written.

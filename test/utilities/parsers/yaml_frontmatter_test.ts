@@ -2,7 +2,13 @@ import { assert, assertEquals, equal } from "../../deps.ts";
 import * as $ from "../../../lib/utilities/mod.ts";
 import { ParsersUtilities as Y$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test({name: "suite :: UTILITIES/PARSERS/YAML_FRONTMATTER", ignore: true, fn() {}});
+Deno.test(
+  {
+    name: "suite :: UTILITIES/PARSERS/YAML_FRONTMATTER",
+    ignore: true,
+    fn() {},
+  },
+);
 
 Deno.test("getDelimiterPositions() should get frontmatter delimiter positions", () => {
   assertEquals(Y$.getDelimiterPositions(""), [-1, -1]);

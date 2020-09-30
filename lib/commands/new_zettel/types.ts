@@ -10,6 +10,7 @@ import type { CLITypes } from "./deps.ts";
 
 export type TNewZettelOptions = CLITypes.TCLIStandardOptions & {
   default: boolean;
+  template: string;
   total: number;
 };
 

@@ -25,7 +25,7 @@ interface TData {
 /// LOGIC ///
 
 export const data: TData = {
-  fileCount: 1,
+  fileCount: 2, // Number of files to be copied to the local hard drive.
   localDirectory: ".zettelcorn",
   tokens: {
     "{id}": {

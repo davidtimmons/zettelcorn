@@ -1,7 +1,7 @@
 import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
 import { ParsersUtilities as T$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test({name: "suite :: UTILITIES/PARSERS/TAGS", ignore: true, fn() {}});
+Deno.test({ name: "suite :: UTILITIES/PARSERS/TAGS", ignore: true, fn() {} });
 
 Deno.test("findHeuristicTags() should find topic tags in a document using a heuristic", () => {
   const document = $.formatWithEOL([

@@ -1,7 +1,8 @@
 # Temporary files
 
-.zettelcorn
 temp
+/.zettelcorn
+!test_data/.zettelcorn
 
 # Logs
 logs

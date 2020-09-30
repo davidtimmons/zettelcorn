@@ -124,6 +124,7 @@ will create the following directory and files at that location:
 ```text
 .zettelcorn
 |— {id}.md.zettel
+|— zettelcorn_config.yaml
 ```
 
 ##### Configuration directory: `.zettelcorn`
@@ -139,7 +140,19 @@ _See:_ [`new.zettel`](#-newzettel-options-directory)
 - The content of this file can modified as desired.
 - The file name can be modified as desired up to the `.zettel` extension.
 - Tokens such as `{id}` are automatically replaced when creating a new zettel from this template.
-- `{id}` is the only recognized token.
+- `{id}` is the only recognized token for now.
+
+##### Configuration file: `zettelcorn_config.yaml`
+
+- This file contains optional configuration settings for Zettelcorn.
+- `zettel_templates`:
+  - Create custom template files that match your Zettelkasten workflow.
+  - There must be a "default" key and a default template.
+  - Any other template is optional.
+  - Follow these steps to use additional custom templates:
+    1. Create a new key in the YAML configuration file, e.g. `alt`.
+    1. Create a new file with a compound file extension that matches the YAML key and ends with `.zettel`, e.g. `.alt.zettel`.
+    1. Provide this key to the appropriate Zettelcorn command, e.g. [`new.zettel --template alt`](#-newzettel-options-directory).
 
 ### [🠔](#-documentation) `inject.id [options] <directory>`
 
@@ -380,13 +393,14 @@ Create one or many new zettel files.
 - `[options]`:
   - `--total [n]` - Create \[n\] new zettel files (default: `1`)
   - `--default` - Ignore the local zettel template if it exists
+  - `--template <key>` - Create a new zettel file using a custom template (requires init)
   - `--silent` - Run command with no console output and automatic yes to prompts
   - `--verbose` - List all zettel files that were created
   - `-h, --help` - Display the help message for this command
 
 #### Notes
 
-_See:_ [`{id}.md.zettel`](#configuration-file-idmdzettel)
+_See:_ [`init [options] [directory]`](#-init-options-directory)
 
 - New zettels are created with a timestamp ID, e.g., `20200907174614`.
 - By default, when a zettel template is found, new zettel files are created based on that template.
@@ -399,18 +413,26 @@ Suppose you are at the path `/home/ripley/zettelkasten` in your terminal. If a `
 directory exists there and contains a zettel template file, new zettels will be created from
 that template. If not, new zettels will be created from the Zettelcorn default template.
 
-Running `new.zettel` with the following command would create 5 new zettel files
-in your Zettelkasten.
+Running `new.zettel` with the following command would create 5 new zettel files in your Zettelkasten.
 
 ```bash
 $> zettelcorn new.zettel --verbose --total 5 ./my-directory
 ```
 
-If you have a local zettel template, you may wish to use the Zettelcorn default template anyway.
+Even if you have local zettel templates, you may wish to use the Zettelcorn default.
 To do so, run the same command above using the `--default` flag.
 
 ```bash
 $> zettelcorn new.zettel --verbose --default --total 5 ./my-directory
+```
+
+Alternatively, if you have several different local zettel templates for different purposes,
+you can choose the one you want to use. These must first be configured in the local YAML
+configuration file the `zettelcorn init` command creates. To use an alternate template instead of
+the default, run the `new.zettel` command using the `--template <key>` flag.
+
+```bash
+$> zettelcorn new.zettel --verbose --template my_other_template ./my-directory
 ```
 
 ### [🠔](#-documentation) `rename.files [options] <directory> <pattern>`

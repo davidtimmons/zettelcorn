@@ -89,6 +89,15 @@ export function notifyUserOfExit(options: TNotifyUserOfExitOptions) {
       ];
       break;
 
+    case TExitCodes.NO_FILE_FOUND:
+      message = [
+        Colors.red("The template you entered does not exist."),
+        "This is the template you entered: " +
+        Colors.yellow(options.template),
+        "No files were created.",
+      ];
+      break;
+
     case TExitCodes.INVALID_NUMBER:
       message = [
         Colors.red(

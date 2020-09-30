@@ -1,0 +1,9 @@
+# ZETTELCORN CONFIGURATION
+# Visit https://github.com/davidtimmons/zettelcorn to read more about this file.
+
+# Create template files that match your Zettelkasten workflow. There must be a "default" key and
+# a default template, but every other template is optional.
+
+zettel_templates:
+  default: "{id}.md.zettel"            # Default file template used to create a new zettel
+  alt: "{id}-alt.md.alt.zettel"        # Any number of alternate specialized templates may also be used

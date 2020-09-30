@@ -10,7 +10,13 @@ const MENU_OPTIONS = Object.freeze({
   verbose: false,
 });
 
-const runBefore = runAfter;
+function runBefore(): string {
+  const basePath = Deno.realPathSync("./test/test_data/write");
+  return Deno.makeTempDirSync({
+    dir: basePath,
+    prefix: "InitTest_run()_",
+  });
+}
 
 async function runAfter(dir: string) {
   await $.removeDirectory(dir);
@@ -20,19 +26,19 @@ Deno.test({ name: "suite :: COMMANDS/INIT/INIT", ignore: true, fn() {} });
 
 Deno.test("run() should copy configuration files to a .zettelcorn directory", async () => {
   // setup
-  const basePath = Deno.realPathSync("./test/test_data/");
-  const configDirectory = Path.join(basePath, ".zettelcorn");
-  await runBefore(configDirectory);
+  const writePath = runBefore();
+  const configDirectory = Path.join(writePath, ".zettelcorn");
 
   // test
   const goalPaths = [
     configDirectory,
     Path.join(configDirectory, ConfigFiles.Zettel.fileName),
+    Path.join(configDirectory, ConfigFiles.ZcConfig.fileName),
   ];
 
   await Init.run({
     ...MENU_OPTIONS,
-    directory: basePath,
+    directory: writePath,
   });
 
   goalPaths.forEach(async (path) => {
@@ -41,14 +47,13 @@ Deno.test("run() should copy configuration files to a .zettelcorn directory", as
   });
 
   // cleanup
-  await runAfter(configDirectory);
+  await runAfter(writePath);
 });
 
 Deno.test("run() should overwrite existing configuration files in a .zettelcorn directory", async () => {
   // setup
-  const basePath = Deno.realPathSync("./test/test_data/");
-  const configDirectory = Path.join(basePath, ".zettelcorn");
-  await runBefore(configDirectory);
+  const writePath = runBefore();
+  const configDirectory = Path.join(writePath, ".zettelcorn");
 
   const falsePath = Path.join(configDirectory, "hello-world.md");
   Deno.mkdirSync(configDirectory);
@@ -63,7 +68,7 @@ Deno.test("run() should overwrite existing configuration files in a .zettelcorn 
   for (let i = 0, len = 3; i < len; i++) {
     await Init.run({
       ...MENU_OPTIONS,
-      directory: basePath,
+      directory: writePath,
       force: true,
     });
   }
@@ -77,5 +82,5 @@ Deno.test("run() should overwrite existing configuration files in a .zettelcorn 
   assertEquals(falsePathExists, false);
 
   // cleanup
-  await runAfter(configDirectory);
+  await runAfter(writePath);
 });

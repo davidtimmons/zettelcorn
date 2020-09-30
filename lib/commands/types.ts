@@ -15,7 +15,9 @@ export interface TCommand {
   (options: any): TRunResult;
 }
 
-export interface TRunOptions {}
+export interface TRunOptions {
+  zettelcornConfigDirectory?: string;
+}
 
 export type TRunResult = Promise<{
   readonly status: TStatusCodes;

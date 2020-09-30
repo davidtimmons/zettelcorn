@@ -2,7 +2,7 @@ import { assert, unimplemented } from "../../deps.ts";
 import { UIUtilities as UI$ } from "../../../lib/utilities/mod.ts";
 const { _paint } = UI$.__private__;
 
-Deno.test({name: "suite :: UTILITIES/UI/CONSOLE", ignore: true, fn() {}});
+Deno.test({ name: "suite :: UTILITIES/UI/CONSOLE", ignore: true, fn() {} });
 
 Deno.test("notifyUserOfChange() should notify the user of change", (): void => {
   // setup

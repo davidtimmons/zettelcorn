@@ -30,6 +30,10 @@ export function addNewZettelCommand(
       "Ignore the local zettel template if it exists",
     )
     .option(
+      "--template <key>",
+      "Create a new zettel file using a custom template (requires init)",
+    )
+    .option(
       "--silent",
       "Run command with no console output and automatic yes to prompts",
     )
@@ -51,6 +55,7 @@ export function addNewZettelCommand(
           markdown: false,
           recursive: false,
           silent: Boolean(options.silent),
+          template: options.template ?? "default",
           verbose: Boolean(options.verbose),
         });
       },

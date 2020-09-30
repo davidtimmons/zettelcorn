@@ -11,7 +11,7 @@ import { ConfigFiles, Path, Utilities as $ } from "./deps.ts";
 import type * as Types from "./types.ts";
 import * as Status from "./ui/status.ts";
 
-const { MetaData, Zettel } = ConfigFiles;
+const { MetaData, ZcConfig, Zettel } = ConfigFiles;
 
 export async function run(
   options: Types.TNewZettelRunOptions,
@@ -19,10 +19,14 @@ export async function run(
   // Verify CLI input before writing any data.
   await _preflightCheck(options);
 
-  // Confirm that new zettels should be written.
+  // Get selected zettel template, then confirm it should be written.
   const zettelDir = Deno.realPathSync(options.directory);
-  const [fileNameTemplate, fileDataTemplate, isLocal] =
-    await _getZettelTemplate(options);
+  const [fileName, fileData, isLocal] = await _getZettelTemplate(options);
+
+  const defaultExtIndex = fileName.indexOf(Zettel.fileExt);
+  const customExtIndex = fileName.indexOf(`.${options.template.trim()}${Zettel.fileExt}`);
+  const fileExtStart = customExtIndex >= 0 ? customExtIndex : defaultExtIndex;
+  const fileNameTemplate = fileName.substring(0, fileExtStart);
 
   if (!options.silent) {
     const userResponse = await Status.confirmChange({
@@ -41,7 +45,7 @@ export async function run(
 
   // Attempt to write the new files.
   const createFileName = $.generateGetterFromTokenExp(fileNameTemplate);
-  const createFileData = $.generateGetterFromTokenExp(fileDataTemplate);
+  const createFileData = $.generateGetterFromTokenExp(fileData);
   let writeResults: string[] = [];
   try {
     writeResults = _writeZettelFiles(
@@ -99,19 +103,55 @@ async function _getZettelTemplate(
   options: Types.TNewZettelRunOptions,
 ): Promise<[string, string, boolean]> {
   let fileName = Zettel.fileName;
-  let fileDataTemplate = Zettel.fileData;
+  let fileData = Zettel.fileData;
   let isLocal = false;
 
-  if (!options.default) {
-    const [name, data] = await $.getLocalConfigFile(Zettel.fileExt);
-    fileName = name ?? fileName;
-    fileDataTemplate = data ?? fileDataTemplate;
-    isLocal = !$.isEmpty(name);
+  if (options.default) {
+    return [fileName, fileData, isLocal];
   }
-  const extIndex = fileName.indexOf(Zettel.fileExt);
-  const fileNameTemplate = fileName.substring(0, extIndex);
 
-  return [fileNameTemplate, fileDataTemplate, isLocal];
+  // First, get the YAML configuration file that contains the list of zettel template.
+  const [configName, configData] = await $.getLocalConfigFile(
+    ZcConfig.fileName,
+    options.zettelcornConfigDirectory,
+  );
+
+  // Use the local config file if it exists, or fall back to the template defaults.
+  if (configName && configData) {
+    const localConfig = configData ? $.parseYAML(configData) : {};
+    const localTemplates = localConfig.zettel_templates ?? {};
+    const selectedTemplate = localTemplates[options.template];
+
+    // Fail if the local config file does not contain the selected template.
+    if (!selectedTemplate) {
+      Status.notifyUserOfExit({
+        ...options,
+        exitCode: TExitCodes.NO_FILE_FOUND,
+      });
+      Deno.exit();
+    }
+
+    // Then, get the selected template.
+    const [templateName, templateData] = await $.getLocalConfigFile(
+      selectedTemplate,
+      options.zettelcornConfigDirectory,
+    );
+
+    // Fail if the selected template file does not exist.
+    if (!templateName || !templateData) {
+      Status.notifyUserOfExit({
+        ...options,
+        exitCode: TExitCodes.NO_FILE_FOUND,
+      });
+      Deno.exit();
+    }
+
+    fileName = templateName;
+    fileData = templateData;
+    isLocal = true;
+  }
+
+  return [fileName, fileData, isLocal];
 }
 
 /**

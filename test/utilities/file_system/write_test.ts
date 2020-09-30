@@ -1,7 +1,9 @@
 import { assertEquals, assertStringContains } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
-Deno.test({name: "suite :: UTILITIES/FILE_SYSTEM/WRITE", ignore: true, fn() {}});
+Deno.test(
+  { name: "suite :: UTILITIES/FILE_SYSTEM/WRITE", ignore: true, fn() {} },
+);
 
 Deno.test("writeQueuedFiles() should print a message when starting and finishing writes", async () => {
   // setup
