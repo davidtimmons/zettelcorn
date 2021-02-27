@@ -1,4 +1,4 @@
-import { assertEquals, assertStringContains } from "../../deps.ts";
+import { assertEquals, assertStringIncludes } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
 Deno.test(
@@ -15,10 +15,10 @@ Deno.test("writeQueuedFiles() should print a message when starting and finishing
   let callCount = 0;
   console.log = (msg) => {
     if (callCount === 0) {
-      assertStringContains(msg as string, "Modified files:");
+      assertStringIncludes(msg as string, "Modified files:");
     }
     if (callCount === 1) {
-      assertStringContains(msg as string, "Processed 0 files.");
+      assertStringIncludes(msg as string, "Processed 0 files.");
     }
     if (callCount > 1) {
       throw new Error("Log called too many times in this test.");

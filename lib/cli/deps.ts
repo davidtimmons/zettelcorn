@@ -5,8 +5,7 @@
  * @module cli/deps
  */
 
-// @deno-types="https://unpkg.com/cac@6.6.1/mod.d.ts"
-export { cac as CAC } from "https://unpkg.com/cac@6.6.1/mod.js";
+export { cac as CAC } from "https://unpkg.com/cac@6.7.2/mod.ts";
 
 export {
   Flags as InitFlags,

@@ -32,7 +32,7 @@ After running Zettelcorn, Deno will cache all its dependencies. You will need to
 
 ### Deno Compatibility
 
-Zettelcorn was last tested with Deno `1.4.2`.
+Zettelcorn was last tested with Deno `1.7.5`.
 
 ### Deno Flags
 

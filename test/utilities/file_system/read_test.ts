@@ -1,7 +1,7 @@
 import {
   assert,
   assertEquals,
-  assertStringContains,
+  assertStringIncludes,
   Path,
 } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
@@ -90,10 +90,10 @@ Deno.test("buildFileQueue() should collect files with custom meta data", async (
 
 Deno.test("readTextFile() should read a text file at a path", async () => {
   let actual = await FS$.readTextFile("test/test_data/filter/test.md");
-  assertStringContains(actual, "This is a markdown file");
+  assertStringIncludes(actual, "This is a markdown file");
 
   actual = await FS$.readTextFile("");
-  assertStringContains(actual, "");
+  assertStringIncludes(actual, "");
 });
 
 Deno.test("doesFileOrDirectoryExist() should check if a resource exists at a path", async () => {
