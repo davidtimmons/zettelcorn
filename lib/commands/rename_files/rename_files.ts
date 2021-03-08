@@ -52,14 +52,20 @@ export async function run(
     await _confirmChangeWithUser(options, fileQueue, applyPattern);
   }
 
-  await $.writeQueuedFiles(_write, {
+  const writeResult = await $.writeQueuedFiles(_write, {
     ...options,
     applyPattern,
     startWorkMsg: `Renamed files:`,
-    endWorkMsg: `${fileQueue.length} files renamed.`,
   }, fileQueue);
 
-  return { status: TStatusCodes.OK };
+  let status: TStatusCodes;
+  if (writeResult.status === $.TWriteStatusCodes.OK) {
+    status = TStatusCodes.OK;
+  } else {
+    status = TStatusCodes.ERROR;
+  }
+
+  return { status };
 }
 
 async function _confirmChangeWithUser(
@@ -102,11 +108,13 @@ async function _write(
   const newPath = Path.join.apply(null, [basePath, newName]);
   const oldPath = file.path;
 
-  // Overwrites files on path collision rather than failing.
+  // Skip files with the same path rather than failing.
+  if (newPath === oldPath) return;
+
   await Deno.rename(oldPath, newPath);
 
   if (!options.silent && options.verbose) {
-    $.notifyUserOfChange(oldPath, newName);
+    $.notifyUserOfChange(oldPath, newPath);
   }
 }
 

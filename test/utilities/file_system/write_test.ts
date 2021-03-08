@@ -1,9 +1,40 @@
 import { assertEquals, assertStringIncludes } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
 
+const EMPTY_FILE = {
+  fileContent: "",
+  fileName: "",
+  meta: "",
+  path: "",
+  yaml: {},
+};
+
 Deno.test(
   { name: "suite :: UTILITIES/FILE_SYSTEM/WRITE", ignore: true, fn() {} },
 );
+
+Deno.test("writeQueuedFiles() should return a result status", async () => {
+  // setup
+  const options = { silent: true };
+  const writeSuccess = async (_x: unknown, _y: unknown) => {};
+  const writeFailure = async (_x: unknown, _y: unknown) => {
+    throw Error("Surprise!");
+  };
+
+  // test
+  let result: FS$.TWriteResult;
+  result = await FS$.writeQueuedFiles(writeSuccess, options, [EMPTY_FILE]);
+  assertEquals(result.status, FS$.TWriteStatusCodes.OK);
+  assertEquals(result.error, undefined);
+
+  result = await FS$.writeQueuedFiles(writeFailure, options, [EMPTY_FILE]);
+  assertEquals(result.status, FS$.TWriteStatusCodes.WRITE_ERROR);
+  assertEquals(result.error?.message, "Surprise!");
+
+  result = await FS$.writeQueuedFiles(writeFailure, options, []);
+  assertEquals(result.status, FS$.TWriteStatusCodes.EMPTY_WRITE_QUEUE);
+  assertStringIncludes(result.error?.message || "", "empty");
+});
 
 Deno.test("writeQueuedFiles() should print a message when starting and finishing writes", async () => {
   // setup
@@ -33,19 +64,11 @@ Deno.test("writeQueuedFiles() should print a message when starting and finishing
 
 Deno.test("writeQueuedFiles() should wait for all queued files to be written", async () => {
   // setup
+  const options = { verbose: true, silent: false };
   const originalConsoleLog = console.log;
   let callCount = 0;
   console.log = () => {
     callCount += 1;
-  };
-
-  const options = { verbose: true, silent: false };
-  const filler = {
-    fileContent: "",
-    fileName: "",
-    meta: "",
-    path: "",
-    yaml: {},
   };
 
   // test
@@ -55,10 +78,30 @@ Deno.test("writeQueuedFiles() should wait for all queued files to be written", a
     writeCount += 1;
   };
 
-  await FS$.writeQueuedFiles(write, options, [filler, filler, filler, filler]);
+  await FS$.writeQueuedFiles(write, options, [
+    EMPTY_FILE,
+    EMPTY_FILE,
+    EMPTY_FILE,
+    EMPTY_FILE,
+  ]);
   assertEquals(callCount, 2);
   assertEquals(writeCount, 4);
 
   // cleanup
   console.log = originalConsoleLog;
+});
+
+Deno.test("writeQueuedFiles() should handle a large file queue", async () => {
+  // setup
+  const options = { silent: true };
+  const write = async (_x: unknown, _y: unknown) => {};
+  const fileQueue = [];
+  for (let i = 0, len = 5000; i < len; i++) {
+    fileQueue.push(Object.assign({}, EMPTY_FILE));
+  }
+
+  // test
+  let writeResult: FS$.TWriteResult;
+  writeResult = await FS$.writeQueuedFiles(write, options, fileQueue);
+  assertEquals(writeResult.status, FS$.TWriteStatusCodes.OK);
 });

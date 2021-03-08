@@ -112,6 +112,6 @@ Deno.test("getLocalConfigFile() should retrieve a Zettelcorn configuration file"
   assertEquals(fileName, "hello_world.zettel");
   assertEquals((fileData as string).trim(), "Hello World");
 
-  const falseResult = FS$.getLocalConfigFile(".asdf", readDir);
+  const falseResult = await FS$.getLocalConfigFile(".asdf", readDir);
   assertEquals(falseResult, []);
 });

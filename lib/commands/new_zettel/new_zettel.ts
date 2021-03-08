@@ -24,7 +24,9 @@ export async function run(
   const [fileName, fileData, isLocal] = await _getZettelTemplate(options);
 
   const defaultExtIndex = fileName.indexOf(Zettel.fileExt);
-  const customExtIndex = fileName.indexOf(`.${options.template.trim()}${Zettel.fileExt}`);
+  const customExtIndex = fileName.indexOf(
+    `.${options.template.trim()}${Zettel.fileExt}`,
+  );
   const fileExtStart = customExtIndex >= 0 ? customExtIndex : defaultExtIndex;
   const fileNameTemplate = fileName.substring(0, fileExtStart);
 

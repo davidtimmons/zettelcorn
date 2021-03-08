@@ -12,9 +12,10 @@ CLI utilities for managing your Zettelkasten knowledge base.
 
 1. [Install](#-install)
 2. [Documentation](#-documentation)
-3. [Contribute](#-contribute)
-4. [Credits](#-credits)
-5. [License](#-license)
+3. [Development](#-development)
+4. [Contribute](#-contribute)
+5. [Credits](#-credits)
+6. [License](#-license)
 
 ## [🠕](#-table-of-contents) Install
 
@@ -23,8 +24,7 @@ CLI utilities for managing your Zettelkasten knowledge base.
 3. Run the Zettelcorn CLI script.
 
 ```bash
-$> deno run --unstable --allow-read --allow-write
-https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.ts
+$> deno run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts
 ```
 
 After running Zettelcorn, Deno will cache all its dependencies. You will need to include a
@@ -32,7 +32,7 @@ After running Zettelcorn, Deno will cache all its dependencies. You will need to
 
 ### Deno Compatibility
 
-Zettelcorn was last tested with Deno `1.7.5`.
+Zettelcorn was last tested with Deno `1.8.0`.
 
 ### Deno Flags
 
@@ -47,7 +47,7 @@ Consider creating an alias in your `.bashrc` (or equivalent) configuration file 
 running Zettelcorn easier.
 
 ```bash
-alias zettelcorn="deno run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.ts"
+alias zettelcorn="deno run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts"
 ```
 
 ```bash
@@ -69,7 +69,7 @@ Then, paste a `zettelcorn` function into the profile open in Notepad.
 
 ```powershell
 function zettelcorn {
-  deno.exe run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettlecorn.ts @args
+  deno.exe run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts @args
 }
 ```
 
@@ -489,6 +489,16 @@ The example zettel would get a new name.
 ```text
 Movies-12345-Alien-had-an-estimated-$11M-USD-budget-Alien,movie,budget.md
 ```
+
+## [🠕](#-table-of-contents) Development
+
+Run the test suite:
+
+`deno test --unstable --allow-read --allow-write ./test/`
+
+Run the utility from source code:
+
+`deno run --unstable --allow-read --allow-write ./lib/zettelcorn.ts`
 
 ## [🠕](#-table-of-contents) Contribute
 

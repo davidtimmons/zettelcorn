@@ -36,13 +36,20 @@ export async function run(
     await _confirmChangeWithUser(options, fileQueue);
   }
 
-  await $.writeQueuedFiles(_write, {
+  const writeResult = await $.writeQueuedFiles(_write, {
     ...options,
     startWorkMsg: `Injected files:`,
     endWorkMsg: `${fileQueue.length} files injected with a YAML ID.`,
   }, fileQueue);
 
-  return Promise.resolve({ status: TStatusCodes.OK });
+  let status: TStatusCodes;
+  if (writeResult.status === $.TWriteStatusCodes.OK) {
+    status = TStatusCodes.OK;
+  } else {
+    status = TStatusCodes.ERROR;
+  }
+
+  return { status };
 }
 
 /**

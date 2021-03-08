@@ -15,6 +15,4 @@ export default function command(commandModule: T.TCommandModule): T.TCommand {
     await commandModule.run(options);
 }
 
-export {
-  command,
-};
+export { command };

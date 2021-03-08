@@ -1,4 +1,4 @@
-import { assert, unimplemented, Commands } from "../../../deps.ts";
+import { assert, Commands, unimplemented } from "../../../deps.ts";
 import { Status } from "../../../../lib/commands/rename_files/mod.ts";
 const TExitCodes = Commands.TExitCodes;
 

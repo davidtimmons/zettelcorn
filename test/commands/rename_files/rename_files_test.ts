@@ -1,4 +1,5 @@
 import { assert, Path } from "../../deps.ts";
+import { TStatusCodes } from "../../../lib/commands/mod.ts";
 import { RenameFiles } from "../../../lib/commands/rename_files/mod.ts";
 const { _write } = RenameFiles.__private__;
 
@@ -48,7 +49,7 @@ Deno.test("_write() should rename a file", async () => {
   const newPathReal = Deno.realPathSync(newPath);
   assert(newPathReal.length > 0);
 
-  // cleanup
+  // resetFileNames
   Deno.renameSync(newPathReal, oldPathReal);
 });
 
@@ -73,4 +74,56 @@ Deno.test("run() should rename all files", async () => {
   const newPath02 = Deno.realPathSync(Path.join(basePath, "1849-hello.md"));
   Deno.renameSync(newPath01, oldPath01);
   Deno.renameSync(newPath02, oldPath02);
+});
+
+Deno.test("run() should not freeze when renaming many files", async () => {
+  // setup - tests 500 files
+  const timeLimit = 5_000;
+  const basePath = "./test/test_data/bulk";
+  const fileNames: [string, string][] = [];
+
+  for (const dirEntry of Deno.readDirSync(basePath)) {
+    const originalName = dirEntry.name;
+    const newName = originalName.slice(0, -3) + "-hello.md";
+    fileNames.push([newName, originalName]);
+  }
+
+  const resetFileNames = (fileNames: [string, string][]) => {
+    fileNames.forEach(([newName, originalName]) => {
+      try {
+        const newPath = Deno.realPathSync(Path.join(basePath, newName));
+        const oldPath = Path.join(basePath, originalName);
+        Deno.renameSync(newPath, oldPath);
+      } catch (_error) {
+        // Clean up everything there is to clean up rather than failing.
+      }
+    });
+  };
+
+  // The "setTimeout" "fail" function stops the "run" process but does not always fail the test.
+  // Additionally, setTimeout must always be cleared or Deno sporadically complains.
+  // Performance timing together with setTimeout creates a consistent timeout test.
+  const fail = () => {
+    throw Error("The process has frozen.");
+  };
+  const fiveSecondTimer = setTimeout(fail, timeLimit);
+
+  // modify files
+  const startTimer = performance.now();
+  const { status } = await RenameFiles.run({
+    ...MENU_OPTIONS,
+    dashed: true,
+    directory: basePath,
+    pattern: "{id}-hello.md",
+  });
+  const endTimer = performance.now();
+
+  // cleanup
+  resetFileNames(fileNames);
+
+  // test
+  clearTimeout(fiveSecondTimer);
+  if (endTimer - startTimer >= timeLimit) {
+    fail();
+  }
 });
