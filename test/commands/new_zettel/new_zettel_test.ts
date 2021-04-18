@@ -1,5 +1,7 @@
-import { assert, assertEquals, Utilities as $ } from "../../deps.ts";
+import { Asserts, Utilities as $ } from "../../deps.ts";
 import { NewZettel } from "../../../lib/commands/new_zettel/mod.ts";
+const { assertEquals } = Asserts;
+const assert: any = Asserts.assert;
 
 const MENU_OPTIONS = Object.freeze({
   default: false,

@@ -1,6 +1,8 @@
-import { assert, assertEquals, equal } from "../../deps.ts";
+import { Asserts } from "../../deps.ts";
 import * as $ from "../../../lib/utilities/mod.ts";
 import { ParsersUtilities as Y$ } from "../../../lib/utilities/mod.ts";
+const { assertEquals, equal } = Asserts;
+const assert: any = Asserts.assert;
 
 Deno.test(
   {

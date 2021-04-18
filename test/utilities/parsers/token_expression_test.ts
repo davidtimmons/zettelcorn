@@ -1,5 +1,6 @@
-import { assertEquals } from "../../deps.ts";
+import { Asserts } from "../../deps.ts";
 import { ParsersUtilities as TE$ } from "../../../lib/utilities/mod.ts";
+const { assertEquals } = Asserts;
 
 Deno.test({
   name: "suite :: UTILITIES/PARSERS/TOKEN_EXPRESSION",

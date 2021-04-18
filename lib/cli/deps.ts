@@ -5,7 +5,7 @@
  * @module cli/deps
  */
 
-export { cac as CAC } from "https://unpkg.com/cac@6.7.2/mod.ts";
+export { CAC } from "../../deps.ts";
 
 export {
   Flags as InitFlags,

@@ -1,5 +1,6 @@
-import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
+import { Asserts, Path, Utilities as $ } from "../../deps.ts";
 import { InjectTitle } from "../../../lib/commands/inject_title/mod.ts";
+const { assertEquals } = Asserts;
 const { _yamlTransformation } = InjectTitle.__private__;
 
 const MENU_OPTIONS = Object.freeze({

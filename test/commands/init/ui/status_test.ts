@@ -1,5 +1,6 @@
-import { assert, Commands, ConfigFiles } from "../../../deps.ts";
+import { Asserts, Commands, ConfigFiles } from "../../../deps.ts";
 import { Status } from "../../../../lib/commands/init/mod.ts";
+const assert: any = Asserts.assert;
 const TExitCodes = Commands.TExitCodes;
 
 const CONSOLE_LOG = console.log;

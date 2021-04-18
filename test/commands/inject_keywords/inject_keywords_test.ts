@@ -1,10 +1,6 @@
-import {
-  assertEquals,
-  assertThrows,
-  Path,
-  Utilities as $,
-} from "../../deps.ts";
+import { Asserts, Path, Utilities as $ } from "../../deps.ts";
 import * as InjectKeywords from "../../../lib/commands/inject_keywords/inject_keywords.ts";
+const { assertEquals, assertThrows } = Asserts;
 const { _yamlTransformation } = InjectKeywords.__private__;
 
 const MENU_OPTIONS = Object.freeze({

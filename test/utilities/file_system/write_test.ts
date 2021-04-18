@@ -1,5 +1,6 @@
-import { assertEquals, assertStringIncludes } from "../../deps.ts";
+import { Asserts } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
+const { assertEquals, assertStringIncludes } = Asserts;
 
 const EMPTY_FILE = {
   fileContent: "",

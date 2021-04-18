@@ -1,8 +1,10 @@
-import { assert, assertEquals, assertThrows } from "../../deps.ts";
+import { Asserts } from "../../deps.ts";
 import {
   FileSystemUtilities as FS$,
   HelpersUtilities as H$,
 } from "../../../lib/utilities/mod.ts";
+const { assertEquals, assertThrows } = Asserts;
+const assert: any = Asserts.assert;
 
 Deno.test({
   name: "suite :: UTILITIES/HELPERS/FUNCTIONAL",

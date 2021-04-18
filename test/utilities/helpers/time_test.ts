@@ -1,5 +1,7 @@
-import { assert, assertEquals } from "../../deps.ts";
+import { Asserts } from "../../deps.ts";
 import { HelpersUtilities as H$ } from "../../../lib/utilities/mod.ts";
+const { assertEquals } = Asserts;
+const assert: any = Asserts.assert;
 
 Deno.test({
   name: "suite :: UTILITIES/HELPERS/TIME",

@@ -1,6 +1,6 @@
-import { assert, Path } from "../../deps.ts";
-import { TStatusCodes } from "../../../lib/commands/mod.ts";
+import { Asserts, Path } from "../../deps.ts";
 import { RenameFiles } from "../../../lib/commands/rename_files/mod.ts";
+const assert: any = Asserts.assert;
 const { _write } = RenameFiles.__private__;
 
 const MENU_OPTIONS = Object.freeze({

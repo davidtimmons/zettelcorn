@@ -5,9 +5,7 @@
  * @module config_files/deps
  */
 
-export * from "https://deno.land/std@0.89.0/testing/asserts.ts";
-export * as FS from "https://deno.land/std@0.89.0/fs/mod.ts";
-export * as Path from "https://deno.land/std@0.89.0/path/mod.ts";
+export { Asserts, FS, Path } from "../deps.ts";
 export * as Commands from "../lib/commands/mod.ts";
 export * as ConfigFiles from "../lib/config_files/mod.ts";
 export * as Utilities from "../lib/utilities/mod.ts";

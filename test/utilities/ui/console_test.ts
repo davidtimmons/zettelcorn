@@ -1,6 +1,8 @@
-import { assert, unimplemented } from "../../deps.ts";
+import { Asserts } from "../../deps.ts";
 import { UIUtilities as UI$ } from "../../../lib/utilities/mod.ts";
 const { _paint } = UI$.__private__;
+const { unimplemented } = Asserts;
+const assert: any = Asserts.assert;
 
 Deno.test({ name: "suite :: UTILITIES/UI/CONSOLE", ignore: true, fn() {} });
 

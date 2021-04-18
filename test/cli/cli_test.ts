@@ -1,5 +1,7 @@
-import { assert, assertThrows } from "../deps.ts";
+import { Asserts } from "../deps.ts";
 import * as CLI from "../../lib/cli/cli.ts";
+const { assertThrows } = Asserts;
+const assert: any = Asserts.assert;
 const { _tryParse } = CLI.__private__;
 
 Deno.test({ name: "suite :: CLI/CLI", ignore: true, fn() {} });

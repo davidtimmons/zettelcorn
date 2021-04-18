@@ -1,5 +1,6 @@
-import { assertEquals, Path, Utilities as $ } from "../../deps.ts";
+import { Asserts, Path, Utilities as $ } from "../../deps.ts";
 import { ParsersUtilities as T$ } from "../../../lib/utilities/mod.ts";
+const { assertEquals } = Asserts;
 
 Deno.test({ name: "suite :: UTILITIES/PARSERS/TAGS", ignore: true, fn() {} });
 

@@ -1,10 +1,7 @@
-import {
-  assert,
-  assertEquals,
-  assertStringIncludes,
-  Path,
-} from "../../deps.ts";
+import { Asserts, Path } from "../../deps.ts";
 import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
+const { assertEquals, assertStringIncludes } = Asserts;
+const assert: any = Asserts.assert;
 
 Deno.test(
   { name: "suite :: UTILITIES/FILE_SYSTEM/READ", ignore: true, fn() {} },
