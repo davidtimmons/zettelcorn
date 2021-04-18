@@ -8,13 +8,13 @@
 1. [`new.zettel`](#-newzettel-options-directory)
 1. [`rename.files`](#-renamefiles-options-directory-pattern)
 
-## [🠕](#-documentation) `zettelcorn`
+## [🠕](#zettelcorn-cli-documentation) `zettelcorn`
 
 _Alias:_ `zettelcorn -h`, `zettelcorn --help`
 
 Display the help menu.
 
-## [🠕](#-documentation) `init [options] [directory]`
+## [🠕](#zettelcorn-cli-documentation) `init [options] [directory]`
 
 Initializes a Zettelcorn project directory with configuration files.
 
@@ -68,7 +68,7 @@ _See:_ [`new.zettel`](#-newzettel-options-directory)
     1. Create a new file with a compound file extension that matches the YAML key and ends with `.zettel`, e.g. `.alt.zettel`.
     1. Provide this key to the appropriate Zettelcorn command, e.g. [`new.zettel --template alt`](#-newzettel-options-directory).
 
-## [🠕](#-documentation) `inject.id [options] <directory>`
+## [🠕](#zettelcorn-cli-documentation) `inject.id [options] <directory>`
 
 Inject the detected ID into an "id" key inside the YAML frontmatter.
 
@@ -126,7 +126,7 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-## [🠕](#-documentation) `inject.keywords [options] <directory>`
+## [🠕](#zettelcorn-cli-documentation) `inject.keywords [options] <directory>`
 
 Inject topic tags into a "keywords" list inside the YAML frontmatter.
 
@@ -240,7 +240,7 @@ keywords:
 The hashtag (i.e. #hashtag) came into popular usage with social media platforms. #win
 ```
 
-## [🠕](#-documentation) `inject.title [options] <directory>`
+## [🠕](#zettelcorn-cli-documentation) `inject.title [options] <directory>`
 
 Inject the detected title into a "title" key inside the YAML frontmatter.
 
@@ -297,7 +297,7 @@ The film Alien debuted in 1979 with an estimated budget of $11,000,000 USD.
 In 2020, that same amount would be worth roughly $39,000,000 USD.
 ```
 
-## [🠕](#-documentation) `new.zettel [options] [directory]`
+## [🠕](#zettelcorn-cli-documentation) `new.zettel [options] [directory]`
 
 Create one or many new zettel files.
 
@@ -349,7 +349,7 @@ the default, run the `new.zettel` command using the `--template <key>` flag.
 $> zettelcorn new.zettel --verbose --template my_other_template ./my-directory
 ```
 
-## [🠕](#-documentation) `rename.files [options] <directory> <pattern>`
+## [🠕](#zettelcorn-cli-documentation) `rename.files [options] <directory> <pattern>`
 
 Rename files containing YAML frontmatter.
 
