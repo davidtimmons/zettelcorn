@@ -78,7 +78,9 @@ Then, paste a `zettelcorn` function into the profile open in Notepad.
 
 ```powershell
 function zettelcorn {
-  deno.exe run --import-map=import_map.json --allow-read --allow-write --unstable https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts @args
+  $im = "https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/import_map.json";
+  $zc = "https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts";
+  deno.exe run --import-map=$im --allow-read --allow-write --unstable $zc @args
 }
 ```
 
