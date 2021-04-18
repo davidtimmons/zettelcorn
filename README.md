@@ -56,7 +56,7 @@ Consider creating an alias in your `.bashrc` (or equivalent) configuration file 
 running Zettelcorn easier.
 
 ```bash
-alias zettelcorn="deno run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts"
+alias zettelcorn="deno run --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts"
 ```
 
 ```bash
@@ -78,7 +78,7 @@ Then, paste a `zettelcorn` function into the profile open in Notepad.
 
 ```powershell
 function zettelcorn {
-  deno.exe run --unstable --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts @args
+  deno.exe run --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts @args
 }
 ```
 
@@ -101,13 +101,17 @@ See [the Zettelcorn manual](./MANUAL.md) for more details on using this tool.
 
 Zettelcorn includes a permissive license. You are free to modify the source code to suit your needs.
 
-After cloning the project, run the Zettelcorn test suite with the following command:
+After cloning the project, install and cache the dependencies:
 
-`deno test --unstable --allow-read --allow-write ./test/`
+`deno cache --reload --lock=lock.json --unstable ./deps.ts`
+
+Run the Zettelcorn test suite with the following command:
+
+`deno test --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable ./test/`
 
 Run Zettelcorn from a local directory with this command:
 
-`deno run --unstable --allow-read --allow-write ./lib/zettelcorn.ts`
+`deno run --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable ./lib/zettelcorn.ts`
 
 ## [🠕](#-table-of-contents) Contribute
 

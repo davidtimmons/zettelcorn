@@ -5,7 +5,7 @@
  * @module commands/deps
  */
 
-export { Colors, Path } from "../../deps.ts";
-export { Types as CLITypes } from "../cli/mod.ts";
-export * as ConfigFiles from "../config_files/mod.ts";
-export * as Utilities from "../utilities/mod.ts";
+export { Colors, Path } from "DepsExternal";
+export { Types as CLITypes } from "CLI";
+export * as ConfigFiles from "ConfigFiles";
+export * as Utilities from "Utilities";

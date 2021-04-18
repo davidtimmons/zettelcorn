@@ -5,4 +5,4 @@
  * @module config_files/deps
  */
 
-export * as Utilities from "../utilities/mod.ts";
+export * as Utilities from "Utilities";

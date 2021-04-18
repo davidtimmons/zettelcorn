@@ -1,8 +1,11 @@
 {
-    "deno.enable": true,
     "cSpell.words": [
-        "deno"
+        "deno",
+        "zettel"
     ],
+    "deno.config": "./tsconfig.json",
+    "deno.enable": true,
+    "deno.importMap": "./import_map.json",
     "editor.tabSize": 2,
-    "markdown.extension.toc.updateOnSave": false,
+    "markdown.extension.toc.updateOnSave": false
 }

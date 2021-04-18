@@ -1,5 +1,5 @@
-import { Asserts, Path } from "../../deps.ts";
-import { FileSystemUtilities as FS$ } from "../../../lib/utilities/mod.ts";
+import { Asserts, Path } from "DepsTest";
+import { FileSystemUtilities as FS$ } from "Utilities";
 const { assertEquals, assertStringIncludes } = Asserts;
 const assert: any = Asserts.assert;
 

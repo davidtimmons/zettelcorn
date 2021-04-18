@@ -5,5 +5,5 @@
  * @module utilities/deps
  */
 
-export { Colors, FS, IO, JSYAML, Path } from "../../deps.ts";
-export { MetaData } from "../config_files/mod.ts";
+export { Colors, FS, IO, JSYAML, Path } from "DepsExternal";
+export { MetaData } from "ConfigFiles";

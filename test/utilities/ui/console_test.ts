@@ -1,5 +1,5 @@
-import { Asserts } from "../../deps.ts";
-import { UIUtilities as UI$ } from "../../../lib/utilities/mod.ts";
+import { Asserts } from "DepsTest";
+import { UIUtilities as UI$ } from "Utilities";
 const { _paint } = UI$.__private__;
 const { unimplemented } = Asserts;
 const assert: any = Asserts.assert;

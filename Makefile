@@ -7,8 +7,8 @@ install:
 
 .PHONY: run
 run:
-	deno run --lock=lock.json --allow-read --allow-write --unstable ./lib/zettelcorn.ts
+	deno run --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable ./lib/zettelcorn.ts
 
 .PHONY: test
 test:
-	deno test --lock=lock.json --allow-read --allow-write --unstable ./test/
+	deno test --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable ./test/

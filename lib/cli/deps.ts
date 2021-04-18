@@ -5,34 +5,34 @@
  * @module cli/deps
  */
 
-export { CAC } from "../../deps.ts";
+export { CAC } from "DepsExternal";
 
 export {
   Flags as InitFlags,
   Types as InitTypes,
-} from "../commands/init/mod.ts";
+} from "CommandInit";
 
 export {
   Flags as InjectIdFlags,
   Types as InjectIdTypes,
-} from "../commands/inject_id/mod.ts";
+} from "CommandInjectId";
 
 export {
   Flags as InjectKeywordsFlags,
   Types as InjectKeywordsTypes,
-} from "../commands/inject_keywords/mod.ts";
+} from "CommandInjectKeywords";
 
 export {
   Flags as InjectTitleFlags,
   Types as InjectTitleTypes,
-} from "../commands/inject_title/mod.ts";
+} from "CommandInjectTitle";
 
 export {
   Flags as NewZettelFlags,
   Types as NewZettelTypes,
-} from "../commands/new_zettel/mod.ts";
+} from "CommandNewZettel";
 
 export {
   Flags as RenameFilesFlags,
   Types as RenameFilesTypes,
-} from "../commands/rename_files/mod.ts";
+} from "CommandRenameFiles";

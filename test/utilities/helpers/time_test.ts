@@ -1,5 +1,5 @@
-import { Asserts } from "../../deps.ts";
-import { HelpersUtilities as H$ } from "../../../lib/utilities/mod.ts";
+import { Asserts } from "DepsTest";
+import { HelpersUtilities as H$ } from "Utilities";
 const { assertEquals } = Asserts;
 const assert: any = Asserts.assert;
 

@@ -4,14 +4,14 @@
  */
 
 import Env from "../env.ts";
-import { CLI } from "./cli/mod.ts";
-import Commands from "./commands/mod.ts";
-import Init from "./commands/init/mod.ts";
-import InjectId from "./commands/inject_id/mod.ts";
-import InjectKeywords from "./commands/inject_keywords/mod.ts";
-import InjectTitle from "./commands/inject_title/mod.ts";
-import NewZettel from "./commands/new_zettel/mod.ts";
-import RenameFiles from "./commands/rename_files/mod.ts";
+import { CLI } from "CLI";
+import Commands from "Commands";
+import Init from "CommandInit";
+import InjectId from "CommandInjectId";
+import InjectKeywords from "CommandInjectKeywords";
+import InjectTitle from "CommandInjectTitle";
+import NewZettel from "CommandNewZettel";
+import RenameFiles from "CommandRenameFiles";
 
 // Required Deno flags: --unstable --allow-read --allow-write
 

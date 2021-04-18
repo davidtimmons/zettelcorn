@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "CLI": "./lib/cli/mod.ts",
+    "CommandInit": "./lib/commands/init/mod.ts",
+    "CommandInjectId": "./lib/commands/inject_id/mod.ts",
+    "CommandInjectKeywords": "./lib/commands/inject_keywords/mod.ts",
+    "CommandInjectTitle": "./lib/commands/inject_title/mod.ts",
+    "CommandNewZettel": "./lib/commands/new_zettel/mod.ts",
+    "CommandRenameFiles": "./lib/commands/rename_files/mod.ts",
+    "Commands": "./lib/commands/mod.ts",
+    "ConfigFiles": "./lib/config_files/mod.ts",
+    "DepsExternal": "./deps.ts",
+    "DepsTest": "./test/deps.ts",
+    "Utilities": "./lib/utilities/mod.ts"
+  }
+}

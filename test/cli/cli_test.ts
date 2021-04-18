@@ -1,5 +1,5 @@
-import { Asserts } from "../deps.ts";
-import * as CLI from "../../lib/cli/cli.ts";
+import { Asserts } from "DepsTest";
+import { CLI } from "CLI";
 const { assertThrows } = Asserts;
 const assert: any = Asserts.assert;
 const { _tryParse } = CLI.__private__;

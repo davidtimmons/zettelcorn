@@ -1,5 +1,5 @@
-import { Asserts, Path, Utilities as $ } from "../../deps.ts";
-import { InjectId } from "../../../lib/commands/inject_id/mod.ts";
+import { Asserts, Path, Utilities as $ } from "DepsTest";
+import { InjectId } from "CommandInjectId";
 const { assertEquals } = Asserts;
 const { _yamlTransformation } = InjectId.__private__;
 

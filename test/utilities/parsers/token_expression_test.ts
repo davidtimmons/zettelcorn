@@ -1,5 +1,5 @@
-import { Asserts } from "../../deps.ts";
-import { ParsersUtilities as TE$ } from "../../../lib/utilities/mod.ts";
+import { Asserts } from "DepsTest";
+import { ParsersUtilities as TE$ } from "Utilities";
 const { assertEquals } = Asserts;
 
 Deno.test({

@@ -6,6 +6,6 @@
  */
 
 export { Asserts, FS, Path } from "../deps.ts";
-export * as Commands from "../lib/commands/mod.ts";
-export * as ConfigFiles from "../lib/config_files/mod.ts";
-export * as Utilities from "../lib/utilities/mod.ts";
+export * as Commands from "Commands";
+export * as ConfigFiles from "ConfigFiles";
+export * as Utilities from "Utilities";

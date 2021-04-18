@@ -1,6 +1,5 @@
-import { Asserts } from "../../deps.ts";
-import * as $ from "../../../lib/utilities/mod.ts";
-import { ParsersUtilities as Y$ } from "../../../lib/utilities/mod.ts";
+import { Asserts, Utilities as $ } from "DepsTest";
+import { ParsersUtilities as Y$ } from "Utilities";
 const { assertEquals, equal } = Asserts;
 const assert: any = Asserts.assert;
 

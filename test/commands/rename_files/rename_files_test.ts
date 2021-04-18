@@ -1,5 +1,5 @@
-import { Asserts, Path } from "../../deps.ts";
-import { RenameFiles } from "../../../lib/commands/rename_files/mod.ts";
+import { Asserts, Path } from "DepsTest";
+import { RenameFiles } from "CommandRenameFiles";
 const assert: any = Asserts.assert;
 const { _write } = RenameFiles.__private__;
 

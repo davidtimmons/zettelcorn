@@ -1,5 +1,5 @@
-import { Asserts, ConfigFiles, Path, Utilities as $ } from "../../deps.ts";
-import { Init } from "../../../lib/commands/init/mod.ts";
+import { Asserts, ConfigFiles, Path, Utilities as $ } from "DepsTest";
+import { Init } from "CommandInit";
 const { assertEquals } = Asserts;
 
 const MENU_OPTIONS = Object.freeze({

@@ -1,5 +1,5 @@
-import { Asserts, Utilities as $ } from "../../deps.ts";
-import { NewZettel } from "../../../lib/commands/new_zettel/mod.ts";
+import { Asserts, Utilities as $ } from "DepsTest";
+import { NewZettel } from "CommandNewZettel";
 const { assertEquals } = Asserts;
 const assert: any = Asserts.assert;
 
