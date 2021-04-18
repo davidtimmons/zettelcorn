@@ -4,4 +4,5 @@
         "deno"
     ],
     "editor.tabSize": 2,
+    "markdown.extension.toc.updateOnSave": false,
 }
