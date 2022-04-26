@@ -4,7 +4,7 @@ CLI utilities for managing your Zettelkasten knowledge base.
 
 - [x] Compatible with Linux
 - [x] Compatible with Windows
-- [ ] Not tested in macOS but [_should_ work](https://github.com/davidtimmons/zettelcorn/issues/1)
+- [ ] Not tested with macOS but [_should_ work](https://github.com/davidtimmons/zettelcorn/issues/1)
 
 ![Zettelcorn](./media/promo.png)
 
@@ -33,7 +33,7 @@ Zettelcorn takes the manual labor out of maintaining a digital Zettelkasten. Add
 3. Run the Zettelcorn CLI script remotely.
 
 ```bash
-$> deno run --import-map=import_map.json --allow-read --allow-write --unstable https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts
+$> deno run --import-map=import_map.json --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts
 ```
 
 After running Zettelcorn, Deno will cache all its dependencies. You will need to include a
@@ -41,11 +41,10 @@ After running Zettelcorn, Deno will cache all its dependencies. You will need to
 
 ### Deno Compatibility
 
-Zettelcorn was last tested with Deno `1.9.0`.
+Zettelcorn was last tested with Deno `1.21.0`.
 
 ### Deno Flags
 
-- `--unstable` - Zettelcorn uses the Deno standard library which is not yet completely stable.
 - `--allow-read` - Zettelcorn reads zettel files from your file system.
 - `--allow-write` - Zettelcorn modifies and writes files but always with your permission.
 - `--reload` - Updates the Deno cache to use the latest version of Zettelcorn.
@@ -56,7 +55,7 @@ Consider creating an alias in your `.bashrc` (or equivalent) configuration file 
 running Zettelcorn easier.
 
 ```bash
-alias zettelcorn="deno run --import-map=import_map.json --allow-read --allow-write --unstable https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts"
+alias zettelcorn="deno run --import-map=import_map.json --allow-read --allow-write https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts"
 ```
 
 ```bash
@@ -80,7 +79,7 @@ Then, paste a `zettelcorn` function into the profile open in Notepad.
 function zettelcorn {
   $im = "https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/import_map.json";
   $zc = "https://raw.githubusercontent.com/davidtimmons/zettelcorn/master/lib/zettelcorn.ts";
-  deno.exe run --import-map=$im --allow-read --allow-write --unstable $zc @args
+  deno.exe run --import-map=$im --allow-read --allow-write $zc @args
 }
 ```
 
@@ -106,17 +105,17 @@ Zettelcorn includes a permissive license. You are free to modify the source code
 After cloning the project, install and cache the dependencies:
 
 - `make install` or
-- `deno cache --reload --lock=lock.json --unstable ./deps.ts`
+- `deno cache --reload --lock=lock.json ./deps.ts`
 
 Run the Zettelcorn test suite with the following command:
 
 - `make test` or
-- `deno test --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable ./test/`
+- `deno test --lock=lock.json --import-map=import_map.json --allow-read --allow-write ./test/`
 
 Run Zettelcorn from a local directory with this command:
 
 - `make run` or
-- `deno run --lock=lock.json --import-map=import_map.json --allow-read --allow-write --unstable ./lib/zettelcorn.ts`
+- `deno run --lock=lock.json --import-map=import_map.json --allow-read --allow-write ./lib/zettelcorn.ts`
 
 ## [🠕](#-table-of-contents) Contribute
 
