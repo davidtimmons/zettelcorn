@@ -20,11 +20,11 @@ CLI utilities for managing your Zettelkasten knowledge base.
 
 ## [🠕](#-table-of-contents) Overview
 
-Adding new notes to a digital Zettelkasten should be easy. Blank note files are no problem, but what if new notes should follow a certain template? What if a Zettelkasten uses several *different* note templates? This begins to add unnecessary friction to what should be a simple writing process. Copying and pasting templates can be an irritating distraction when all we really want to do is record a sudden insight in a new note file.
+Adding new notes to a digital Zettelkasten should be easy. Blank note files present no problems, but what if new notes should comply with a certain template structure? What if a Zettelkasten uses several *different* note templates? This adds unnecessary friction to what should be a simple writing process. Copying and pasting templates can be an irritating distraction when all we really want to do is quickly record a sudden insight in a new note file.
 
-Maintaining consistent note structure can also be a problem. What if we suddenly decide file names should follow a different format than our earlier notes? Or what if we suddenly need accurate metadata about each of our notes for a new Zettelkasten tool to work correctly? Reversing early note structure decisions becomes a time-consuming slog as a Zettelkasten grows. Our focus should be on writing new notes, not managing note files and metadata.
+Maintaining consistent note structure can also be a problem. What if we decide file names should follow a different format than our earlier notes? Or what if we suddenly need accurate metadata about each of our notes for a new Zettelkasten tool to function correctly? Reversing early note structure decisions becomes a time-consuming slog as a Zettelkasten grows. Our focus should be on writing new notes, not managing note files and metadata.
 
-Zettelcorn takes the manual labor out of maintaining a digital Zettelkasten. Add one, two, or a hundred blank notes at a time using any custom template. Rename files in the entire Zettelkasten (or specific directories) without a second thought. Parse existing notes then inject a unique ID, title, and keyword list into YAML frontmatter for each note. Maintaining a digital Zettelkasten should not be a hassle. Zettelcorn makes it easy to focus on the fun parts.
+Zettelcorn takes the manual labor out of maintaining a digital Zettelkasten. Add one, two, or a hundred blank notes at a time using any custom template. Rename files in the entire Zettelkasten (or specific directories) with very little effort. Parse existing notes then inject a unique ID, title, and keyword list into YAML frontmatter for each note. Maintaining a digital Zettelkasten should not be a struggle. Zettelcorn makes it easy to focus on the fun parts.
 
 ## [🠕](#-table-of-contents) Install
 
